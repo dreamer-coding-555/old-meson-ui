@@ -1,0 +1,4 @@
+[wrap-git]
+directory = unittest-cpp
+url = https://github.com/michaelbadcrumble/unittest-cpp
+revision = head
