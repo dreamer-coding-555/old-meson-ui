@@ -1,0 +1,55 @@
+version: 2.1
+
+orbs:
+  python: circleci/python@0.2.1
+
+
+executors:
+  meson_ubuntu_builder:
+    docker:
+      - image: michaelbadcruble/ubuntu-sys:meson-ui
+
+  meson_debain_builder:
+    docker:
+      - image: michaelbadcruble/debian-sys:meson-ui
+
+  meson_fedora_builder:
+    docker:
+      - image: michaelbadcruble/fedora-sys:meson-ui
+
+jobs:
+  meson_ubuntu_build:
+    executor: meson_ubuntu_builder
+    steps:
+      - checkout
+      - run:
+          name: Run Unit Tests
+          command: pytest -v run_unittests.py run_project_tests.py
+
+  meson_debain_build:
+    executor: meson_debain_builder
+    steps:
+      - checkout
+      - run:
+          name: Run Unit Tests
+          command: pytest -v run_unittests.py run_project_tests.py
+
+  meson_fedora_build:
+    executor: meson_fedora_builder
+    steps:
+      - checkout
+      - run:
+          name: Running yum install mesa-libGLU
+          command: yum install mesa-libGLU -y
+      - run:
+          name: Run Unit Tests
+          command: pytest -v run_unittests.py run_project_tests.py
+
+
+workflows:
+  version: 2
+  linux_workflow:
+    jobs:
+      - meson_ubuntu_build
+      - meson_debain_build
+      - meson_fedora_build

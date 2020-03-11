@@ -1,0 +1,17 @@
+graft test-cases
+graft docs
+
+include contributing.md
+include code_of_conduct.md
+include readme.md
+include LICENSE
+include run_mesonui_tests.py
+include run_project_tests.py
+include run_unittests.py
+
+include __main__.py
+include meson-ui.py
+
+recursive-include data/mesonui-icon *.png
+recursive-include data/mesonui-layout *.ui
+recursive-include data/mesonui-styles *.qss

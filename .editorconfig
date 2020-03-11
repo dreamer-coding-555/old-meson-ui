@@ -1,0 +1,57 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+
+[*.[ch]]
+indent_size = 4
+
+[*.cc]
+indent_size = 4
+
+[*.cpp]
+indent_size = 4
+
+[*.cs]
+indent_size = 4
+
+[*.cu]
+indent_size = 4
+
+[*.java]
+indent_size = 4
+
+[*.m]
+indent_size = 4
+
+[*.mm]
+indent_size = 4
+
+[*.d]
+indent_size = 4
+
+[*.rs]
+indent_size = 4
+
+[*.py]
+indent_size = 4
+
+[*.sh]
+indent_size = 4
+
+[*.d]
+indent_size = 4
+
+[*.json]
+indent_size = 2
+
+[*.yml]
+indent_size = 4
+
+[*.yaml]
+indent_size = 4
+
+[meson.build]
+indent_size = 4
