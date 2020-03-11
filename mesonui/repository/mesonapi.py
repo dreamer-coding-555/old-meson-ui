@@ -11,7 +11,6 @@ from .datascanner import MesonScriptReader
 from .datareader import MesonBuilddirReader
 from .dataloader import MesonBuilddirLoader
 from pathlib import Path
-import os
 
 
 class MesonAPI:
