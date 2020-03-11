@@ -1,0 +1,15 @@
+<RCC>
+  <qresource prefix="icon">
+    <file>mesonui-icon/ic_clear.png</file>
+    <file>mesonui-icon/wrapdb_logo.png</file>
+    <file>mesonui-icon/ic_right_arrow.png</file>
+    <file>mesonui-icon/ic_quit.png</file>
+    <file>mesonui-icon/ic_open.png</file>
+    <file>mesonui-icon/ic_minimize.png</file>
+    <file>mesonui-icon/ic_left_arrow.png</file>
+    <file>mesonui-icon/ic_inform.png</file>
+    <file>mesonui-icon/ic_docs.png</file>
+    <file>mesonui-icon/ic_github.png</file>
+    <file>mesonui-icon/meson_modern.png</file>
+  </qresource>
+</RCC>

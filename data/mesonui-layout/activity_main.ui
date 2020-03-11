@@ -1,0 +1,646 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Activity_Main_Window</class>
+ <widget class="QMainWindow" name="Activity_Main_Window">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>857</width>
+    <height>643</height>
+   </rect>
+  </property>
+  <property name="focusPolicy">
+   <enum>Qt::StrongFocus</enum>
+  </property>
+  <property name="windowTitle">
+   <string>Meson-UI</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
+  <property name="documentMode">
+   <bool>true</bool>
+  </property>
+  <property name="dockNestingEnabled">
+   <bool>true</bool>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QLabel" name="meson_logo">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>5</y>
+      <width>81</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap resource="../resource.qrc">:/icon/mesonui-icon/meson_modern.png</pixmap>
+    </property>
+    <property name="scaledContents">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QGroupBox" name="output_console_dashboard">
+    <property name="geometry">
+     <rect>
+      <x>-2</x>
+      <y>390</y>
+      <width>861</width>
+      <height>171</height>
+     </rect>
+    </property>
+    <property name="focusPolicy">
+     <enum>Qt::NoFocus</enum>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <property name="title">
+     <string>Output Console:</string>
+    </property>
+    <widget class="QPlainTextEdit" name="output_console">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>30</y>
+       <width>821</width>
+       <height>131</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+     <property name="plainText">
+      <string/>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="intro_dashboard">
+    <property name="geometry">
+     <rect>
+      <x>-1</x>
+      <y>150</y>
+      <width>861</width>
+      <height>231</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <property name="title">
+     <string>Introspection Dashboard:</string>
+    </property>
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>30</y>
+       <width>861</width>
+       <height>201</height>
+      </rect>
+     </property>
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
+       <string>Meson Build Options</string>
+      </attribute>
+      <widget class="QListWidget" name="buildoptions_list">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>0</y>
+         <width>811</width>
+         <height>171</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::Panel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Sunken</enum>
+       </property>
+       <property name="sortingEnabled">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="tab_4">
+      <attribute name="title">
+       <string>Project Information</string>
+      </attribute>
+      <widget class="QListWidget" name="projectinfo_list">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>0</y>
+         <width>811</width>
+         <height>171</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::Panel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Sunken</enum>
+       </property>
+       <property name="sortingEnabled">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="tab_3">
+      <attribute name="title">
+       <string>Unit Tests</string>
+      </attribute>
+      <widget class="QListWidget" name="testsinfo_list">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>0</y>
+         <width>811</width>
+         <height>171</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::Panel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Sunken</enum>
+       </property>
+       <property name="sortingEnabled">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </widget>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="layoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>80</y>
+      <width>821</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="vertical_control_panal_Layout">
+     <property name="spacing">
+      <number>1</number>
+     </property>
+     <item>
+      <layout class="QHBoxLayout" name="horizontal_higher_control">
+       <property name="spacing">
+        <number>5</number>
+       </property>
+       <item>
+        <widget class="QPushButton" name="control_push_init">
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string>Init Project</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="control_push_setup">
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string>Setup Project</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="control_push_build">
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string>Build Project</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="control_push_test">
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string>Run Tests</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontal_lower_control">
+       <property name="spacing">
+        <number>5</number>
+       </property>
+       <item>
+        <widget class="QPushButton" name="control_push_conf">
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string>Configure Project</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="control_push_dist">
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string>Generate release</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="control_push_install">
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string>Install Project</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="control_push_clean">
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string>Clean Project</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QLabel" name="label_sourcedir">
+    <property name="geometry">
+     <rect>
+      <x>120</x>
+      <y>20</y>
+      <width>91</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <property name="text">
+     <string>Source dir:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_builddir">
+    <property name="geometry">
+     <rect>
+      <x>120</x>
+      <y>43</y>
+      <width>91</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Build dir:</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="project_sourcedir">
+    <property name="geometry">
+     <rect>
+      <x>210</x>
+      <y>20</y>
+      <width>571</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="control_push_open_sourcedir">
+    <property name="geometry">
+     <rect>
+      <x>790</x>
+      <y>20</y>
+      <width>51</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset resource="../resource.qrc">
+      <normaloff>:/icon/mesonui-icon/ic_open.png</normaloff>:/icon/mesonui-icon/ic_open.png</iconset>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="project_builddir">
+    <property name="geometry">
+     <rect>
+      <x>210</x>
+      <y>47</y>
+      <width>571</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QWidget" name="layoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>561</y>
+      <width>831</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="control_push_wraptools">
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+       <property name="text">
+        <string>WrapDB Tools</string>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>../mesonui-icon/wrapdb_logo.png</normaloff>../mesonui-icon/wrapdb_logo.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>12</width>
+         <height>12</height>
+        </size>
+       </property>
+       <property name="autoRepeatDelay">
+        <number>300</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="control_push_subprojects">
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+       <property name="text">
+        <string>Subprojects</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="control_push_version">
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+       <property name="text">
+        <string>Version</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="control_push_intro">
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+       <property name="text">
+        <string>Introspction Refresh</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QPushButton" name="control_push_clear_sourcedir">
+    <property name="geometry">
+     <rect>
+      <x>790</x>
+      <y>46</y>
+      <width>51</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset resource="../resource.qrc">
+      <normaloff>:/icon/mesonui-icon/ic_clear.png</normaloff>:/icon/mesonui-icon/ic_clear.png</iconset>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>857</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu_meson_actions">
+    <property name="title">
+     <string>Meson commands</string>
+    </property>
+    <property name="separatorsCollapsible">
+     <bool>false</bool>
+    </property>
+    <addaction name="action_open_sourcedir"/>
+    <addaction name="action_clear_sourcedir"/>
+    <addaction name="separator"/>
+    <addaction name="action_init"/>
+    <addaction name="action_setup"/>
+    <addaction name="action_build"/>
+    <addaction name="action_test"/>
+    <addaction name="action_conf"/>
+    <addaction name="action_dist"/>
+    <addaction name="action_install"/>
+    <addaction name="action_clean"/>
+    <addaction name="action_subprojects"/>
+    <addaction name="action_wraptools"/>
+    <addaction name="action_intro"/>
+    <addaction name="action_version"/>
+   </widget>
+   <widget class="QMenu" name="menuhelp">
+    <property name="title">
+     <string>help</string>
+    </property>
+    <addaction name="action_meson_docs"/>
+    <addaction name="action_meson_issue"/>
+    <addaction name="action_mesonui_issue"/>
+   </widget>
+   <addaction name="menu_meson_actions"/>
+   <addaction name="menuhelp"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionMeson_docs">
+   <property name="text">
+    <string>Meson docs</string>
+   </property>
+  </action>
+  <action name="actionIssue_for_Meson">
+   <property name="text">
+    <string>Issue for Meson</string>
+   </property>
+  </action>
+  <action name="actionIssue_for_Meson_UI">
+   <property name="text">
+    <string>Issue for Meson-UI</string>
+   </property>
+  </action>
+  <action name="actionMeson_QnA">
+   <property name="text">
+    <string>Meson QnA</string>
+   </property>
+  </action>
+  <action name="action_init">
+   <property name="text">
+    <string>Init new project</string>
+   </property>
+  </action>
+  <action name="action_setup">
+   <property name="text">
+    <string>Setup project</string>
+   </property>
+  </action>
+  <action name="action_build">
+   <property name="text">
+    <string>Build project</string>
+   </property>
+  </action>
+  <action name="action_test">
+   <property name="text">
+    <string>Run tests</string>
+   </property>
+  </action>
+  <action name="action_conf">
+   <property name="text">
+    <string>Configure project</string>
+   </property>
+  </action>
+  <action name="action_dist">
+   <property name="text">
+    <string>Generate release</string>
+   </property>
+  </action>
+  <action name="action_install">
+   <property name="text">
+    <string>Install project</string>
+   </property>
+  </action>
+  <action name="action_clean">
+   <property name="text">
+    <string>Clean builddir</string>
+   </property>
+  </action>
+  <action name="action_wraptools">
+   <property name="text">
+    <string>Wrap tools</string>
+   </property>
+  </action>
+  <action name="action_intro">
+   <property name="text">
+    <string>Introspection refresh</string>
+   </property>
+  </action>
+  <action name="action_version">
+   <property name="text">
+    <string>Version</string>
+   </property>
+  </action>
+  <action name="action_help">
+   <property name="text">
+    <string>Help</string>
+   </property>
+  </action>
+  <action name="action_open_sourcedir">
+   <property name="text">
+    <string>Open sourcedir</string>
+   </property>
+  </action>
+  <action name="action_clear_sourcedir">
+   <property name="text">
+    <string>Clear sourcedir</string>
+   </property>
+  </action>
+  <action name="action_subprojects">
+   <property name="text">
+    <string>Subprojects</string>
+   </property>
+  </action>
+  <action name="action_meson_docs">
+   <property name="icon">
+    <iconset resource="../resource.qrc">
+     <normaloff>:/icon/mesonui-icon/ic_docs.png</normaloff>:/icon/mesonui-icon/ic_docs.png</iconset>
+   </property>
+   <property name="text">
+    <string>Meson docs</string>
+   </property>
+  </action>
+  <action name="action_meson_issue">
+   <property name="icon">
+    <iconset resource="../resource.qrc">
+     <normaloff>:/icon/mesonui-icon/ic_github.png</normaloff>:/icon/mesonui-icon/ic_github.png</iconset>
+   </property>
+   <property name="text">
+    <string>Meson issue</string>
+   </property>
+  </action>
+  <action name="action_mesonui_issue">
+   <property name="icon">
+    <iconset resource="../resource.qrc">
+     <normaloff>:/icon/mesonui-icon/ic_github.png</normaloff>:/icon/mesonui-icon/ic_github.png</iconset>
+   </property>
+   <property name="text">
+    <string>Meson-UI issue</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="../resource.qrc"/>
+ </resources>
+ <connections/>
+</ui>

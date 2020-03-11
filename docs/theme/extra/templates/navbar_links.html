@@ -1,0 +1,15 @@
+@require(page)
+
+<li class="dropdown">
+	<a class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		Quick References <span class="caret"></span>
+	</a>
+	<ul class="dropdown-menu" id="quick-refs-menu">
+		@for tup in (("Build-options.html", "Options"), \
+			     ("Configuration.html", "Configuration")):
+			<li>
+				<a href="@tup[0]">@tup[1]</a>
+			</li>
+		@end
+	</ul>
+</li>
