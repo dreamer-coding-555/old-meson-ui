@@ -102,7 +102,7 @@ class ConfigureActivity(QDialog, Ui_Activity_Configure_Dialog):
         if self._console is None:
             return
         else:
-            self._console.command_run(str(self._model.model_project().meson().configure(meson_args)))
+            self._console.command_run(str(self._model.model_project().meson().configure(args=args)))
 
     def _cache_parser(self, meson_args: MesonUiStack) -> None:
         '''
