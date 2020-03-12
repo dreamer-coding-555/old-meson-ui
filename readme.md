@@ -13,13 +13,10 @@
 [![CircleCI](https://circleci.com/gh/michaelbadcrumble/meson-ui.svg?style=shield)](https://circleci.com/gh/michaelbadcrumble/meson-ui)
 ![MacOS System](https://github.com/michaelbadcrumble/meson-ui/workflows/MacOS%20System/badge.svg?branch=master)
 ![Windows system](https://github.com/michaelbadcrumble/meson-ui/workflows/Windows%20system/badge.svg?branch=master)
+![LintMypy](https://github.com/michaelbadcrumble/meson-ui/workflows/LintMypy/badge.svg?branch=master)
 [![Codecov](https://codecov.io/gh/michaelbadcrumble/meson-ui/coverage.svg?branch=master)](https://codecov.io/gh/michaelbadcrumble/meson-ui/branch/master)
 [![Code Quality: Python](https://img.shields.io/lgtm/grade/python/g/michaelbadcrumble/meson-ui.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/michaelbadcrumble/meson-ui/context:python)
 [![Total Alerts](https://img.shields.io/lgtm/alerts/g/michaelbadcrumble/meson-ui.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/michaelbadcrumble/meson-ui/alerts)
-
-#### Community
-
-![Subreddit subscribers](https://img.shields.io/reddit/subreddit-subscribers/meson_UI?color=green&label=Meson-UI%20Reddit&logo=Meson-UI&logoColor=darkgreen)<br><br>
 
 ## Overview
 
@@ -54,9 +51,9 @@ systems features.
 ### Dependencies
 
 -----------------------------------------------------------------------------------------------------------------
-| Python Package Index.                   | Tool Home Page                                    |  Version Needed  |
+| Python Package Index.                   | Dependency Home Page                              |  Version Needed  |
 |-----------------------------------------|---------------------------------------------------|------------------|
-| [PyQt5](https://pypi.org/project/PyQt5) | N/A                                               | 5.14.1 or newer. |
+| [PyQt5](https://pypi.org/project/PyQt5) | [PyQt5 Project website](https://doc.qt.io/qtforpython/) | 5.14.1 or newer. |
 | [Meson](https://pypi.org/project/meson) | [Meson Build Home Page](https://mesonbuild.com/)  | 0.54.0 or newer. |
 | [Ninja](https://pypi.org/project/ninja) | [Ninja Build Home Page](https://ninja-build.org/) | 1.9.0 or newer.  |
 
@@ -103,6 +100,14 @@ You do not need to sign a CLA to contribute to Meson-ui.
 
 ### Contact the developer.
 ==========================
+
+### Community
+--------------------------------------------------------------------------
+| Project Community. | Description                                       |
+|--------------------|---------------------------------------------------|
+| ![Subreddit subscribers](https://img.shields.io/reddit/subreddit-subscribers/meson_UI?color=green&label=Meson-UI%20Reddit&logo=Meson-UI&logoColor=darkgreen) | Meson build GUI reddit. |
+| ![Subreddit subscribers](https://img.shields.io/reddit/subreddit-subscribers/meson?color=green&label=meson%20Reddit&logo=meson&logoColor=darkgreen) | Meson build reddit.  |
+
 
 #### Developer and creator of Meson-UI
 
