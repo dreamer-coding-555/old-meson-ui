@@ -278,8 +278,8 @@ class TestApiBuilddirLoader:
         assert(info == [])
 
     def test_api_targets(self):
-        source = join('test-cases', 'intro-loader', '07-targets')
-        build = join('test-cases', 'intro-loader', '07-targets', 'builddir')
+        source = join('test-cases', 'intro-loader', '06-targets')
+        build = join('test-cases', 'intro-loader', '06-targets', 'builddir')
         meson: Meson = Meson(sourcedir=source, builddir=build)
 
         meson.setup()
@@ -294,8 +294,8 @@ class TestApiBuilddirLoader:
         assert(info[0]['id'] == 'prog@exe')
 
     def test_install(self):
-        source = join('test-cases', 'intro-loader', '08-install')
-        build = join('test-cases', 'intro-loader', '08-install', 'builddir')
+        source = join('test-cases', 'intro-loader', '07-install')
+        build = join('test-cases', 'intro-loader', '07-install', 'builddir')
         meson: Meson = Meson(sourcedir=source, builddir=build)
 
         meson.setup()
@@ -306,8 +306,8 @@ class TestApiBuilddirLoader:
         assert(info == {})
 
     def test_mesoninfo(self):
-        source = Path(join('test-cases', 'intro-loader', '09-mesoninfo'))
-        build = Path(join('test-cases', 'intro-loader', '09-mesoninfo', 'builddir'))
+        source = Path(join('test-cases', 'intro-loader', '08-mesoninfo'))
+        build = Path(join('test-cases', 'intro-loader', '08-mesoninfo', 'builddir'))
         meson: Meson = Meson(sourcedir=source, builddir=build)
 
         meson.setup()
@@ -321,8 +321,8 @@ class TestApiBuilddirLoader:
         assert(info['directories']['info'] == str(Path().joinpath(build.resolve(), 'meson-info')))
 
     def test_no_testlogs(self):
-        source = Path(join('test-cases', 'intro-loader', '11-no-testlog'))
-        build = Path(join('test-cases', 'intro-loader', '11-no-testlog', 'builddir'))
+        source = Path(join('test-cases', 'intro-loader', '10-no-testlog'))
+        build = Path(join('test-cases', 'intro-loader', '10-no-testlog', 'builddir'))
         meson: Meson = Meson(sourcedir=source, builddir=build)
 
         meson.setup()
@@ -333,8 +333,8 @@ class TestApiBuilddirLoader:
         assert(info is None)
 
     def test_testlogs(self):
-        source = Path(join('test-cases', 'intro-loader', '10-testlog'))
-        build = Path(join('test-cases', 'intro-loader', '10-testlog', 'builddir'))
+        source = Path(join('test-cases', 'intro-loader', '09-testlog'))
+        build = Path(join('test-cases', 'intro-loader', '09-testlog', 'builddir'))
         meson: Meson = Meson(sourcedir=source, builddir=build)
 
         meson.setup()
@@ -349,8 +349,8 @@ class TestApiBuilddirLoader:
         assert(info['result'] == 'OK')
 
     def test_mesonbuild_files(self):
-        source = Path(join('test-cases', 'intro-loader', '12-buildsystem_files'))
-        build = Path(join('test-cases', 'intro-loader', '12-buildsystem_files', 'builddir'))
+        source = Path(join('test-cases', 'intro-loader', '11-buildsystem_files'))
+        build = Path(join('test-cases', 'intro-loader', '11-buildsystem_files', 'builddir'))
         meson: Meson = Meson(sourcedir=source, builddir=build)
 
         meson.setup()
