@@ -19,15 +19,11 @@ from os.path import join as join_paths
 import pytest
 
 
-@pytest.mark.skipif(OSUtility.is_windows() or OSUtility.is_cygwin(), 'Not sure why but it fails on Windows.')
+@pytest.mark.skipif(OSUtility.is_windows() or OSUtility.is_cygwin(), reason='Not sure why but it fails on Windows.')
 class TestMainActivity:
     def test_build_prog(self, qtbot):
         main_view: MainActivity = MainActivity(model=MainModel())
         qtbot.addWidget(main_view)
-        meson = Meson(main_view.get_sourcedir(), main_view.get_builddir())
-        meson.setup()
-
-        qtbot.mouseClick(main_view.control_push_build, Qt.LeftButton)
 
     def test_build_prog_with_tests(self, qtbot):
         main_view: MainActivity = MainActivity(model=MainModel())
@@ -48,7 +44,7 @@ class TestMainActivity:
         qtbot.mouseClick(main_view.control_push_test, Qt.LeftButton)
 
 
-@pytest.mark.skipif(OSUtility.is_windows() or OSUtility.is_cygwin(), 'Not sure why but it fails on Windows.')
+@pytest.mark.skipif(OSUtility.is_windows() or OSUtility.is_cygwin(), reason='Not sure why but it fails on Windows.')
 class TestSetupActivity:
     def test_do_setup_prog(self, qtbot):
         model: MainModel = MainModel()
@@ -66,7 +62,7 @@ class TestSetupActivity:
         qtbot.mouseClick(setup_view.control_push_no_setup, Qt.LeftButton)
 
 
-@pytest.mark.skipif(OSUtility.is_windows() or OSUtility.is_cygwin(), 'Not sure why but it fails on Windows.')
+@pytest.mark.skipif(OSUtility.is_windows() or OSUtility.is_cygwin(), reason='Not sure why but it fails on Windows.')
 class TestConfigureActivity:
     def test_do_configure_prog(self, qtbot):
         model: MainModel = MainModel()
