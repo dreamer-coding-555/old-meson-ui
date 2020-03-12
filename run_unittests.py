@@ -479,7 +479,7 @@ class TestApiBuilddirReader:
 
         script: MesonBuilddirReader = MesonBuilddirReader(build)
         info = script.extract_from(group='buildsystem-files')
-
+        print(info)
         assert(info[0] == join(source.resolve(), 'meson.build'))
 
     def test_api_bad_extract_method(self):
