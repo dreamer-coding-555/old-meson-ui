@@ -37,7 +37,7 @@ class MesonBuilddirReader:
             info = self._scan(group=f'--{group}')
             return info[group]
         elif group == 'buildsystem-files':
-            return self._scan(group='--buildsystem_files')
+            return self._scan(group='--buildsystem-files')
         elif group == 'projectinfo':
             info = self._scan(group=f'--{group}')
             return info[group]
