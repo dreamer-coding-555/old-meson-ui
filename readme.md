@@ -102,11 +102,8 @@ You do not need to sign a CLA to contribute to Meson-ui.
 ==========================
 
 ### Community
---------------------------------------------------------------------------
-| Project Community. | Description                                       |
-|--------------------|---------------------------------------------------|
-| ![Subreddit subscribers](https://img.shields.io/reddit/subreddit-subscribers/meson_UI?color=green&label=Meson-UI%20Reddit&logo=Meson-UI&logoColor=darkgreen) | Meson build GUI reddit. |
-| ![Subreddit subscribers](https://img.shields.io/reddit/subreddit-subscribers/meson?color=green&label=meson%20Reddit&logo=meson&logoColor=darkgreen) | Meson build reddit.  |
+![Subreddit subscribers](https://img.shields.io/reddit/subreddit-subscribers/meson_UI?color=green&label=Meson-UI%20Reddit&logo=Meson-UI&logoColor=darkgreen)
+![Subreddit subscribers](https://img.shields.io/reddit/subreddit-subscribers/meson?color=green&label=meson%20Reddit&logo=meson&logoColor=darkgreen)
 
 
 #### Developer and creator of Meson-UI
