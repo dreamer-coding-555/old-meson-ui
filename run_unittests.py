@@ -477,7 +477,7 @@ class TestApiBuilddirReader:
 
         meson.setup()
 
-        script: MesonBuilddirLoader = MesonBuilddirLoader(build)
+        script: MesonBuilddirReader = MesonBuilddirReader(build)
         info = script.extract_from(group='buildsystem-files')
 
         assert(info[0] == join(source.resolve(), 'meson.build'))
