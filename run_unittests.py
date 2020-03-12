@@ -9,11 +9,8 @@
 #
 from pathlib import Path
 from os.path import join
-from unittest import TestCase
-from unittest import skipUnless
 import pytest
 
-from mesonui.mesonuilib.utilitylib import OSUtility
 
 from mesonui.mesonuilib.appconfig.core import MesonCoreConfig
 from mesonui.mesonuilib.appconfig.base import MesonBaseConfig
@@ -34,6 +31,77 @@ from mesonui.repository.datareader import MesonBuilddirReader
 from mesonui.repository.datascanner import MesonScriptReader
 from mesonui.repository.mesonapi import MesonAPI
 from mesonui.mesonuilib.buildsystem import Meson
+from mesonui.containers.doublylist import MesonUiDLL
+from mesonui.containers.stack import MesonUiStack
+
+
+class TestMesonUiStack:
+    def test_push(self):
+        stack: MesonUiStack = MesonUiStack()
+        stack.push('--some-flag')
+
+        assert(stack.pop() == '--some-flag')
+
+    def test_push_copy(self):
+        stack: MesonUiStack = MesonUiStack()
+        stack.push('--some-flag')
+
+        assert(stack.push('--some-flag') is False)
+        assert(stack.pop() == '--some-flag')
+
+    def test_pop_empty(self):
+        stack: MesonUiStack = MesonUiStack()
+        stack.push('--some-flag')
+
+        assert(stack.pop() == '--some-flag')
+        assert(stack.pop() is None)
+
+
+class TestMesonDll:
+    def test_insert(self):
+        dll: MesonUiDLL = MesonUiDLL()
+
+        assert(dll.is_empty() is True)
+        dll.append_item('ensert some data')
+
+        assert(dll.size() == 1)
+        assert(dll.is_empty() is False)
+
+    def test_search(self):
+        dll: MesonUiDLL = MesonUiDLL()
+
+        assert(dll.is_empty() is True)
+        dll.append_item('insert some data')
+
+        assert(dll.search_for('insert some data') == 'insert some data')
+        assert(dll.search_for('spam data') is None)
+        assert(dll.size() == 1)
+        assert(dll.is_empty() is False)
+
+    def test_remove(self):
+        dll: MesonUiDLL = MesonUiDLL()
+
+        assert(dll.is_empty() is True)
+        dll.append_item('entry item 1')
+        dll.append_item('entry item 2')
+        dll.append_item('entry item 3')
+
+        assert(dll.size() == 3)
+        assert(dll.is_empty() is False)
+
+        dll.remove_item()
+
+        assert(dll.size() == 2)
+
+    def test_remove_from_empty(self):
+        dll: MesonUiDLL = MesonUiDLL()
+
+        assert(dll.is_empty() is True)
+        assert(dll.size() == 0)
+
+        dll.remove_item()
+
+        assert(dll.size() == 0)
 
 
 class TestMesonAPI:

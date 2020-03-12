@@ -20,9 +20,6 @@ class MesonUiDLL:
         self.tail: MesonUiNode = None
         self.count: int = 0
 
-    def __repr__(self):
-        return f'Meson-UI DLL object: {self.head}=>'
-
     def is_empty(self):
         return self.head is None
 
@@ -46,9 +43,9 @@ class MesonUiDLL:
                 self.head.previous = None
             else:
                 self.head = self.tail = None
+        self.count -= 1
 
     def iter(self):
-        # Iterate the list
         current = self.head
         while current:
             item_val = current.data
@@ -57,10 +54,6 @@ class MesonUiDLL:
 
     def size(self):
         return self.count
-
-    def print_foward(self):
-        for node in self.iter():
-            print(node)
 
     def search_for(self, key: str):
         if self.is_empty():

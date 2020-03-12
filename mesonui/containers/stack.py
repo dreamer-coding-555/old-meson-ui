@@ -20,6 +20,6 @@ class MesonUiStack:
 
     def pop(self):
         if len(self.stack) <= 0:
-            return ("No element in the Stack")
+            return None
         else:
             return self.stack.pop()
