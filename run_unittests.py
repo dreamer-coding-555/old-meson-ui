@@ -402,6 +402,18 @@ class TestApiBuilddirReader:
 
         assert(info == {})
 
+    def test_mesonbuild_files(self):
+        source = Path(join('test-cases', 'intro-reader', '09-buildsystem_files'))
+        build = Path(join('test-cases', 'intro-reader', '09-buildsystem_files', 'builddir'))
+        meson: Meson = Meson(sourcedir=source, builddir=build)
+
+        meson.setup()
+
+        script: MesonBuilddirLoader = MesonBuilddirLoader(build)
+        info = script.extract_from(group='buildsystem-files')
+
+        assert(info[0] == join(source.resolve(), 'meson.build'))
+
     def test_api_bad_extract_method(self):
         reader: MesonBuilddirReader = MesonBuilddirReader(None)
         with pytest.raises(Exception) as e:
