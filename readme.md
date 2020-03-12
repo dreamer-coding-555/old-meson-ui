@@ -101,11 +101,6 @@ You do not need to sign a CLA to contribute to Meson-ui.
 ### Contact the developer.
 ==========================
 
-### Community
-![Subreddit subscribers](https://img.shields.io/reddit/subreddit-subscribers/meson_UI?color=green&label=Meson-UI%20Reddit&logo=Meson-UI&logoColor=darkgreen)
-![Subreddit subscribers](https://img.shields.io/reddit/subreddit-subscribers/meson?color=green&label=meson%20Reddit&logo=meson&logoColor=darkgreen)
-
-
 #### Developer and creator of Meson-UI
 
 * reddit: [https://www.reddit.com/user/MichaelBrockus](https://www.reddit.com/user/MichaelBrockus)
