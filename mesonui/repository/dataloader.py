@@ -7,8 +7,6 @@
 #
 # copyright 2020 The Meson-UI development team
 #
-from subprocess import check_output
-from subprocess import STDOUT
 from pathlib import Path
 from os.path import join
 import json
@@ -17,11 +15,6 @@ import json
 class MesonBuilddirLoader:
     def __init__(self, builddir: Path = None):
         self._builddir = builddir
-
-    def _introspect(self, args: list) -> any:
-        cmd: list = ['meson', 'introspect']
-        cmd.extend(args)
-        return check_output(cmd, stderr=STDOUT)
 
     def _scan(self, group: str) -> any:
         if group == 'testlog.json':
