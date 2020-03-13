@@ -29,66 +29,48 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install Dev-Requirements
-          command: pip3 install -r dev-requirements
-      - run:
           name: Run Unit Tests
-          command: python3 run_tests.py
+          command: pytest -v run_unittests.py run_project_tests.py
 
   meson_alpine_build:
     executor: meson_alpine_builder
     steps:
       - checkout
       - run:
-          name: Install Dev-Requirements
-          command: pip3 install -r dev-requirements.txt
-      - run:
           name: Run Unit Tests
-          command: python3 run_tests.py
+          command: pytest -v run_unittests.py run_project_tests.py
 
   meson_archlinux_build:
     executor: meson_archlinux_builder
     steps:
       - checkout
       - run:
-          name: Install Dev-Requirements
-          command: pip3 install -r dev-requirements.txt
-      - run:
           name: Run Unit Tests
-          command: python3 run_tests.py
+          command: pytest -v run_unittests.py run_project_tests.py
 
   meson_ubuntu_build:
     executor: meson_ubuntu_builder
     steps:
       - checkout
       - run:
-          name: Install Dev-Requirements
-          command: pip3 install -r dev-requirements.txt
-      - run:
           name: Run Unit Tests
-          command: python3 run_tests.py
+          command: pytest -v run_unittests.py run_project_tests.py
 
   meson_debain_build:
     executor: meson_debain_builder
     steps:
       - checkout
       - run:
-          name: Install Dev-Requirements
-          command: pip3 install -r dev-requirements.txt
-      - run:
           name: Run Unit Tests
-          command: python3 run_tests.py
+          command: pytest -v run_unittests.py run_project_tests.py
 
   meson_fedora_build:
     executor: meson_fedora_builder
     steps:
       - checkout
       - run:
-          name: Install Dev-Requirements
-          command: pip3 install -r dev-requirements.txt
-      - run:
           name: Run Unit Tests
-          command: python3 run_tests.py
+          command: pytest -v run_unittests.py run_project_tests.py
 
 workflows:
   version: 2
