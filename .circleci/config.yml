@@ -30,7 +30,7 @@ jobs:
       - checkout
       - run:
           name: Run Unit Tests
-          command: pytest -v run_unittests.py run_project_tests.py
+          command: python3 run_tests.py
 
   meson_alpine_build:
     executor: meson_alpine_builder
@@ -38,7 +38,7 @@ jobs:
       - checkout
       - run:
           name: Run Unit Tests
-          command: pytest -v run_unittests.py run_project_tests.py
+          command: python3 run_tests.py
 
   meson_archlinux_build:
     executor: meson_archlinux_builder
@@ -46,7 +46,7 @@ jobs:
       - checkout
       - run:
           name: Run Unit Tests
-          command: pytest -v run_unittests.py run_project_tests.py
+          command: python3 run_tests.py
 
   meson_ubuntu_build:
     executor: meson_ubuntu_builder
@@ -54,7 +54,7 @@ jobs:
       - checkout
       - run:
           name: Run Unit Tests
-          command: pytest -v run_unittests.py run_project_tests.py
+          command: python3 run_tests.py
 
   meson_debain_build:
     executor: meson_debain_builder
@@ -62,7 +62,7 @@ jobs:
       - checkout
       - run:
           name: Run Unit Tests
-          command: pytest -v run_unittests.py run_project_tests.py
+          command: python3 run_tests.py
 
   meson_fedora_build:
     executor: meson_fedora_builder
@@ -70,7 +70,7 @@ jobs:
       - checkout
       - run:
           name: Run Unit Tests
-          command: pytest -v run_unittests.py run_project_tests.py
+          command: python3 run_tests.py
 
 workflows:
   version: 2
