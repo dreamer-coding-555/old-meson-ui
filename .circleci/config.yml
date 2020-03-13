@@ -29,6 +29,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Pip install Pytest-Qt
+          command: pip3 install pytest-qt
+      - run:
           name: Run Unit Tests
           command: python3 run_tests.py
 
@@ -36,6 +39,9 @@ jobs:
     executor: meson_alpine_builder
     steps:
       - checkout
+      - run:
+          name: Pip install Pytest-Qt
+          command: pip3 install pytest-qt
       - run:
           name: Run Unit Tests
           command: python3 run_tests.py
@@ -45,6 +51,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Pip install Pytest-Qt
+          command: pip3 install pytest-qt
+      - run:
           name: Run Unit Tests
           command: python3 run_tests.py
 
@@ -52,6 +61,9 @@ jobs:
     executor: meson_ubuntu_builder
     steps:
       - checkout
+      - run:
+          name: Pip install Pytest-Qt
+          command: pip3 install pytest-qt
       - run:
           name: Run Unit Tests
           command: python3 run_tests.py
@@ -61,6 +73,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Pip install Pytest-Qt
+          command: pip3 install pytest-qt
+      - run:
           name: Run Unit Tests
           command: python3 run_tests.py
 
@@ -68,6 +83,9 @@ jobs:
     executor: meson_fedora_builder
     steps:
       - checkout
+      - run:
+          name: Pip install Pytest-Qt
+          command: pip3 install pytest-qt
       - run:
           name: Run Unit Tests
           command: python3 run_tests.py
