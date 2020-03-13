@@ -3,7 +3,6 @@ version: 2.1
 orbs:
   python: circleci/python@0.2.1
 
-
 executors:
   meson_opensuse_builder:
     docker:
@@ -72,7 +71,6 @@ jobs:
       - run:
           name: Run Unit Tests
           command: pytest -v run_unittests.py run_project_tests.py
-
 
 workflows:
   version: 2
