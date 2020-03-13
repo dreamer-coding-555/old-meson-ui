@@ -19,8 +19,14 @@ from .mesonbuild.init import MesonInit
 from .mesonbuild.dist import MesonDist
 from .mesonbuild.wrap import MesonWrap
 from .mesonbuild.test import MesonTest
+
+from .cmakebuild.version import CMakeVersion
+from .cmakebuild.compile import CMakeCompile
+from .cmakebuild.setup import CMakeSetup
+from .cmakebuild.clean import CMakeClean
+from .cmakebuild.build import CMakeBuild
+from .cmakebuild.test import CMakeTest
 from pathlib import Path
-import typing as T
 
 
 class Meson:
@@ -78,3 +84,36 @@ class Meson:
 
     def wrap(self) -> MesonWrap:
         return self._wrap
+
+
+class CMake:
+    '''
+    this class is a wrapper for the CMake build system.
+    '''
+    def __init__(self, sourcedir: Path = Path().cwd(), builddir: Path = Path().joinpath(Path().cwd(), 'builddir')):
+        super().__init__()
+        self._version: CMakeVersion = CMakeVersion()
+        self._compile: CMakeCompile = CMakeCompile(builddir)
+        self._setup: CMakeSetup = CMakeSetup(sourcedir, builddir)
+        self._build: CMakeBuild = CMakeBuild(builddir)
+        self._clean: CMakeClean = CMakeClean(builddir)
+        self._test: CMakeTest = CMakeTest(builddir)
+    # end of method
+
+    def version(self) -> CMakeVersion:
+        return self._version.run()
+
+    def setup(self, args: list = []) -> CMakeSetup:
+        return self._setup.run(args=args)
+
+    def compile(self) -> CMakeCompile:
+        return self._compile.run()
+
+    def build(self) -> CMakeBuild:
+        return self._build.run()
+
+    def clean(self) -> CMakeClean:
+        return self._clean.run()
+
+    def test(self) -> CMakeTest:
+        return self._test.run()

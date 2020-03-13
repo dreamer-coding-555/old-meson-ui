@@ -16,12 +16,25 @@ from mesonui.packageinfo import PackageInfo
 from mesonui.projectinfo import ProjectInfo
 from mesonui.authorinfo import ProjectAuthor
 from mesonui.mesonuilib.buildsystem import Meson
+from mesonui.mesonuilib.buildsystem import CMake
 import shutil
 import tempfile
 import logging
 
 logger = logging.getLogger(__name__)
 sublogger = logging.getLogger(__name__ + ".log")
+
+CMAKE_SCRIPT = '''\
+cmake_minimum_required(VERSION 3.16.3 FATAL_ERROR)
+
+project(test-prog)
+
+include(CTest)
+
+add_executable(main_exe "main.cc")
+add_test(NAME "test_exe" COMMAND "main_exe")
+
+'''
 
 BUILD_SCRIPT = '''\
 project('test-prog', 'c', meson_version: '>=0.53.0')
@@ -31,7 +44,18 @@ exe = executable('simple-test', ['main.c'])
 test('exe test cases', exe)
 '''
 
-SOURCE_FILE = '''\
+CPP_SOURCE_FILE = '''\
+#include <iostream>
+
+int main()
+{
+    std::cout << "Basic Test Cases." << std::endl;
+    return 0;
+}// end of function main
+
+'''
+
+C_SOURCE_FILE = '''\
 #include <stdio.h>
 
 int main(void)
@@ -65,6 +89,132 @@ class TestPyPiPackageInfo:
         assert(pypi.get_description() == 'Meson-UI is a build GUI for Meson build system.')
 
 
+class TestCMake:
+
+    def test_setup_command(self, tmpdir):
+        #
+        # Setting up tmp test directory
+        with tmpdir.as_cwd():
+            pass
+        tmpdir.chdir()
+
+        #
+        # Running Meson command
+        cmake: CMake = CMake(
+            sourcedir=(tmpdir / 'cmake-tmp'),
+            builddir=(tmpdir / 'cmake-tmp', 'builddir'))
+
+        tmpdir.join('cmake-tmp', 'CMakeLists.txt').write(CMAKE_SCRIPT, ensure=True)
+        tmpdir.join('cmake-tmp', 'main.cc').write(CPP_SOURCE_FILE, ensure=True)
+
+        cmake.setup()
+
+        #
+        # Run asserts to check it is working
+        assert tmpdir.join('cmake-tmp', 'CMakeLists.txt').read() == CMAKE_SCRIPT
+        assert (tmpdir / 'cmake-tmp' / 'builddir') == tmpdir.join('cmake-tmp', 'builddir')
+
+    def test_compile_command(self, tmpdir):
+        #
+        # Setting up tmp test directory
+        with tmpdir.as_cwd():
+            pass
+        tmpdir.chdir()
+
+        #
+        # Running Meson command
+        cmake: CMake = CMake(
+            sourcedir=(tmpdir / 'cmake-tmp'),
+            builddir=(tmpdir / 'cmake-tmp', 'builddir'))
+
+        tmpdir.join('cmake-tmp', 'CMakeLists.txt').write(CMAKE_SCRIPT, ensure=True)
+        tmpdir.join('cmake-tmp', 'main.cc').write(CPP_SOURCE_FILE, ensure=True)
+
+        cmake.setup()
+        cmake.compile()
+
+        #
+        # Run asserts to check it is working
+        assert tmpdir.join('cmake-tmp', 'CMakeLists.txt').read() == CMAKE_SCRIPT
+        assert (tmpdir / 'cmake-tmp' / 'builddir') == tmpdir.join('cmake-tmp', 'builddir')
+        assert (tmpdir / 'cmake-tmp' / 'builddir' / 'build.ninja') == tmpdir.join('cmake-tmp', 'builddir', 'build.ninja')
+
+    def test_build_command(self, tmpdir):
+        #
+        # Setting up tmp test directory
+        with tmpdir.as_cwd():
+            pass
+        tmpdir.chdir()
+
+        #
+        # Running Meson command
+        cmake: CMake = CMake(
+            sourcedir=(tmpdir / 'cmake-tmp'),
+            builddir=(tmpdir / 'cmake-tmp', 'builddir'))
+
+        tmpdir.join('cmake-tmp', 'CMakeLists.txt').write(CMAKE_SCRIPT, ensure=True)
+        tmpdir.join('cmake-tmp', 'main.cc').write(CPP_SOURCE_FILE, ensure=True)
+
+        cmake.setup()
+        cmake.build()
+
+        #
+        # Run asserts to check it is working
+        assert tmpdir.join('cmake-tmp', 'CMakeLists.txt').read() == CMAKE_SCRIPT
+        assert (tmpdir / 'cmake-tmp' / 'builddir') == tmpdir.join('cmake-tmp', 'builddir')
+        assert (tmpdir / 'cmake-tmp' / 'builddir' / 'build.ninja') == tmpdir.join('cmake-tmp', 'builddir', 'build.ninja')
+
+    def test_test_command(self, tmpdir):
+        #
+        # Setting up tmp test directory
+        with tmpdir.as_cwd():
+            pass
+        tmpdir.chdir()
+
+        #
+        # Running Meson command
+        cmake: CMake = CMake(
+            sourcedir=(tmpdir / 'cmake-tmp'),
+            builddir=(tmpdir / 'cmake-tmp', 'builddir'))
+
+        tmpdir.join('cmake-tmp', 'CMakeLists.txt').write(CMAKE_SCRIPT, ensure=True)
+        tmpdir.join('cmake-tmp', 'main.cc').write(CPP_SOURCE_FILE, ensure=True)
+
+        cmake.setup()
+        cmake.build()
+        cmake.test()
+
+        #
+        # Run asserts to check it is working
+        assert tmpdir.join('cmake-tmp', 'CMakeLists.txt').read() == CMAKE_SCRIPT
+        assert (tmpdir / 'cmake-tmp' / 'builddir') == tmpdir.join('cmake-tmp', 'builddir')
+
+    def test_clean_command(self, tmpdir):
+        #
+        # Setting up tmp test directory
+        with tmpdir.as_cwd():
+            pass
+        tmpdir.chdir()
+
+        #
+        # Running Meson command
+        cmake: CMake = CMake(
+            sourcedir=(tmpdir / 'cmake-tmp'),
+            builddir=(tmpdir / 'cmake-tmp', 'builddir'))
+
+        tmpdir.join('cmake-tmp', 'CMakeLists.txt').write(CMAKE_SCRIPT, ensure=True)
+        tmpdir.join('cmake-tmp', 'main.cc').write(CPP_SOURCE_FILE, ensure=True)
+
+        cmake.setup()
+        cmake.build()
+        cmake.clean()
+
+        #
+        # Run asserts to check it is working
+        assert tmpdir.join('cmake-tmp', 'CMakeLists.txt').read() == CMAKE_SCRIPT
+        assert not (tmpdir / 'cmake-tmp' / 'builddir') == tmpdir.join('cmake-tmp', 'builddir')
+
+
 class TestMeson:
 
     def test_setup_command(self, tmpdir):
@@ -81,7 +231,7 @@ class TestMeson:
             builddir=(tmpdir / 'meson-tmp', 'builddir'))
 
         tmpdir.join('meson-tmp', 'meson.build').write(BUILD_SCRIPT, ensure=True)
-        tmpdir.join('meson-tmp', 'main.c').write(SOURCE_FILE, ensure=True)
+        tmpdir.join('meson-tmp', 'main.c').write(C_SOURCE_FILE, ensure=True)
 
         meson.setup()
 
@@ -104,7 +254,7 @@ class TestMeson:
             builddir=(tmpdir / 'meson-tmp', 'builddir'))
 
         tmpdir.join('meson-tmp', 'meson.build').write(BUILD_SCRIPT, ensure=True)
-        tmpdir.join('meson-tmp', 'main.c').write(SOURCE_FILE, ensure=True)
+        tmpdir.join('meson-tmp', 'main.c').write(C_SOURCE_FILE, ensure=True)
 
         meson.setup()
         meson.build()
@@ -129,7 +279,7 @@ class TestMeson:
             builddir=(tmpdir / 'meson-tmp' / 'builddir'))
 
         tmpdir.join('meson-tmp', 'meson.build').write(BUILD_SCRIPT, ensure=True)
-        tmpdir.join('meson-tmp', 'main.c').write(SOURCE_FILE, ensure=True)
+        tmpdir.join('meson-tmp', 'main.c').write(C_SOURCE_FILE, ensure=True)
 
         meson.setup()
         meson.build()
@@ -155,7 +305,7 @@ class TestMeson:
             builddir=(tmpdir / 'meson-tmp' / 'builddir'))
 
         tmpdir.join('meson-tmp', 'meson.build').write(BUILD_SCRIPT, ensure=True)
-        tmpdir.join('meson-tmp', 'main.c').write(SOURCE_FILE, ensure=True)
+        tmpdir.join('meson-tmp', 'main.c').write(C_SOURCE_FILE, ensure=True)
 
         meson.setup()
         meson.build()
@@ -181,7 +331,7 @@ class TestMeson:
             builddir=(tmpdir / 'meson-tmp' / 'builddir'))
 
         tmpdir.join('meson-tmp', 'meson.build').write(BUILD_SCRIPT, ensure=True)
-        tmpdir.join('meson-tmp', 'main.c').write(SOURCE_FILE, ensure=True)
+        tmpdir.join('meson-tmp', 'main.c').write(C_SOURCE_FILE, ensure=True)
 
         meson.setup()
         meson.compile()
@@ -206,7 +356,7 @@ class TestMeson:
             builddir=(tmpdir / 'meson-tmp' / 'builddir'))
 
         tmpdir.join('meson-tmp', 'meson.build').write(BUILD_SCRIPT, ensure=True)
-        tmpdir.join('meson-tmp', 'main.c').write(SOURCE_FILE, ensure=True)
+        tmpdir.join('meson-tmp', 'main.c').write(C_SOURCE_FILE, ensure=True)
 
         meson.setup()
         meson.compile()
@@ -232,7 +382,7 @@ class TestMeson:
             builddir=(tmpdir / 'meson-tmp' / 'builddir'))
 
         tmpdir.join('meson-tmp', 'meson.build').write(BUILD_SCRIPT, ensure=True)
-        tmpdir.join('meson-tmp', 'main.c').write(SOURCE_FILE, ensure=True)
+        tmpdir.join('meson-tmp', 'main.c').write(C_SOURCE_FILE, ensure=True)
 
         meson.setup()
         meson.build()
@@ -259,7 +409,7 @@ class TestMeson:
             builddir=(tmpdir / 'meson-tmp' / 'builddir'))
 
         tmpdir.join('meson-tmp', 'meson.build').write(BUILD_SCRIPT, ensure=True)
-        tmpdir.join('meson-tmp', 'main.c').write(SOURCE_FILE, ensure=True)
+        tmpdir.join('meson-tmp', 'main.c').write(C_SOURCE_FILE, ensure=True)
 
         meson.setup()
         meson.build()
