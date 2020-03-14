@@ -18,13 +18,9 @@ from mesonui.view.subprojects_activity import SubprojectsActivity
 from mesonui.mesonuilib.outputconsole import OutputConsole
 
 from mesonui.models.appmodel import MainModel
-from mesonui.mesonuilib.utilitylib import OSUtility
 from PyQt5.QtCore import Qt
-from os.path import join as join_paths
-import pytest
 
 
-@pytest.mark.skipif(OSUtility.is_windows() or OSUtility.is_cygwin(), reason='Not sure why but it fails on Windows.')
 class TestMainActivity:
     def test_is_renderable(self, qtbot):
         activity = MainActivity(MainModel())
@@ -62,7 +58,6 @@ class TestMainActivity:
         assert activity.project_builddir.text() == ''
 
 
-@pytest.mark.skipif(OSUtility.is_windows() or OSUtility.is_cygwin(), reason='Not sure why but it fails on Windows.')
 class TestSetupActivity:
     def test_is_renderable(self, qtbot):
         activity = SetupActivity(None, MainModel())
@@ -100,7 +95,6 @@ class TestSetupActivity:
         qtbot.mouseClick(setup_view.control_push_no_setup, Qt.LeftButton)
 
 
-@pytest.mark.skipif(OSUtility.is_windows() or OSUtility.is_cygwin(), reason='Not sure why but it fails on Windows.')
 class TestConfigureActivity:
     def test_is_renderable(self, qtbot):
         activity = ConfigureActivity(MainModel())
@@ -136,7 +130,6 @@ class TestConfigureActivity:
         qtbot.mouseClick(setup_view.control_push_no_setup, Qt.LeftButton)
 
 
-@pytest.mark.skipif(OSUtility.is_windows() or OSUtility.is_cygwin(), reason='Not sure why but it fails on Windows.')
 class TestInitActivity:
     def test_is_renderable(self, qtbot):
         activity = InitActivity(MainModel())
@@ -149,7 +142,6 @@ class TestInitActivity:
         qtbot.mouseClick(setup_view.control_push_no_init, Qt.LeftButton)
 
 
-@pytest.mark.skipif(OSUtility.is_windows() or OSUtility.is_cygwin(), reason='Not sure why but it fails on Windows.')
 class TestDistActivity:
     def test_is_renderable(self, qtbot):
         activity = DistActivity(MainModel())
@@ -162,7 +154,6 @@ class TestDistActivity:
         qtbot.mouseClick(setup_view.control_push_no_dist, Qt.LeftButton)
 
 
-@pytest.mark.skipif(OSUtility.is_windows() or OSUtility.is_cygwin(), reason='Not sure why but it fails on Windows.')
 class TestWrapActivity:
     def test_is_renderable(self, qtbot):
         activity = WrapActivity(MainModel())
@@ -175,7 +166,6 @@ class TestWrapActivity:
         qtbot.mouseClick(setup_view.control_push_ok, Qt.LeftButton)
 
 
-@pytest.mark.skipif(OSUtility.is_windows() or OSUtility.is_cygwin(), reason='Not sure why but it fails on Windows.')
 class TestInstallActivity:
     def test_is_renderable(self, qtbot):
         activity = InstallActivity(MainModel())
@@ -188,7 +178,6 @@ class TestInstallActivity:
         qtbot.mouseClick(setup_view.control_push_no_install, Qt.LeftButton)
 
 
-@pytest.mark.skipif(OSUtility.is_windows() or OSUtility.is_cygwin(), reason='Not sure why but it fails on Windows.')
 class TestSubprojectsActivity:
     def test_is_renderable(self, qtbot):
         activity = SubprojectsActivity(MainModel())
