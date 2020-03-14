@@ -116,27 +116,17 @@ basis. Sometimes it may be easier to write the test than convince the
 maintainers that one is not needed. Exercise judgment and ask for help
 in problematic cases.
 
-The tests are split into two different parts: unit tests and full
-project tests. To run all tests, execute `./run_tests.py`. Unit tests
-can be run with `./run_unittests.py` and project tests with
-`./run_project_tests.py`.
+The tests are split into three different parts: unit tests, full project
+tests and UI tests. To run all tests, execute `./run_tests.py`. Unit tests
+can be run with `./run_unittests.py`, full project tests with
+`./run_project_tests.py`, and UI tests with `./run_mesonui_tests.py`.
 
 Each project test is a standalone project that can be compiled on its
-own. They are all in `test-cases` subdirectory. The simplest way to
-run a single project test is to do something like `./meson.py test\
-cases/common/1\ trivial builddir`. The one exception to this is `test
-cases/unit` directory discussed below.
+own. They are all created in temporary directories.
 
-The test cases in the `common` subdirectory are meant to be run always
-for all backends. They should only depend on C and C++, without any
-external dependencies such as libraries. If there is a need for an
-external program in the common directory, such as a code generator, it
-should be implemented as a Python script. The goal of test projects is
-also to provide sample projects that end users can use as a base for
-their own projects.
-
-Projects needed by unit tests are in the `test-cases/unit`
-subdirectory. They are not run as part of `./run_project_tests.py`.
+Projects needed by unit tests are in the `test-cases`
+subdirectory. They are not run as part of `./run_project_tests.py`
+and or `./run_mesonui_tests.py`.
 
 ### Skipping integration tests
 
@@ -144,13 +134,8 @@ Meson-UI uses several continuous integration testing systems that have slightly
 different interfaces for indicating a commit should be skipped.
 
 Continuous integration systems currently used:
-Continuous integration systems currently used:
-- [Travis-CI](https://docs.travis-ci.com/user/customizing-the-build#skipping-a-build)
-  allows `[skip ci]` anywhere in the commit messages.
 - [Circle-CI](https://circleci.com/docs/2.0/skip-build/)
   allows `[skip ci]` in the commit message.
-- [AppVeyor](https://docs.microsoft.com/en-us/azure/devops/pipelines/scripts/git-commands?view=vsts&tabs=yaml#how-do-i-avoid-triggering-a-ci-build-when-the-script-pushes)
-  allows `***NO_CI***` in the commit message.
 - [Sider](https://sider.review)
   runs Flake8 ([see below](#python-coding-style))
 
@@ -161,7 +146,7 @@ To promote consistent naming policy, use:
 ## Documentation
 
 The `docs` directory contains the full documentation that will be used
-to generate [the Meson-UI web site](http://meson-ui.com). Every change
+to generate [the Meson-UI web site](https://meson-ui.com). Every change
 in functionality must change the documentation pages. In most cases
 this means updating the reference documentation page but bigger
 changes might need changes in other documentation, too.
