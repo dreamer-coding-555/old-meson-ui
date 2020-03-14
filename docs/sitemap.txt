@@ -6,6 +6,7 @@ index.md
 		Overview.md
 		Builtin-options.md
 		Project-templates.md
+	Style-guide.md
 	FAQ.md
 	Release-notes.md
 	Additional.md
