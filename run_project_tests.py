@@ -88,9 +88,7 @@ class TestMeson:
 
         #
         # Running Meson command
-        meson: Meson = Meson(
-            sourcedir=(tmpdir / 'meson-tmp'),
-            builddir=(tmpdir / 'meson-tmp', 'builddir'))
+        meson: Meson = Meson(sourcedir=(tmpdir / 'meson-tmp'), builddir=(tmpdir / 'meson-tmp', 'builddir'))
 
         tmpdir.join('meson-tmp', 'meson.build').write(BUILD_SCRIPT, ensure=True)
         tmpdir.join('meson-tmp', 'main.c').write(C_SOURCE_FILE, ensure=True)
@@ -100,7 +98,8 @@ class TestMeson:
         #
         # Run asserts to check it is working
         assert tmpdir.join('meson-tmp', 'meson.build').read() == BUILD_SCRIPT
-        assert (tmpdir / 'meson-tmp' / 'builddir') == tmpdir.join('meson-tmp', 'builddir')
+        assert tmpdir.join('meson-tmp', 'meson.build').ensure()
+        assert tmpdir.join('meson-tmp', 'builddir').ensure()
 
     def test_build_command(self, tmpdir):
         #
@@ -111,21 +110,20 @@ class TestMeson:
 
         #
         # Running Meson command
-        meson: Meson = Meson(
-            sourcedir=(tmpdir / 'meson-tmp'),
-            builddir=(tmpdir / 'meson-tmp', 'builddir'))
+        meson: Meson = Meson(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
 
-        tmpdir.join('meson-tmp', 'meson.build').write(BUILD_SCRIPT, ensure=True)
-        tmpdir.join('meson-tmp', 'main.c').write(C_SOURCE_FILE, ensure=True)
+        tmpdir.join('meson.build').write(BUILD_SCRIPT, ensure=True)
+        tmpdir.join('main.c').write(C_SOURCE_FILE, ensure=True)
 
         meson.setup()
         meson.build()
 
         #
         # Run asserts to check it is working
-        assert tmpdir.join('meson-tmp', 'meson.build').read() == BUILD_SCRIPT
-        assert (tmpdir / 'meson-tmp' / 'builddir') == tmpdir.join('meson-tmp', 'builddir')
-        assert (tmpdir / 'meson-tmp' / 'builddir' / 'build.ninja') == tmpdir.join('meson-tmp', 'builddir', 'build.ninja')
+        assert tmpdir.join('meson.build').read() == BUILD_SCRIPT
+        assert tmpdir.join('meson.build').ensure()
+        assert tmpdir.join('builddir', 'build.ninja').ensure()
+        assert tmpdir.join('builddir', 'compile_commands.json').ensure()
 
     def test_configure_command(self, tmpdir):
         #
@@ -136,12 +134,10 @@ class TestMeson:
 
         #
         # Running Meson command
-        meson: Meson = Meson(
-            sourcedir=(tmpdir / 'meson-tmp'),
-            builddir=(tmpdir / 'meson-tmp' / 'builddir'))
+        meson: Meson = Meson(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
 
-        tmpdir.join('meson-tmp', 'meson.build').write(BUILD_SCRIPT, ensure=True)
-        tmpdir.join('meson-tmp', 'main.c').write(C_SOURCE_FILE, ensure=True)
+        tmpdir.join('meson.build').write(BUILD_SCRIPT, ensure=True)
+        tmpdir.join('main.c').write(C_SOURCE_FILE, ensure=True)
 
         meson.setup()
         meson.build()
@@ -149,9 +145,10 @@ class TestMeson:
 
         #
         # Run asserts to check it is working
-        assert tmpdir.join('meson-tmp', 'meson.build').read() == BUILD_SCRIPT
-        assert (tmpdir / 'meson-tmp' / 'builddir') == tmpdir.join('meson-tmp', 'builddir')
-        assert (tmpdir / 'meson-tmp' / 'builddir' / 'build.ninja') == tmpdir.join('meson-tmp', 'builddir', 'build.ninja')
+        assert tmpdir.join('meson.build').read() == BUILD_SCRIPT
+        assert tmpdir.join('meson.build').ensure()
+        assert tmpdir.join('builddir', 'build.ninja').ensure()
+        assert tmpdir.join('builddir', 'compile_commands.json').ensure()
 
     def test_rebuild_command(self, tmpdir):
         #
@@ -162,12 +159,10 @@ class TestMeson:
 
         #
         # Running Meson command
-        meson: Meson = Meson(
-            sourcedir=(tmpdir / 'meson-tmp'),
-            builddir=(tmpdir / 'meson-tmp' / 'builddir'))
+        meson: Meson = Meson(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
 
-        tmpdir.join('meson-tmp', 'meson.build').write(BUILD_SCRIPT, ensure=True)
-        tmpdir.join('meson-tmp', 'main.c').write(C_SOURCE_FILE, ensure=True)
+        tmpdir.join('meson.build').write(BUILD_SCRIPT, ensure=True)
+        tmpdir.join('main.c').write(C_SOURCE_FILE, ensure=True)
 
         meson.setup()
         meson.build()
@@ -175,9 +170,10 @@ class TestMeson:
 
         #
         # Run asserts to check it is working
-        assert tmpdir.join('meson-tmp', 'meson.build').read() == BUILD_SCRIPT
-        assert (tmpdir / 'meson-tmp' / 'builddir') == tmpdir.join('meson-tmp', 'builddir')
-        assert (tmpdir / 'meson-tmp' / 'builddir' / 'build.ninja') == tmpdir.join('meson-tmp', 'builddir', 'build.ninja')
+        assert tmpdir.join('meson.build').read() == BUILD_SCRIPT
+        assert tmpdir.join('meson.build').ensure()
+        assert tmpdir.join('builddir', 'build.ninja').ensure()
+        assert tmpdir.join('builddir', 'compile_commands.json').ensure()
 
     def test_compile_command(self, tmpdir):
         #
@@ -188,21 +184,20 @@ class TestMeson:
 
         #
         # Running Meson command
-        meson: Meson = Meson(
-            sourcedir=(tmpdir / 'meson-tmp'),
-            builddir=(tmpdir / 'meson-tmp' / 'builddir'))
+        meson: Meson = Meson(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
 
-        tmpdir.join('meson-tmp', 'meson.build').write(BUILD_SCRIPT, ensure=True)
-        tmpdir.join('meson-tmp', 'main.c').write(C_SOURCE_FILE, ensure=True)
+        tmpdir.join('meson.build').write(BUILD_SCRIPT, ensure=True)
+        tmpdir.join('main.c').write(C_SOURCE_FILE, ensure=True)
 
         meson.setup()
         meson.compile()
 
         #
         # Run asserts to check it is working
-        assert tmpdir.join('meson-tmp', 'meson.build').read() == BUILD_SCRIPT
-        assert (tmpdir / 'meson-tmp' / 'builddir') == tmpdir.join('meson-tmp', 'builddir')
-        assert (tmpdir / 'meson-tmp' / 'builddir' / 'build.ninja') == tmpdir.join('meson-tmp', 'builddir', 'build.ninja')
+        assert tmpdir.join('meson.build').read() == BUILD_SCRIPT
+        assert tmpdir.join('meson.build').ensure()
+        assert tmpdir.join('builddir', 'build.ninja').ensure()
+        assert tmpdir.join('builddir', 'compile_commands.json').ensure()
 
     def test_clean_command(self, tmpdir):
         #
@@ -213,12 +208,10 @@ class TestMeson:
 
         #
         # Running Meson command
-        meson: Meson = Meson(
-            sourcedir=(tmpdir / 'meson-tmp'),
-            builddir=(tmpdir / 'meson-tmp' / 'builddir'))
+        meson: Meson = Meson(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
 
-        tmpdir.join('meson-tmp', 'meson.build').write(BUILD_SCRIPT, ensure=True)
-        tmpdir.join('meson-tmp', 'main.c').write(C_SOURCE_FILE, ensure=True)
+        tmpdir.join('meson.build').write(BUILD_SCRIPT, ensure=True)
+        tmpdir.join('main.c').write(C_SOURCE_FILE, ensure=True)
 
         meson.setup()
         meson.compile()
@@ -226,9 +219,10 @@ class TestMeson:
 
         #
         # Run asserts to check it is working
-        assert tmpdir.join('meson-tmp', 'meson.build').read() == BUILD_SCRIPT
-        assert (tmpdir / 'meson-tmp' / 'builddir') == tmpdir.join('meson-tmp', 'builddir')
-        assert (tmpdir / 'meson-tmp' / 'builddir' / 'build.ninja') == tmpdir.join('meson-tmp', 'builddir', 'build.ninja')
+        assert tmpdir.join('meson.build').read() == BUILD_SCRIPT
+        assert tmpdir.join('meson.build').ensure()
+        assert tmpdir.join('builddir', 'build.ninja').ensure()
+        assert tmpdir.join('builddir', 'compile_commands.json').ensure()
 
     def test_mtest_command(self, tmpdir):
         #
@@ -239,12 +233,10 @@ class TestMeson:
 
         #
         # Running Meson command
-        meson: Meson = Meson(
-            sourcedir=(tmpdir / 'meson-tmp'),
-            builddir=(tmpdir / 'meson-tmp' / 'builddir'))
+        meson: Meson = Meson(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
 
-        tmpdir.join('meson-tmp', 'meson.build').write(BUILD_SCRIPT, ensure=True)
-        tmpdir.join('meson-tmp', 'main.c').write(C_SOURCE_FILE, ensure=True)
+        tmpdir.join('meson.build').write(BUILD_SCRIPT, ensure=True)
+        tmpdir.join('main.c').write(C_SOURCE_FILE, ensure=True)
 
         meson.setup()
         meson.build()
@@ -252,9 +244,10 @@ class TestMeson:
 
         #
         # Run asserts to check it is working
-        assert tmpdir.join('meson-tmp', 'meson.build').read() == BUILD_SCRIPT
-        assert (tmpdir / 'meson-tmp' / 'builddir') == tmpdir.join('meson-tmp', 'builddir')
-        assert (tmpdir / 'meson-tmp' / 'builddir' / 'build.ninja') == tmpdir.join('meson-tmp', 'builddir', 'build.ninja')
+        assert tmpdir.join('meson.build').read() == BUILD_SCRIPT
+        assert tmpdir.join('meson.build').ensure()
+        assert tmpdir.join('builddir', 'build.ninja').ensure()
+        assert tmpdir.join('builddir', 'compile_commands.json').ensure()
 
     @pytest.mark.skipif(not shutil.which('git'), reason='Did not find "git" on this system')
     def test_mdist_command(self, tmpdir):
@@ -266,38 +259,45 @@ class TestMeson:
 
         #
         # Running Meson command
-        meson: Meson = Meson(
-            sourcedir=(tmpdir / 'meson-tmp'),
-            builddir=(tmpdir / 'meson-tmp' / 'builddir'))
+        meson: Meson = Meson(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
 
-        tmpdir.join('meson-tmp', 'meson.build').write(BUILD_SCRIPT, ensure=True)
-        tmpdir.join('meson-tmp', 'main.c').write(C_SOURCE_FILE, ensure=True)
+        tmpdir.join('meson.build').write(BUILD_SCRIPT, ensure=True)
+        tmpdir.join('main.c').write(C_SOURCE_FILE, ensure=True)
 
         meson.setup()
         meson.build()
-        CIUtility._git_init((tmpdir / 'meson-tmp'))
+        CIUtility._git_init(tmpdir)
         meson.dist()
 
         #
         # Run asserts to check it is working
-        assert tmpdir.join('meson-tmp', 'meson.build').read() == BUILD_SCRIPT
-        assert (tmpdir / 'meson-tmp' / 'builddir') == tmpdir.join('meson-tmp', 'builddir')
-        assert (tmpdir / 'meson-tmp' / 'builddir' / 'build.ninja') == tmpdir.join('meson-tmp', 'builddir', 'build.ninja')
+        assert tmpdir.join('meson.build').read() == BUILD_SCRIPT
+        assert tmpdir.join('meson.build').ensure()
+        assert tmpdir.join('builddir', 'build.ninja').ensure()
+        assert tmpdir.join('builddir', 'compile_commands.json').ensure()
+        assert tmpdir.join('builddir', 'meson-dist', 'test-prog-undefined.tar.xz').ensure()
 
     def test_init_command(self, tmpdir):
         #
         # Setting up tmp test directory
-        for lang in ('c', 'cpp', 'cs', 'java'):
-            for target in ('executable', 'library'):
-                with tempfile.TemporaryDirectory() as tmp_dir:
-                    meson: Meson = Meson(tmp_dir, join_paths(tmp_dir, 'builddir'))
-                    meson.init(['--language', lang, '--type', target])
-                    meson.setup()
-                    meson.compile()
+        with tmpdir.as_cwd():
+            pass
+        tmpdir.chdir()
 
-                    #
-                    # Run asserts to check it is working
-                    assert Path(join_paths(tmp_dir, 'builddir')).is_dir()
+        #
+        # Running Meson command
+        meson: Meson = Meson(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
+
+        meson.init(['--language=c'])
+        meson.setup()
+        meson.build()
+        meson.test()
+
+        #
+        # Run asserts to check it is working
+        assert tmpdir.join('meson.build').ensure()
+        assert tmpdir.join('builddir', 'build.ninja').ensure()
+        assert tmpdir.join('builddir', 'compile_commands.json').ensure()
 
 
 class TestMesonBackend:
