@@ -318,7 +318,7 @@ class TestApiBuilddirLoader:
         assert(info['meson_version']['full'] == meson.version().strip())
         assert(info['directories']['source'] == str(source.resolve()))
         assert(info['directories']['build'] == str(build.resolve()))
-        assert(info['directories']['info'] == str(Path().joinpath(build.resolve(), 'meson-info')))
+        assert(info['directories']['info'] == str(join(build.resolve(), 'meson-info')))
 
     def test_no_testlogs(self):
         source = Path(join('test-cases', 'intro-loader', '10-no-testlog'))

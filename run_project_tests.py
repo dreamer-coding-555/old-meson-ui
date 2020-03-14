@@ -212,7 +212,7 @@ class TestCMake:
         #
         # Run asserts to check it is working
         assert tmpdir.join('cmake-tmp', 'CMakeLists.txt').read() == CMAKE_SCRIPT
-        assert not (tmpdir / 'cmake-tmp' / 'builddir') == tmpdir.join('cmake-tmp', 'builddir')
+        assert (tmpdir / 'cmake-tmp' / 'builddir') == tmpdir.join('cmake-tmp', 'builddir')
 
 
 class TestMeson:
