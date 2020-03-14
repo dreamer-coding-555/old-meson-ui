@@ -39,8 +39,8 @@ class TestSetupActivity:
 
     def test_do_setup_prog(self, qtbot):
         model: MainModel = MainModel()
-        model.model_project().set_sourcedir(join_paths('test-cases', 'meson-ui', '03-setup'))
-        model.model_project().set_builddir(join_paths('test-cases', 'meson-ui', '03-setup', 'builddir'))
+        model.buildsystem().meson().sourcedir = join_paths('test-cases', 'meson-ui', '03-setup')
+        model.buildsystem().meson().builddir = join_paths('test-cases', 'meson-ui', '03-setup', 'builddir')
         setup_view: SetupActivity = SetupActivity(OutputConsole(MainActivity(MainModel())), model)
         qtbot.addWidget(setup_view)
 
@@ -61,8 +61,8 @@ class TestConfigureActivity:
 
     def test_do_setup_prog(self, qtbot):
         model: MainModel = MainModel()
-        model.model_project().set_sourcedir(join_paths('test-cases', 'meson-ui', '03-setup'))
-        model.model_project().set_builddir(join_paths('test-cases', 'meson-ui', '03-setup', 'builddir'))
+        model.buildsystem().meson().sourcedir = join_paths('test-cases', 'meson-ui', '03-setup')
+        model.buildsystem().meson().builddir = join_paths('test-cases', 'meson-ui', '03-setup', 'builddir')
         setup_view: ConfigureActivity = ConfigureActivity(OutputConsole(MainActivity(MainModel())), model)
         qtbot.addWidget(setup_view)
 

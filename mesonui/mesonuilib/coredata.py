@@ -16,71 +16,16 @@ from .appconfig.init import MesonInitConfig
 from .appconfig.install import MesonInstallConfig
 from .appconfig.backend import MesonBackendConfig
 
-from .utilitylib import default_libexecdir
-from .utilitylib import default_prefix
-from .utilitylib import default_libdir
+from .mapmeson import default_backend
+from .mapmeson import default_core
+from .mapmeson import default_base
+from .mapmeson import default_path
+from .mapmeson import default_test
+from .mapmeson import default_dist
+from .mapmeson import default_init
+from .mapmeson import default_install
 
-from enum import Enum
 import typing as T
-
-class MESON_SUPPORT(Enum):
-    VERSION_50 = '0.50.0'
-
-default_core: T.Dict = {
-    'auto-features':     ('auto', 'enabled', 'disabled'),
-    'backend':           ('ninja', 'xcode', 'vs2010', 'vs2015', 'vs2017', 'vs2019'), # need to add 'qtide' and 'eclipse'
-    'buildtype':         ('debug', 'plain', 'release', 'debugoptimized', 'minsize', 'custom'),
-    'default-library':   ('shared', 'static', 'both'),
-    'layout':            ('mirror', 'flat'),
-    'optimization':      ('0', 'g', '1', '2', '3', 's'),
-    'warnlevel':         ('0', '1', '2', '3'),
-    'wrap-mode':         ('default', 'nofallback', 'nodownload', 'forcefallback'),
-    'unity':             ('off', 'on', 'subprojects'),
-    'werror':            ('false', 'true'),
-    'strip':             ('false', 'true'),
-    'debug':             ('true', 'false'),
-    'cmake-prefix-path': ('.'),
-    'pkg-config-path':   ('.')
-}
-
-default_test: T.Dict = {
-    'stdsplit': ('true', 'false'),
-    'errorlogs': ('true', 'false')
-}
-
-default_path: T.Dict = {
-    'prefix':         (default_prefix()),
-    'bindir':         ('bin'),
-    'datadir':        ('share'),
-    'includedir':     ('include'),
-    'infodir':        ('share/info'),
-    'libdir':         (default_libdir()),
-    'libexecdir':     (default_libexecdir()),
-    'localedir':      ('share/locale'),
-    'localstatedir':  ('var'),
-    'mandir':         ('share/man'),
-    'sbindir':        ('sbin'),
-    'sharedstatedir': ('com'),
-    'sysconfdir':     ('etc'),
-}
-
-default_base: T.Dict = {
-    'b_asneeded':  ('true', 'false'),
-    'b_bitcode':   ('false', 'true'),
-    'b_colorout':  ('always', 'auto', 'never'),
-    'b_coverage':  ('false', 'true'),
-    'b_lundef':    ('true', 'false'),
-    'b_lto':       ('true', 'false'),
-    'b_ndebug':    ('false', 'true', 'if-release'),
-    'b_pch':       ('true', 'false'),
-    'b_pgo':       ('off', 'generate', 'use'),
-    'b_sanitize':  ('none', 'address', 'thread', 'undefined', 'memory', 'address,undefined'),
-    'b_staticpic': ('true', 'false'),
-    'b_pie':       ('false', 'true'),
-    'b_vscrt':     ('none', 'md', 'mdd', 'mt', 'mtd', 'from_buildtype')
-}
-
-default_backend: T.Dict = {'backend_max_links': ('0')}
 
 
 class MesonUiCache:
@@ -149,12 +94,6 @@ class MesonUiCache:
         return self._conf_backend.extract()
 
 
-default_dist: dict = {
-    'formats': ('xztar', 'gztar', 'zip'),
-    'include-subprojects': ('false', 'true')
-}
-
-
 class MesonUiDistCache:
     def __init__(self):
         self._conf_dist: MesonDistConfig = MesonDistConfig()
@@ -170,13 +109,6 @@ class MesonUiDistCache:
         return self._conf_dist.extract()
 
 
-default_init: T.Dict = {
-    'type': ('executable', 'library'),
-    'name': ('demo'),
-    'version': ('0.1'),
-    'language': ('c', 'cpp', 'cs', 'cuda', 'd', 'fortran', 'java', 'rust', 'objc', 'objcpp'),
-}
-
 class MesonUiInitCache:
     def __init__(self):
         self._conf_init: MesonInitConfig = MesonInitConfig()
@@ -191,12 +123,6 @@ class MesonUiInitCache:
     def get_cache(self) -> T.Dict[T.AnyStr, set]:
         return self._conf_init.extract()
 
-
-default_install: dict = {
-    'on-rebuild': ('false', 'true'),
-    'only-changed': ('false', 'true'),
-    'quiet': ('false', 'true')
-}
 
 class MesonUiInstallCache:
     def __init__(self):

@@ -31,7 +31,7 @@ exe = executable('simple-test', ['main.c'])
 test('exe test cases', exe)
 '''
 
-SOURCE_FILE = '''\
+C_SOURCE_FILE = '''\
 #include <stdio.h>
 
 int main(void)
@@ -67,6 +67,18 @@ class TestPyPiPackageInfo:
 
 class TestMeson:
 
+    def test_change_sourcedir(self):
+        meson = Meson('test/dir/one', 'test/dir/one/builddir')
+
+        assert(meson.sourcedir == 'test/dir/one')
+        assert(meson.builddir == 'test/dir/one/builddir')
+
+        meson.sourcedir = 'test/dir/two'
+        meson.builddir = 'test/dir/two/builddir'
+
+        assert(meson.sourcedir == 'test/dir/two')
+        assert(meson.builddir == 'test/dir/two/builddir')
+
     def test_setup_command(self, tmpdir):
         #
         # Setting up tmp test directory
@@ -81,7 +93,7 @@ class TestMeson:
             builddir=(tmpdir / 'meson-tmp', 'builddir'))
 
         tmpdir.join('meson-tmp', 'meson.build').write(BUILD_SCRIPT, ensure=True)
-        tmpdir.join('meson-tmp', 'main.c').write(SOURCE_FILE, ensure=True)
+        tmpdir.join('meson-tmp', 'main.c').write(C_SOURCE_FILE, ensure=True)
 
         meson.setup()
 
@@ -104,7 +116,7 @@ class TestMeson:
             builddir=(tmpdir / 'meson-tmp', 'builddir'))
 
         tmpdir.join('meson-tmp', 'meson.build').write(BUILD_SCRIPT, ensure=True)
-        tmpdir.join('meson-tmp', 'main.c').write(SOURCE_FILE, ensure=True)
+        tmpdir.join('meson-tmp', 'main.c').write(C_SOURCE_FILE, ensure=True)
 
         meson.setup()
         meson.build()
@@ -129,7 +141,7 @@ class TestMeson:
             builddir=(tmpdir / 'meson-tmp' / 'builddir'))
 
         tmpdir.join('meson-tmp', 'meson.build').write(BUILD_SCRIPT, ensure=True)
-        tmpdir.join('meson-tmp', 'main.c').write(SOURCE_FILE, ensure=True)
+        tmpdir.join('meson-tmp', 'main.c').write(C_SOURCE_FILE, ensure=True)
 
         meson.setup()
         meson.build()
@@ -155,7 +167,7 @@ class TestMeson:
             builddir=(tmpdir / 'meson-tmp' / 'builddir'))
 
         tmpdir.join('meson-tmp', 'meson.build').write(BUILD_SCRIPT, ensure=True)
-        tmpdir.join('meson-tmp', 'main.c').write(SOURCE_FILE, ensure=True)
+        tmpdir.join('meson-tmp', 'main.c').write(C_SOURCE_FILE, ensure=True)
 
         meson.setup()
         meson.build()
@@ -181,7 +193,7 @@ class TestMeson:
             builddir=(tmpdir / 'meson-tmp' / 'builddir'))
 
         tmpdir.join('meson-tmp', 'meson.build').write(BUILD_SCRIPT, ensure=True)
-        tmpdir.join('meson-tmp', 'main.c').write(SOURCE_FILE, ensure=True)
+        tmpdir.join('meson-tmp', 'main.c').write(C_SOURCE_FILE, ensure=True)
 
         meson.setup()
         meson.compile()
@@ -206,7 +218,7 @@ class TestMeson:
             builddir=(tmpdir / 'meson-tmp' / 'builddir'))
 
         tmpdir.join('meson-tmp', 'meson.build').write(BUILD_SCRIPT, ensure=True)
-        tmpdir.join('meson-tmp', 'main.c').write(SOURCE_FILE, ensure=True)
+        tmpdir.join('meson-tmp', 'main.c').write(C_SOURCE_FILE, ensure=True)
 
         meson.setup()
         meson.compile()
@@ -232,7 +244,7 @@ class TestMeson:
             builddir=(tmpdir / 'meson-tmp' / 'builddir'))
 
         tmpdir.join('meson-tmp', 'meson.build').write(BUILD_SCRIPT, ensure=True)
-        tmpdir.join('meson-tmp', 'main.c').write(SOURCE_FILE, ensure=True)
+        tmpdir.join('meson-tmp', 'main.c').write(C_SOURCE_FILE, ensure=True)
 
         meson.setup()
         meson.build()
@@ -259,7 +271,7 @@ class TestMeson:
             builddir=(tmpdir / 'meson-tmp' / 'builddir'))
 
         tmpdir.join('meson-tmp', 'meson.build').write(BUILD_SCRIPT, ensure=True)
-        tmpdir.join('meson-tmp', 'main.c').write(SOURCE_FILE, ensure=True)
+        tmpdir.join('meson-tmp', 'main.c').write(C_SOURCE_FILE, ensure=True)
 
         meson.setup()
         meson.build()

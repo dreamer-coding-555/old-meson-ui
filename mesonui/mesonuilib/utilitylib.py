@@ -46,9 +46,6 @@ class CMesonException(MesonUiExceptionType):
 class MesonWrapperException(MesonUiExceptionType):
     '''Exceptions thrown by Meson Wrapper class'''
 
-class CMakeWrapperException(MesonUiExceptionType):
-    '''Exceptions thrown by CMake Wrapper class'''
-
 '''
 Exception classes for other things like backends and cache
 '''
@@ -128,6 +125,20 @@ class CIUtility:
         subprocess.check_call(['git', 'config', 'user.email', 'teh_coderz@example.com'], cwd=project_dir)
         subprocess.check_call('git add *', cwd=project_dir, shell=True, stdout=subprocess.DEVNULL)
         subprocess.check_call(['git', 'commit', '-a', '-m', 'I am a project'], cwd=project_dir, stdout=subprocess.DEVNULL)
+
+    def skip_if_no_git(self, f):
+        '''
+        Skip this test if no git is found, unless we're on CI.
+        This allows users to run our test suite without having
+        git installed on, f.ex., macOS, while ensuring that our CI does not
+        silently skip the test because of misconfiguration.
+        '''
+        @functools.wraps(f)
+        def wrapped(self, *args, **kwargs):
+            if not self.is_ci() and shutil.which('git') is None:
+                raise unittest.SkipTest('Git not found')
+            return f(*args, **kwargs)
+        return
 
     def skip_if_no_cmake(self, f):
         '''

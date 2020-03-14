@@ -55,8 +55,8 @@ class MainActivity(QMainWindow, Ui_Activity_Main_Window):
         #
         #
         # All actions that are use for working with entry values
-        self.project_sourcedir.setText(str(self._model.model_project().get_sourcedir()))
-        self.project_builddir.setText(str(self._model.model_project().get_builddir()))
+        self.project_sourcedir.setText(str(self._model.buildsystem().meson().sourcedir))
+        self.project_builddir.setText(str(self._model.buildsystem().meson().builddir))
         #
         # All actions that are use for working with entry values
         self.control_push_open_sourcedir.clicked.connect(lambda: self.exec_open())
@@ -99,7 +99,7 @@ class MainActivity(QMainWindow, Ui_Activity_Main_Window):
         self.action_init.triggered.connect(lambda: self.exec_init())
         self.action_test.triggered.connect(lambda: self.exec_test())
 
-        self.meson_api: MesonAPI = MesonAPI(self.get_sourcedir(), self.get_builddir)
+        self.meson_api: MesonAPI = MesonAPI(str(self.get_sourcedir()), str(self.get_builddir()))
         self.console: OutputConsole = OutputConsole(self)
         self.dashboard: IntrospectionDashboard = IntrospectionDashboard(self, self.meson_api)
         self.exec_introspect()
@@ -112,14 +112,15 @@ class MainActivity(QMainWindow, Ui_Activity_Main_Window):
 
     @pyqtSlot()
     def exec_version(self) -> None:
-        logging.info('Get Meson build system version with "meson --version" command')
-        self.console.command_run(f'Meson: {self._model.model_project().meson().version()}')
+        logging.info('Get version number')
+        self.console.command_run(f'meson version {self._model.buildsystem().meson().version()}')
 
     @pyqtSlot()
     def exec_setup(self) -> None:
-        logging.info('Setup Meson build project with "meson setup" command')
-        self._model.model_project().set_sourcedir(self.get_sourcedir())
-        self._model.model_project().set_builddir(self.get_builddir())
+        logging.info('Setup project process')
+        self._model.buildsystem().meson().sourcedir = self.get_sourcedir()
+        self._model.buildsystem().meson().builddir = self.get_builddir()
+
         SetupActivity(self.console, model=self._model)
 
     @pyqtSlot()
@@ -131,8 +132,8 @@ class MainActivity(QMainWindow, Ui_Activity_Main_Window):
                                           'There was no builddir found. Stop action.')
             return
         logging.info('Configure Meson build project with "meson configure" command')
-        self._model.model_project().set_sourcedir(self.get_sourcedir())
-        self._model.model_project().set_builddir(self.get_builddir())
+        self._model.buildsystem().meson().sourcedir = self.get_sourcedir()
+        self._model.buildsystem().meson().builddir = self.get_builddir()
 
         ConfigureActivity(self.console, model=self._model)
         self.dashboard.update(self.meson_api)
@@ -145,8 +146,8 @@ class MainActivity(QMainWindow, Ui_Activity_Main_Window):
             SnackBarMessage.warning(self, 'No builddir found',
                                           'There was no builddir found. Stop action.')
             return
-        logging.info('Compile Meson build project with "meson compile" command')
-        self.console.command_run(str(self._model.model_project().meson().compile()))
+        logging.info('Compile build project')
+        self.console.command_run(str(self._model.buildsystem().meson().compile()))
         self.dashboard.update(self.meson_api)
 
     @pyqtSlot()
@@ -157,14 +158,15 @@ class MainActivity(QMainWindow, Ui_Activity_Main_Window):
             SnackBarMessage.warning(self, 'No builddir found',
                                           'There was no builddir found. Stop action.')
             return
-        logging.info('Compile Meson build project with "ninja -C builddir" command')
-        self.console.command_run(str(self._model.model_project().meson().build()))
+        logging.info('Build project with "ninja" command')
+        self.console.command_run(str(self._model.buildsystem().meson().build()))
         self.dashboard.update(self.meson_api)
 
     @pyqtSlot()
     def exec_introspect(self) -> None:
         logging.info('Getting project introspection data with "meson introspect" command')
-        self.dashboard.update(self.meson_api)
+        if Path(join(self.get_sourcedir(), 'meson.build')):
+            self.dashboard.update(self.meson_api)
 
     @pyqtSlot()
     def exec_subprojects(self) -> None:
@@ -202,8 +204,8 @@ class MainActivity(QMainWindow, Ui_Activity_Main_Window):
             SnackBarMessage.warning(self, 'No builddir found',
                                           'There was no builddir found. Stop action.')
             return
-        logging.info(' Meson test runner with "meson test" command')
-        self.console.command_run(str(self._model.model_project().meson().test()))
+        logging.info('Run test cases written in the script')
+        self.console.command_run(str(self._model.buildsystem().meson().test()))
         self.dashboard.update(self.meson_api)
 
     @pyqtSlot()
@@ -220,8 +222,8 @@ class MainActivity(QMainWindow, Ui_Activity_Main_Window):
             SnackBarMessage.warning(self, 'No builddir found',
                                           'There was no builddir found. Stop action.')
             return
-        logging.info(' Cleanning project directory with "ninja clean -C builddir" command')
-        self.console.command_run(str(self._model.model_project().meson().clean()))
+        logging.info('Cleanning project directory')
+        self.console.command_run(str(self._model.buildsystem().meson().clean()))
 
     @pyqtSlot()
     def exec_install(self) -> None:
@@ -242,8 +244,8 @@ class MainActivity(QMainWindow, Ui_Activity_Main_Window):
 
     @pyqtSlot()
     def exec_init(self) -> None:
-        self._model.model_project().set_sourcedir(self.get_sourcedir())
-        self._model.model_project().set_builddir(self.get_builddir())
+        self._model.buildsystem().meson().sourcedir = self.get_sourcedir()
+        self._model.buildsystem().meson().builddir = self.get_builddir()
         logging.info(' Init new project template with "meson init" command')
         InitActivity(model=self._model)
         self.dashboard.update(self.meson_api)
@@ -261,38 +263,29 @@ class MainActivity(QMainWindow, Ui_Activity_Main_Window):
                                           'There was no builddir found. Stop action.')
             return
         logging.info(' Create project with "meson dist" command')
-        self._model.model_project().set_sourcedir(self.get_sourcedir())
-        self._model.model_project().set_builddir(self.get_builddir())
+        self._model.buildsystem().meson().sourcedir = self.get_sourcedir()
+        self._model.buildsystem().meson().builddir = self.get_builddir()
         DistActivity(model=self._model)
 
     @pyqtSlot()
     def exec_open(self) -> None:
         source_root = str(QFileDialog.getExistingDirectory(self, 'Open Sourcedir', QDir.homePath()))
         if source_root != '':
-            logging.info(' Setting project "sourcedir" and "builddir" values')
-            logging.info(f' [sourcedir ]: {self._model.model_project().get_sourcedir()}')
-            logging.info(f' [builddir  ]: {self._model.model_project().get_builddir()}')
-            self._model.model_project().set_sourcedir(Path(source_root))
-            self._model.model_project().set_builddir(Path().joinpath(source_root, 'builddir'))
+            self._model.buildsystem().meson().sourcedir = source_root
+            self._model.buildsystem().meson().builddir = join(source_root, 'builddir')
+            self.project_sourcedir.setText(str(self._model.buildsystem().meson().sourcedir))
+            self.project_builddir.setText(str(self._model.buildsystem().meson().builddir))
         else:
             logging.info(' User just closed file dialog.')
             return
-        self.project_sourcedir.setText(str(self._model.model_project().get_sourcedir()))
-        self.project_builddir.setText(str(self._model.model_project().get_builddir()))
         self.dashboard.update(self.meson_api)
 
     @pyqtSlot()
     def get_sourcedir(self) -> T.AnyStr:
-        '''
-        enter info
-        '''
         return self.project_sourcedir.text()
 
     @pyqtSlot()
     def get_builddir(self) -> T.AnyStr:
-        '''
-        enter info
-        '''
         return self.project_builddir.text()
 
     @pyqtSlot()

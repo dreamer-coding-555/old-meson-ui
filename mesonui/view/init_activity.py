@@ -87,7 +87,7 @@ class InitActivity(QDialog, Ui_Activity_Init_Dialog):
         '''
         for i in meson_args:
             logging.info(f'{i}')
-        self._model.model_project().meson().init(meson_args)
+        self._model.buildsystem().meson().init(meson_args)
 
     def _cache_parser(self, meson_args: list) -> None:
         '''
