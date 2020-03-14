@@ -27,7 +27,12 @@ class MesonBuilddirReader:
         return info
 
     def extract_from(self, group: str) -> any:
-        if group == 'buildoptions':
+        #
+        # We need to make sure to return None if testlogs.json is not found. So
+        # check to see if the group is "testlog" and if so give nothing back
+        if group == 'testlog':
+            return None
+        elif group == 'buildoptions':
             info = self._scan(group=f'--{group}')
             return info[group]
         elif group == 'tests':

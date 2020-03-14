@@ -26,7 +26,7 @@ class BuildOptionsModel:
         while self._dll.head is not None:
             self._dll.remove_item()
 
-        for values in range(len(options['buildoptions'])):
+        for values in range(len(options)):
             self._dll.append_item(f' section: {options[values]["section"]}\n'
                                   f' option:  {options[values]["name"]:<25}\n'
                                   f' value:   {str(options[values]["value"]):<65}\n'
