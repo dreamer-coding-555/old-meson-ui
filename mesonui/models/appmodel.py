@@ -8,11 +8,11 @@
 # copyright 2020 The Meson-UI development team
 #
 # here we use a lot of data models
-from .configure import ConfigureModel
-from .buildoptions import BuildOptionsModel
 from .projectinfolist import ProjectInfoModel
+from .buildoptions import BuildOptionsModel
 from .testlogslist import TestsLogsModel
 from .buildsystem import BuildSystemModel
+from .configure import ConfigureModel
 
 
 class MainModel:

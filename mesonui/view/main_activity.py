@@ -114,9 +114,9 @@ class MainActivity(QMainWindow, Ui_Activity_Main_Window):
     def exec_version(self) -> None:
         logging.info('Get version number')
         if Path(join(self.get_sourcedir(), 'CMakeLists.txt')).exists():
-            self.console.command_run(f'CMake: {self._model.buildsystem().cmake().version()}')
+            self.console.command_run(f'{self._model.buildsystem().cmake().version()}')
         else:
-            self.console.command_run(f'Meson: {self._model.buildsystem().meson().version()}')
+            self.console.command_run(f'meson version {self._model.buildsystem().meson().version()}')
 
     @pyqtSlot()
     def exec_setup(self) -> None:
@@ -306,25 +306,25 @@ class MainActivity(QMainWindow, Ui_Activity_Main_Window):
             self.control_push_conf.setEnabled(False)
             self.control_push_dist.setEnabled(False)
             self.control_push_init.setEnabled(False)
+            self.control_push_intro.setEnabled(False)
+            self.control_push_subprojects.setEnabled(False)
+            self.control_push_wraptools.setEnabled(False)
         else:
             self.control_push_install.setEnabled(True)
             self.control_push_conf.setEnabled(True)
             self.control_push_dist.setEnabled(True)
             self.control_push_init.setEnabled(True)
+            self.control_push_intro.setEnabled(True)
+            self.control_push_subprojects.setEnabled(True)
+            self.control_push_wraptools.setEnabled(True)
             self.dashboard.update(self.meson_api)
 
     @pyqtSlot()
     def get_sourcedir(self) -> T.AnyStr:
-        '''
-        enter info
-        '''
         return self.project_sourcedir.text()
 
     @pyqtSlot()
     def get_builddir(self) -> T.AnyStr:
-        '''
-        enter info
-        '''
         return self.project_builddir.text()
 
     @pyqtSlot()
