@@ -16,7 +16,7 @@ class CMakeCompile:
         self._builddir: Path = builddir
 
     def run(self, args: list = []):
-        run_cmd = ['cmake', '--build', '-C', str(self._builddir)]
+        run_cmd = ['cmake', '--build', str(self._builddir)]
         run_cmd.extend(args)
         process = subprocess.Popen(run_cmd, encoding='utf8', stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         return process.communicate()[0]

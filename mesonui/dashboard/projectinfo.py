@@ -17,7 +17,7 @@ class IntroProjectInfoTab:
         self.setup_introspection()
 
     def setup_introspection(self):
-        head_ref = self._context._model.model_projectinfo().get_list().head
+        head_ref = self._context._model.buildsysteminfo().get_list().head
         while (head_ref is not None):
             new_item = QListWidgetItem(head_ref.data)
             self._context.projectinfo_list.addItem(new_item)
@@ -26,9 +26,9 @@ class IntroProjectInfoTab:
     def update_introspection(self, meson_api):
         if self._context.projectinfo_list.count() != 0:
             self._context.projectinfo_list.clear()
-        self._context._model.model_projectinfo().set_list(meson_api)
+        self._context._model.buildsysteminfo().set_list(meson_api)
 
-        head_ref = self._context._model.model_projectinfo().get_list().head
+        head_ref = self._context._model.buildsysteminfo().get_list().head
         if head_ref is None:
             new_item = QListWidgetItem(f'No Project data.')
             self._context.projectinfo_list.addItem(new_item)

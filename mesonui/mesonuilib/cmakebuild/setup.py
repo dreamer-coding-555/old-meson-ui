@@ -18,8 +18,8 @@ class CMakeSetup:
         super().__init__()
 
     def run(self, args: list = []):
-        run_cmd = ['cmake', '-GNinja', f'-S {self._sourcedir}', f'-B {self._builddir}']
-        run_cmd.extend(args)
+        run_cmd = ['cmake', '-GNinja', self._sourcedir, f'-B{self._builddir}']
+        # run_cmd.extend(args)
         process = subprocess.Popen(run_cmd, encoding='utf8', stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         return process.communicate()[0]

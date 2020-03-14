@@ -26,6 +26,7 @@ from .cmakebuild.setup import CMakeSetup
 from .cmakebuild.clean import CMakeClean
 from .cmakebuild.build import CMakeBuild
 from .cmakebuild.test import CMakeTest
+from os.path import join as join_paths
 from pathlib import Path
 
 
@@ -33,87 +34,105 @@ class Meson:
     '''
     this class is a wrapper for the Meson build system.
     '''
-    def __init__(self, sourcedir: Path = Path().cwd(), builddir: Path = Path().joinpath(Path().cwd(), 'builddir')):
+    def __init__(self, sourcedir: Path = Path().cwd(), builddir: Path = join_paths(Path().cwd(), 'builddir')):
         super().__init__()
-        self._subprojects: MesonSubprojects = MesonSubprojects(sourcedir)
-        self._configure: MesonConfigure = MesonConfigure(builddir)
-        self._install: MesonInstall = MesonInstall(builddir)
-        self._version: MesonVersion = MesonVersion()
-        self._compile: MesonCompile = MesonCompile(builddir)
-        self._setup: MesonSetup = MesonSetup(sourcedir, builddir)
-        self._build: MesonBuild = MesonBuild(builddir)
-        self._clean: MesonClean = MesonClean(builddir)
-        self._dist: MesonDist = MesonDist(builddir)
-        self._init: MesonInit = MesonInit(sourcedir)
-        self._test: MesonTest = MesonTest(builddir)
-        self._wrap: MesonWrap = MesonWrap()
+        self._sourcedir = sourcedir
+        self._builddir = builddir
     # end of method
 
+    @property
+    def sourcedir(self):
+        return self._sourcedir
+
+    @property
+    def builddir(self):
+        return self._builddir
+
+    @sourcedir.setter
+    def sourcedir(self, new_dir: Path):
+        self._sourcedir = new_dir
+
+    @builddir.setter
+    def builddir(self, new_dir: Path):
+        self._builddir = new_dir
+
     def version(self) -> MesonVersion:
-        return self._version.run()
+        return MesonVersion().run()
 
     def configure(self, args: list = []) -> MesonConfigure:
-        return self._configure.run(args=args)
+        return MesonConfigure(self.builddir).run(args=args)
 
     def setup(self, args: list = []) -> MesonSetup:
-        return self._setup.run(args=args)
+        return MesonSetup(self.sourcedir, self.builddir).run(args=args)
 
     def subprojects(self) -> MesonSubprojects:
-        return self._subprojects
+        return MesonSubprojects(self.sourcedir)
 
     def compile(self, args: list = []) -> MesonCompile:
-        return self._compile.run(args=args)
+        return MesonCompile(self.builddir).run(args=args)
 
     def install(self, args: list = []) -> MesonInstall:
-        return self._install.run(args=args)
+        return MesonInstall(self.builddir).run(args=args)
 
     def build(self) -> MesonBuild:
-        return self._build.run()
+        return MesonBuild(self.builddir).run()
 
     def clean(self) -> MesonClean:
-        return self._clean.run()
+        return MesonClean(self.builddir).run()
 
     def init(self, args: list = []) -> MesonInit:
-        return self._init.run(args=args)
+        return MesonInit(self.sourcedir).run(args=args)
 
     def dist(self, args: list = []) -> MesonDist:
-        return self._dist.run(args=args)
+        return MesonDist(self.builddir).run(args=args)
 
     def test(self) -> MesonTest:
-        return self._test.run()
+        return MesonTest(self.builddir).run()
 
     def wrap(self) -> MesonWrap:
-        return self._wrap
+        return MesonWrap()
 
 
 class CMake:
     '''
     this class is a wrapper for the CMake build system.
     '''
-    def __init__(self, sourcedir: Path = Path().cwd(), builddir: Path = Path().joinpath(Path().cwd(), 'builddir')):
+    def __init__(self, sourcedir: Path = Path().cwd(), builddir: Path = join_paths(Path().cwd(), 'builddir')):
         super().__init__()
-        self._version: CMakeVersion = CMakeVersion()
-        self._compile: CMakeCompile = CMakeCompile(builddir)
-        self._setup: CMakeSetup = CMakeSetup(sourcedir, builddir)
-        self._build: CMakeBuild = CMakeBuild(builddir)
-        self._clean: CMakeClean = CMakeClean(builddir)
-        self._test: CMakeTest = CMakeTest(builddir)
+        self._sourcedir = sourcedir
+        self._builddir = builddir
     # end of method
 
+    @property
+    def sourcedir(self):
+        return self._sourcedir
+
+    @property
+    def builddir(self):
+        return self._builddir
+
+    @sourcedir.setter
+    def sourcedir(self, new_dir: Path):
+        self._sourcedir = new_dir
+
+    @builddir.setter
+    def builddir(self, new_dir: Path):
+        self._builddir = new_dir
+
     def version(self) -> CMakeVersion:
-        return self._version.run()
+        return CMakeVersion().run()
 
     def setup(self, args: list = []) -> CMakeSetup:
-        return self._setup.run(args=args)
+        return CMakeSetup(self.sourcedir, self.builddir).run(args=args)
 
     def compile(self) -> CMakeCompile:
-        return self._compile.run()
+        return CMakeCompile(self.builddir).run()
 
     def build(self) -> CMakeBuild:
-        return self._build.run()
+        return CMakeBuild(self.builddir).run()
 
     def clean(self) -> CMakeClean:
-        return self._clean.run()
+        return CMakeClean(self.builddir).run()
 
     def test(self) -> CMakeTest:
-        return self._test.run()
+        return CMakeTest(self.builddir).run()

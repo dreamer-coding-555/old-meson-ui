@@ -84,7 +84,7 @@ class SetupActivity(QDialog, Ui_Activity_Setup_Dialog):
         this method will perform the "meson setup" action and pass all
         options with the set whatever the user would like
         '''
-        if self._model.model_project().get_builddir() != '':
+        if self._model.buildsystem().meson().builddir != '':
             #
             # here we define are process on how we are
             # going to build a set object with Meson
@@ -109,7 +109,7 @@ class SetupActivity(QDialog, Ui_Activity_Setup_Dialog):
         if self._console is None:
             return
         else:
-            self._console.command_run(str(self._model.model_project().meson().setup(args=args)))
+            self._console.command_run(str(self._model.buildsystem().meson().setup(args=args)))
 
     def _cache_parser(self, meson_args: MesonUiStack) -> None:
         '''
@@ -166,7 +166,7 @@ class SetupActivity(QDialog, Ui_Activity_Setup_Dialog):
         #
         # here we add the fatal flag to make sure that the user
         # does not have too.
-        if Path(self._model.model_project().get_builddir()).exists():
+        if Path(self._model.buildsystem().meson().builddir).exists():
             meson_args.push(['--fatal-meson-warnings', '--wipe'])
         else:
             meson_args.push(['--fatal-meson-warnings'])
