@@ -789,13 +789,13 @@ class TestMesonUiCacheSystem:
         for i in values:
             assert(values[i] is not None)
 
-    # def test_dist_cache(self):
-    #     cache = MesonUiDistCache()
-    #     cache.init_cache()
-    #     values = cache.get_cache()
+    def test_dist_cache(self):
+        cache = MesonUiDistCache()
+        cache.init_cache()
+        values = cache.get_cache()
 
-    #     for i in values:
-    #         assert(values[i] is not None)
+        for i in values:
+            assert(values[i] is not None)
 
     def test_install_cache(self):
         cache = MesonUiInstallCache()
@@ -804,3 +804,24 @@ class TestMesonUiCacheSystem:
 
         for i in values:
             assert(values[i] is not None)
+
+    def test_init_cache_give_none(self):
+        cache = MesonUiInitCache()
+
+        with pytest.raises(MesonUiException) as e:
+            cache.get_cache()
+        assert('Meson cache failed do to "None" value found while loading value' == str(e.value))
+
+    def test_dist_cache_give_none(self):
+        cache = MesonUiDistCache()
+
+        with pytest.raises(MesonUiException) as e:
+            cache.get_cache()
+        assert('Meson cache failed do to "None" value found while loading value' == str(e.value))
+
+    def test_install_cache_give_none(self):
+        cache = MesonUiInstallCache()
+
+        with pytest.raises(MesonUiException) as e:
+            cache.get_cache()
+        assert('Meson cache failed do to "None" value found while loading value' == str(e.value))

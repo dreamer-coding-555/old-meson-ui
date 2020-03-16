@@ -14,8 +14,8 @@ import typing as T
 class MesonDistConfig:
     def __init__(self):
         self.meson_configure: T.Dict = {
-            'formats': None,
-            'include-subprojects': None
+            '--formats': None,
+            '--include-subprojects': None
         }
 
     def extract(self):
