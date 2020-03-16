@@ -22,24 +22,6 @@ import logging
 logger = logging.getLogger(__name__)
 sublogger = logging.getLogger(__name__ + ".log")
 
-BUILD_SCRIPT = '''\
-project('test-prog', 'c', meson_version: '>=0.53.0')
-
-exe = executable('simple-test', ['main.c'])
-
-test('exe test cases', exe)
-'''
-
-C_SOURCE_FILE = '''\
-#include <stdio.h>
-
-int main(void)
-{
-    puts("Basic Test Cases.");
-    return 0;
-}// end of function main
-
-'''
 
 class TestPyPiPackageInfo:
     def test_all_pypi_info(self):
@@ -89,14 +71,11 @@ class TestMeson:
         # Running Meson command
         meson: Meson = Meson(sourcedir=(tmpdir / 'meson-tmp'), builddir=(tmpdir / 'meson-tmp', 'builddir'))
 
-        tmpdir.join('meson-tmp', 'meson.build').write(BUILD_SCRIPT, ensure=True)
-        tmpdir.join('meson-tmp', 'main.c').write(C_SOURCE_FILE, ensure=True)
-
-        meson.setup()
+        meson.init(['--language=c', '--type=executable'])
+        meson.setup(['--backend=ninja'])
 
         #
         # Run asserts to check it is working
-        assert tmpdir.join('meson-tmp', 'meson.build').read() == BUILD_SCRIPT
         assert tmpdir.join('meson-tmp', 'meson.build').ensure()
         assert tmpdir.join('meson-tmp', 'builddir').ensure()
 
@@ -111,15 +90,12 @@ class TestMeson:
         # Running Meson command
         meson: Meson = Meson(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
 
-        tmpdir.join('meson.build').write(BUILD_SCRIPT, ensure=True)
-        tmpdir.join('main.c').write(C_SOURCE_FILE, ensure=True)
-
-        meson.setup()
+        meson.init(['--language=c', '--type=executable'])
+        meson.setup(['--backend=ninja'])
         meson.build()
 
         #
         # Run asserts to check it is working
-        assert tmpdir.join('meson.build').read() == BUILD_SCRIPT
         assert tmpdir.join('meson.build').ensure()
         assert tmpdir.join('builddir', 'build.ninja').ensure()
         assert tmpdir.join('builddir', 'compile_commands.json').ensure()
@@ -135,16 +111,12 @@ class TestMeson:
         # Running Meson command
         meson: Meson = Meson(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
 
-        tmpdir.join('meson.build').write(BUILD_SCRIPT, ensure=True)
-        tmpdir.join('main.c').write(C_SOURCE_FILE, ensure=True)
-
-        meson.setup()
-        meson.build()
+        meson.init(['--language=c', '--type=executable'])
+        meson.setup(['--backend=ninja'])
         meson.configure(['--werror', '--buildtype=minsize'])
 
         #
         # Run asserts to check it is working
-        assert tmpdir.join('meson.build').read() == BUILD_SCRIPT
         assert tmpdir.join('meson.build').ensure()
         assert tmpdir.join('builddir', 'build.ninja').ensure()
         assert tmpdir.join('builddir', 'compile_commands.json').ensure()
@@ -160,16 +132,14 @@ class TestMeson:
         # Running Meson command
         meson: Meson = Meson(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
 
-        tmpdir.join('meson.build').write(BUILD_SCRIPT, ensure=True)
-        tmpdir.join('main.c').write(C_SOURCE_FILE, ensure=True)
+        meson.init(['--language=c', '--type=executable'])
+        meson.setup(['--backend=ninja'])
+        meson.compile()
 
-        meson.setup()
-        meson.build()
         meson.setup(['--wipe'])
 
         #
         # Run asserts to check it is working
-        assert tmpdir.join('meson.build').read() == BUILD_SCRIPT
         assert tmpdir.join('meson.build').ensure()
         assert tmpdir.join('builddir', 'build.ninja').ensure()
         assert tmpdir.join('builddir', 'compile_commands.json').ensure()
@@ -185,15 +155,12 @@ class TestMeson:
         # Running Meson command
         meson: Meson = Meson(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
 
-        tmpdir.join('meson.build').write(BUILD_SCRIPT, ensure=True)
-        tmpdir.join('main.c').write(C_SOURCE_FILE, ensure=True)
-
-        meson.setup()
+        meson.init(['--language=c', '--type=executable'])
+        meson.setup(['--backend=ninja'])
         meson.compile()
 
         #
         # Run asserts to check it is working
-        assert tmpdir.join('meson.build').read() == BUILD_SCRIPT
         assert tmpdir.join('meson.build').ensure()
         assert tmpdir.join('builddir', 'build.ninja').ensure()
         assert tmpdir.join('builddir', 'compile_commands.json').ensure()
@@ -209,16 +176,13 @@ class TestMeson:
         # Running Meson command
         meson: Meson = Meson(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
 
-        tmpdir.join('meson.build').write(BUILD_SCRIPT, ensure=True)
-        tmpdir.join('main.c').write(C_SOURCE_FILE, ensure=True)
-
-        meson.setup()
+        meson.init(['--language=c', '--type=executable'])
+        meson.setup(['--backend=ninja'])
         meson.compile()
         meson.clean()
 
         #
         # Run asserts to check it is working
-        assert tmpdir.join('meson.build').read() == BUILD_SCRIPT
         assert tmpdir.join('meson.build').ensure()
         assert tmpdir.join('builddir', 'build.ninja').ensure()
         assert tmpdir.join('builddir', 'compile_commands.json').ensure()
@@ -234,16 +198,12 @@ class TestMeson:
         # Running Meson command
         meson: Meson = Meson(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
 
-        tmpdir.join('meson.build').write(BUILD_SCRIPT, ensure=True)
-        tmpdir.join('main.c').write(C_SOURCE_FILE, ensure=True)
-
-        meson.setup()
+        meson.init(['--language=c', '--type=executable'])
+        meson.setup(['--backend=ninja'])
         meson.compile()
-        print(meson.install())
 
         #
         # Run asserts to check it is working
-        assert tmpdir.join('meson.build').read() == BUILD_SCRIPT
         assert tmpdir.join('meson.build').ensure()
         assert tmpdir.join('builddir', 'build.ninja').ensure()
         assert tmpdir.join('builddir', 'compile_commands.json').ensure()
@@ -259,16 +219,13 @@ class TestMeson:
         # Running Meson command
         meson: Meson = Meson(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
 
-        tmpdir.join('meson.build').write(BUILD_SCRIPT, ensure=True)
-        tmpdir.join('main.c').write(C_SOURCE_FILE, ensure=True)
-
-        meson.setup()
-        meson.build()
+        meson.init(['--language=c', '--type=executable'])
+        meson.setup(['--backend=ninja'])
+        meson.compile()
         meson.test()
 
         #
         # Run asserts to check it is working
-        assert tmpdir.join('meson.build').read() == BUILD_SCRIPT
         assert tmpdir.join('meson.build').ensure()
         assert tmpdir.join('builddir', 'build.ninja').ensure()
         assert tmpdir.join('builddir', 'compile_commands.json').ensure()
@@ -285,17 +242,15 @@ class TestMeson:
         # Running Meson command
         meson: Meson = Meson(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
 
-        tmpdir.join('meson.build').write(BUILD_SCRIPT, ensure=True)
-        tmpdir.join('main.c').write(C_SOURCE_FILE, ensure=True)
+        meson.init(['--language=c', '--type=executable'])
+        meson.setup(['--backend=ninja'])
+        meson.compile()
 
-        meson.setup()
-        meson.build()
         CIUtility._git_init(tmpdir)
         meson.dist()
 
         #
         # Run asserts to check it is working
-        assert tmpdir.join('meson.build').read() == BUILD_SCRIPT
         assert tmpdir.join('meson.build').ensure()
         assert tmpdir.join('builddir', 'build.ninja').ensure()
         assert tmpdir.join('builddir', 'compile_commands.json').ensure()
@@ -314,7 +269,7 @@ class TestMeson:
 
         meson.init(['--language=c'])
         meson.setup()
-        meson.build()
+        meson.compile()
         meson.test()
 
         #
@@ -326,37 +281,67 @@ class TestMeson:
 
 class TestMesonBackend:
 
-    def test_ninjabackend(self):
-        sourcedir: str = join_paths('test-cases', 'backends', '01-ninjabackend')
-        builddir: str = join_paths('test-cases', 'backends', '01-ninjabackend', 'builddir')
-        meson = Meson(sourcedir=sourcedir, builddir=builddir)
+    def test_ninjabackend(self, tmpdir):
+        #
+        # Setting up tmp test directory
+        with tmpdir.as_cwd():
+            pass
+        tmpdir.chdir()
 
-        meson.setup(args=['--backend=ninja'])
-        meson.compile()
+        #
+        # Running Meson command
+        meson: Meson = Meson(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
 
-        assert(Path(sourcedir).is_dir())
-        assert(Path(builddir).is_dir())
+        meson.init(['--language=c'])
+        meson.setup(['--backend=ninja'])
+
+        #
+        # Run asserts to check it is working
+        assert tmpdir.join('meson.build').ensure()
+        assert tmpdir.join('builddir', 'build.ninja').ensure()
+        assert tmpdir.join('builddir', 'compile_commands.json').ensure()
 
     @pytest.mark.skipif(not OSUtility.is_osx(), reason='Skipping because Xcode backend only works on OSX systems')
-    def test_xcodebackend(self):
-        sourcedir: str = join_paths('test-cases', 'backends', '02-xcodebackend')
-        builddir: str = join_paths('test-cases', 'backends', '02-xcodebackend', 'builddir')
-        meson = Meson(sourcedir=sourcedir, builddir=builddir)
+    def test_xcode_backend(self, tmpdir):
+        #
+        # Setting up tmp test directory
+        with tmpdir.as_cwd():
+            pass
+        tmpdir.chdir()
 
-        meson.setup(args=['--backend=xcode'])
+        #
+        # Running Meson command
+        meson: Meson = Meson(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
+
+        meson.init(['--language=c', '--type=executable'])
+        meson.setup(['--backend=xcode'])
         meson.compile()
+        meson.test()
 
-        assert(Path(sourcedir).is_dir())
-        assert(Path(builddir).is_dir())
+        #
+        # Run asserts to check it is working
+        assert tmpdir.join('meson.build').ensure()
+        assert tmpdir.join('builddir', 'build.ninja').ensure()
+        assert tmpdir.join('builddir', 'compile_commands.json').ensure()
+        assert tmpdir.join('builddir', 'test-prog.xcodeproj', 'project.pbxproj').ensure()
 
     @pytest.mark.skipif(not OSUtility.is_windows(), reason='Skipping because Visual Studio backend only works on Windows')
-    def test_vsbackend(self):
-        sourcedir: str = join_paths('test-cases', 'backends', '03-vsbackend')
-        builddir: str = join_paths('test-cases', 'backends', '03-vsbackend', 'builddir')
-        meson = Meson(sourcedir=sourcedir, builddir=builddir)
+    def test_vsbackend(self, tmpdir):
+        #
+        # Setting up tmp test directory
+        with tmpdir.as_cwd():
+            pass
+        tmpdir.chdir()
 
-        meson.setup(args=['--backend=vs'])
-        meson.compile()
+        #
+        # Running Meson command
+        meson: Meson = Meson(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
 
-        assert(Path(sourcedir).is_dir())
-        assert(Path(builddir).is_dir())
+        meson.init(['--language=c'])
+        meson.setup(['--backend=vs'])
+
+        #
+        # Run asserts to check it is working
+        assert tmpdir.join('meson.build').ensure()
+        assert tmpdir.join('builddir', 'build.ninja').ensure()
+        assert tmpdir.join('builddir', 'compile_commands.json').ensure()
