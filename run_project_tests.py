@@ -8,8 +8,6 @@
 # copyright 2020 The Meson-UI development team
 #
 import pytest
-from pathlib import Path
-from os.path import join as join_paths
 from mesonui.mesonuilib.utilitylib import OSUtility
 from mesonui.mesonuilib.utilitylib import CIUtility
 from mesonui.packageinfo import PackageInfo
