@@ -252,7 +252,7 @@ class TestMeson:
         assert tmpdir.join('meson.build').ensure()
         assert tmpdir.join('builddir', 'build.ninja').ensure()
         assert tmpdir.join('builddir', 'compile_commands.json').ensure()
-        assert tmpdir.join('builddir', 'meson-dist', 'test-prog-undefined.tar.xz').ensure()
+        assert tmpdir.join('builddir', 'meson-dist', 'test_mdist_command0-0.1.tar.xz').ensure()
 
     def test_init_command(self, tmpdir):
         #
