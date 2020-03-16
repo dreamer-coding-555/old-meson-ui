@@ -33,6 +33,7 @@ from mesonui.repository.mesonapi import MesonAPI
 from mesonui.mesonuilib.buildsystem import Meson
 from mesonui.containers.doublylist import MesonUiDLL
 from mesonui.containers.stack import MesonUiStack
+from mesonui.mesonuilib.utilitylib import MesonUiException
 
 
 class TestMesonUiStack:
@@ -77,6 +78,14 @@ class TestMesonDll:
         assert(dll.search_for('spam data') is None)
         assert(dll.size() == 1)
         assert(dll.is_empty() is False)
+
+    def test_search_empty(self):
+        dll: MesonUiDLL = MesonUiDLL()
+
+        assert(dll.is_empty() is True)
+
+        assert(dll.search_for('not here') is None)
+        assert(dll.size() == 0)
 
     def test_remove(self):
         dll: MesonUiDLL = MesonUiDLL()
@@ -203,6 +212,28 @@ class TestMesonAPI:
         #
         # As a last posable value we will give None
         info = script.get_object(group='projectinfo', extract_method='script')
+
+        assert(info is None)
+
+    def test_reader_testlogs_get_none(self):
+        source = join('test-cases', 'meson-api', '09-read-testlog-null')
+        build = join('test-cases', 'meson-api', '09-read-testlog-null', 'builddir')
+
+        script: MesonAPI = MesonAPI(sourcedir=source, builddir=build)
+        #
+        # Posable value of passing testlog will be None
+        info = script.get_object(group='testlog', extract_method='reader')
+
+        assert(info is None)
+
+    def test_loader_testlogs_get_none(self):
+        source = join('test-cases', 'meson-api', '10-load-testlog-null')
+        build = join('test-cases', 'meson-api', '10-load-testlog-null', 'builddir')
+
+        script: MesonAPI = MesonAPI(sourcedir=source, builddir=build)
+        #
+        # Posable value of passing testlog will be None
+        info = script.get_object(group='testlog', extract_method='loader')
 
         assert(info is None)
 
@@ -545,12 +576,16 @@ class TestApiScriptScanner:
         assert('Group tag not-a-key not found in extract via data options!' == str(e.value))
 
 
-class MesonCacheConfig:
+class TestMesonCacheConfig:
     def test_core_configure(self):
         conf = MesonCoreConfig()
 
         for i in conf.meson_configure:
             assert(conf.meson_configure[i] is None)
+
+        with pytest.raises(MesonUiException) as e:
+            conf.extract()
+        assert('Meson cache failed do to "None" value found while loading value' == str(e.value))
 
     def test_base_configure(self):
         conf = MesonBaseConfig()
@@ -558,11 +593,19 @@ class MesonCacheConfig:
         for i in conf.meson_configure:
             assert(conf.meson_configure[i] is None)
 
+        with pytest.raises(MesonUiException) as e:
+            conf.extract()
+        assert('Meson cache failed do to "None" value found while loading value' == str(e.value))
+
     def test_path_configure(self):
         conf = MesonPathConfig()
 
         for i in conf.meson_configure:
             assert(conf.meson_configure[i] is None)
+
+        with pytest.raises(MesonUiException) as e:
+            conf.extract()
+        assert('Meson cache failed do to "None" value found while loading value' == str(e.value))
 
     def test_test_configure(self):
         conf = MesonTestConfig()
@@ -570,11 +613,19 @@ class MesonCacheConfig:
         for i in conf.meson_configure:
             assert(conf.meson_configure[i] is None)
 
+        with pytest.raises(MesonUiException) as e:
+            conf.extract()
+        assert('Meson cache failed do to "None" value found while loading value' == str(e.value))
+
     def test_init_configure(self):
         conf = MesonInitConfig()
 
         for i in conf.meson_configure:
             assert(conf.meson_configure[i] is None)
+
+        with pytest.raises(MesonUiException) as e:
+            conf.extract()
+        assert('Meson cache failed do to "None" value found while loading value' == str(e.value))
 
     def test_dist_configure(self):
         conf = MesonDistConfig()
@@ -582,11 +633,19 @@ class MesonCacheConfig:
         for i in conf.meson_configure:
             assert(conf.meson_configure[i] is None)
 
+        with pytest.raises(MesonUiException) as e:
+            conf.extract()
+        assert('Meson cache failed do to "None" value found while loading value' == str(e.value))
+
     def test_install_configure(self):
         conf = MesonInstallConfig()
 
         for i in conf.meson_configure:
             assert(conf.meson_configure[i] is None)
+
+        with pytest.raises(MesonUiException) as e:
+            conf.extract()
+        assert('Meson cache failed do to "None" value found while loading value' == str(e.value))
 
     def test_backend_configure(self):
         conf = MesonBackendConfig()
@@ -594,8 +653,124 @@ class MesonCacheConfig:
         for i in conf.meson_configure:
             assert(conf.meson_configure[i] is None)
 
+        with pytest.raises(MesonUiException) as e:
+            conf.extract()
+        assert('Meson cache failed do to "None" value found while loading value' == str(e.value))
 
-class MesonUiCacheSystem:
+    def test_core_configure_if_empty_option(self):
+        conf = MesonCoreConfig()
+
+        with pytest.raises(MesonUiException) as e:
+            conf.config('', 'some-value')
+        assert('Option key passed as empty string object' == str(e.value))
+
+    def test_base_configure_if_empty_option(self):
+        conf = MesonBaseConfig()
+
+        with pytest.raises(MesonUiException) as e:
+            conf.config('', 'some-value')
+        assert('Option key passed as empty string object' == str(e.value))
+
+    def test_path_configure_if_empty_option(self):
+        conf = MesonPathConfig()
+
+        with pytest.raises(MesonUiException) as e:
+            conf.config('', 'some-value')
+        assert('Option key passed as empty string object' == str(e.value))
+
+    def test_test_configure_if_empty_option(self):
+        conf = MesonTestConfig()
+
+        with pytest.raises(MesonUiException) as e:
+            conf.config('', 'some-value')
+        assert('Option key passed as empty string object' == str(e.value))
+
+    def test_init_configure_if_empty_option(self):
+        conf = MesonInitConfig()
+
+        with pytest.raises(MesonUiException) as e:
+            conf.config('', 'some-value')
+        assert('Option key passed as empty string object' == str(e.value))
+
+    def test_dist_configure_if_empty_option(self):
+        conf = MesonDistConfig()
+
+        with pytest.raises(MesonUiException) as e:
+            conf.config('', 'some-value')
+        assert('Option key passed as empty string object' == str(e.value))
+
+    def test_install_configure_if_empty_option(self):
+        conf = MesonInstallConfig()
+
+        with pytest.raises(MesonUiException) as e:
+            conf.config('', 'some-value')
+        assert('Option key passed as empty string object' == str(e.value))
+
+    def test_backend_configure_if_empty_option(self):
+        conf = MesonBackendConfig()
+
+        with pytest.raises(MesonUiException) as e:
+            conf.config('', 'some-value')
+        assert('Option key passed as empty string object' == str(e.value))
+
+    def test_core_configure_if_empty_value(self):
+        conf = MesonCoreConfig()
+
+        with pytest.raises(MesonUiException) as e:
+            conf.config('some-option', '')
+        assert('Value passed in as empty string object' == str(e.value))
+
+    def test_base_configure_if_empty_value(self):
+        conf = MesonBaseConfig()
+
+        with pytest.raises(MesonUiException) as e:
+            conf.config('some-option', '')
+        assert('Value passed in as empty string object' == str(e.value))
+
+    def test_path_configure_if_empty_value(self):
+        conf = MesonPathConfig()
+
+        with pytest.raises(MesonUiException) as e:
+            conf.config('some-option', '')
+        assert('Value passed in as empty string object' == str(e.value))
+
+    def test_test_configure_if_empty_value(self):
+        conf = MesonTestConfig()
+
+        with pytest.raises(MesonUiException) as e:
+            conf.config('some-option', '')
+        assert('Value passed in as empty string object' == str(e.value))
+
+    def test_init_configure_if_empty_value(self):
+        conf = MesonInitConfig()
+
+        with pytest.raises(MesonUiException) as e:
+            conf.config('some-option', '')
+        assert('Value passed in as empty string object' == str(e.value))
+
+    def test_dist_configure_if_empty_value(self):
+        conf = MesonDistConfig()
+
+        with pytest.raises(MesonUiException) as e:
+            conf.config('some-option', '')
+        assert('Value passed in as empty string object' == str(e.value))
+
+    def test_install_configure_if_empty_value(self):
+        conf = MesonInstallConfig()
+
+        with pytest.raises(MesonUiException) as e:
+            conf.config('some-option', '')
+        assert('Value passed in as empty string object' == str(e.value))
+
+    def test_backend_configure_if_empty_value(self):
+        conf = MesonBackendConfig()
+
+        with pytest.raises(MesonUiException) as e:
+            conf.config('some-option', '')
+        assert('Value passed in as empty string object' == str(e.value))
+
+
+class TestMesonUiCacheSystem:
     def test_mesonui_main_cache(self):
         cache = MesonUiCache()
         cache.init_cache()
@@ -614,13 +789,13 @@ class MesonUiCacheSystem:
         for i in values:
             assert(values[i] is not None)
 
-    def test_dist_cache(self):
-        cache = MesonUiDistCache()
-        cache.init_cache()
-        values = cache.get_cache()
+    # def test_dist_cache(self):
+    #     cache = MesonUiDistCache()
+    #     cache.init_cache()
+    #     values = cache.get_cache()
 
-        for i in values:
-            assert(values[i] is not None)
+    #     for i in values:
+    #         assert(values[i] is not None)
 
     def test_install_cache(self):
         cache = MesonUiInstallCache()
