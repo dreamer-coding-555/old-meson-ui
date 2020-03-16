@@ -113,7 +113,7 @@ class CIUtility:
         subprocess.check_call(['git', 'init'], cwd=project_dir, stdout=subprocess.DEVNULL)
         subprocess.check_call(['git', 'config', 'user.name', 'Author Person'], cwd=project_dir)
         subprocess.check_call(['git', 'config', 'user.email', 'teh_coderz@example.com'], cwd=project_dir)
-        subprocess.check_call('git add *', cwd=project_dir, shell=True, stdout=subprocess.DEVNULL)
+        subprocess.check_call(['git', 'add', '*'], cwd=project_dir, shell=True, stdout=subprocess.DEVNULL)
         subprocess.check_call(['git', 'commit', '-a', '-m', 'I am a project'], cwd=project_dir, stdout=subprocess.DEVNULL)
 
     def skip_if_no_git(self, f):

@@ -244,7 +244,7 @@ class TestMeson:
         meson.setup(['--backend=ninja'])
         meson.compile()
 
-        CIUtility._git_init((tmpdir / 'builddir'))
+        CIUtility._git_init(tmpdir)
         meson.dist()
 
         #
