@@ -109,12 +109,14 @@ class CIUtility:
         return False
 
     @staticmethod
-    def _git_init(project_dir):
-        subprocess.check_call(['git', 'init'], cwd=project_dir, stdout=subprocess.DEVNULL)
-        subprocess.check_call(['git', 'config', 'user.name', 'Author Person'], cwd=project_dir)
-        subprocess.check_call(['git', 'config', 'user.email', 'teh_coderz@example.com'], cwd=project_dir)
-        subprocess.check_call(['git', 'add', '*'], cwd=project_dir, shell=True, stdout=subprocess.DEVNULL)
-        subprocess.check_call(['git', 'commit', '-a', '-m', 'I am a project'], cwd=project_dir, stdout=subprocess.DEVNULL)
+    def _git_init():
+        #
+        # TODO: impl GitUtility and Git wrapper class
+        subprocess.Popen(['git', 'init'], stderr=subprocess.PIPE).communicate()[0]
+        subprocess.Popen(['git', 'config', 'user.name', 'Author Person'], stderr=subprocess.PIPE).communicate()[0]
+        subprocess.Popen(['git', 'config', 'user.email', 'teh_coderz@example.com'], stderr=subprocess.PIPE).communicate()[0]
+        subprocess.Popen(['git', 'add', '*'], stderr=subprocess.PIPE).communicate()[0]
+        subprocess.Popen(['git', 'commit', '-a', '-m', 'I am a project'], stderr=subprocess.PIPE).communicate()[0]
 
     def skip_if_no_git(self, f):
         '''
