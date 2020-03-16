@@ -42,17 +42,33 @@ class TestMesonUiQueue:
         queue: MesonUiQueue = MesonUiQueue()
         queue.enqueue('message log 1')
 
-        assert(queue.size == 1)
+        assert(len(queue.items) == 1)
+
+    def test_enqueue_copy(self):
+        queue: MesonUiQueue = MesonUiQueue()
+        queue.enqueue('message log 1')
+
+        assert(queue.enqueue('message log 1') is None)
+        assert(len(queue.items) == 1)
 
     def test_dequeue(self):
         queue: MesonUiQueue = MesonUiQueue()
         queue.enqueue('message log 1')
         queue.enqueue('message log 2')
 
-        assert(queue.size == 2)
+        assert(len(queue.items) == 2)
 
         assert(queue.dequeue() == 'message log 1')
-        assert(queue.size == 1)
+        assert(len(queue.items) == 1)
+
+        assert(queue.dequeue() == 'message log 2')
+        assert(len(queue.items) == 0)
+
+    def test_dequeue_empty(self):
+        queue: MesonUiQueue = MesonUiQueue()
+
+        assert(queue.dequeue() is None)
+        assert(len(queue.items) == 0)
 
 
 class TestMesonUiStack:
