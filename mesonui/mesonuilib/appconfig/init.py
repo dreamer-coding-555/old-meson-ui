@@ -30,5 +30,7 @@ class MesonInitConfig:
     def config(self, option: T.AnyStr, value: T.AnyStr = '') -> None:
         if option == '':
             raise MesonUiException('Option key passed as empty string object')
+        if value == '':
+            raise MesonUiException('Value passed in as empty string object')
 
         self.meson_configure[f'--{option}'] = value

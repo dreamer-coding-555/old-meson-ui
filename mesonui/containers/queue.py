@@ -7,28 +7,23 @@
 #
 # copyright 2020 The Meson-UI development team
 #
+
 class MesonUiQueue:
     def __init__(self):
-        self.queue: list = list()
+        self.items = []
 
-    #Adding elements to queue
+    def is_empty(self):
+        return self.items == []
+
     def enqueue(self, data):
-        #Checking to avoid duplicate entry (not mandatory)
-        if data not in self.queue:
-            self.queue.insert(0, data)
-            return True
-        return False
+        if data not in self.items:
+            self.items.append(data)
+        else:
+            return None
 
-    #Removing the last element from the queue
     def dequeue(self):
-        if len(self.queue) > 0:
-            return self.queue.pop()
-        return ("Queue Empty!")
-
-    #Getting the size of the queue
-    def size(self):
-        return len(self.queue)
-
-    #printing the elements of the queue
-    def printQueue(self):
-        return self.queue
+        print(len(self.items))
+        if len(self.items) == 0:
+            return None
+        else:
+            return self.items.pop(0)

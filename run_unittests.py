@@ -32,7 +32,43 @@ from mesonui.repository.datascanner import MesonScriptReader
 from mesonui.repository.mesonapi import MesonAPI
 from mesonui.mesonuilib.buildsystem import Meson
 from mesonui.containers.doublylist import MesonUiDLL
+from mesonui.containers.queue import MesonUiQueue
 from mesonui.containers.stack import MesonUiStack
+from mesonui.mesonuilib.utilitylib import MesonUiException
+
+
+class TestMesonUiQueue:
+    def test_enqueue(self):
+        queue: MesonUiQueue = MesonUiQueue()
+        queue.enqueue('message log 1')
+
+        assert(len(queue.items) == 1)
+
+    def test_enqueue_copy(self):
+        queue: MesonUiQueue = MesonUiQueue()
+        queue.enqueue('message log 1')
+
+        assert(queue.enqueue('message log 1') is None)
+        assert(len(queue.items) == 1)
+
+    def test_dequeue(self):
+        queue: MesonUiQueue = MesonUiQueue()
+        queue.enqueue('message log 1')
+        queue.enqueue('message log 2')
+
+        assert(len(queue.items) == 2)
+
+        assert(queue.dequeue() == 'message log 1')
+        assert(len(queue.items) == 1)
+
+        assert(queue.dequeue() == 'message log 2')
+        assert(len(queue.items) == 0)
+
+    def test_dequeue_empty(self):
+        queue: MesonUiQueue = MesonUiQueue()
+
+        assert(queue.dequeue() is None)
+        assert(len(queue.items) == 0)
 
 
 class TestMesonUiStack:
@@ -78,6 +114,14 @@ class TestMesonDll:
         assert(dll.size() == 1)
         assert(dll.is_empty() is False)
 
+    def test_search_empty(self):
+        dll: MesonUiDLL = MesonUiDLL()
+
+        assert(dll.is_empty() is True)
+
+        assert(dll.search_for('not here') is None)
+        assert(dll.size() == 0)
+
     def test_remove(self):
         dll: MesonUiDLL = MesonUiDLL()
 
@@ -105,7 +149,7 @@ class TestMesonDll:
 
 
 class TestMesonAPI:
-    def test_scan_from_script(self):
+    def test_meson_api_scan_from_script(self):
         source = join('test-cases', 'meson-api', '01-scan-script')
         build = join('test-cases', 'meson-api', '01-scan-script', 'builddir')
         meson: Meson = Meson(sourcedir=source, builddir=build)
@@ -119,7 +163,7 @@ class TestMesonAPI:
         assert(info['version'] == '0.1')
         assert(info['subproject_dir'] == 'subprojects')
 
-    def test_read_from_builddir(self):
+    def test_meson_api_read_from_builddir(self):
         source = join('test-cases', 'meson-api', '02-read-builddir')
         build = join('test-cases', 'meson-api', '02-read-builddir', 'builddir')
         meson: Meson = Meson(sourcedir=source, builddir=build)
@@ -133,7 +177,7 @@ class TestMesonAPI:
         assert(info['version'] == '0.1')
         assert(info['subproject_dir'] == 'subprojects')
 
-    def test_load_from_builddir(self):
+    def test_meson_api_load_from_builddir(self):
         source = join('test-cases', 'meson-api', '03-load-builddir')
         build = join('test-cases', 'meson-api', '03-load-builddir', 'builddir')
         meson: Meson = Meson(sourcedir=source, builddir=build)
@@ -147,7 +191,7 @@ class TestMesonAPI:
         assert(info['version'] == '0.1')
         assert(info['subproject_dir'] == 'subprojects')
 
-    def test_reader_use_fullback(self):
+    def test_meson_api_reader_use_fullback(self):
         source = join('test-cases', 'meson-api', '04-read-fullback')
         build = join('test-cases', 'meson-api', '04-read-fullback', 'builddir')
 
@@ -160,7 +204,7 @@ class TestMesonAPI:
         assert(info['version'] == '0.1')
         assert(info['subproject_dir'] == 'subprojects')
 
-    def test_loader_use_fullback(self):
+    def test_meson_api_loader_use_fullback(self):
         source = join('test-cases', 'meson-api', '05-load-fullback')
         build = join('test-cases', 'meson-api', '05-load-fullback', 'builddir')
 
@@ -173,7 +217,7 @@ class TestMesonAPI:
         assert(info['version'] == '0.1')
         assert(info['subproject_dir'] == 'subprojects')
 
-    def test_reader_fullback_get_none(self):
+    def test_meson_api_reader_fullback_get_none(self):
         source = join('test-cases', 'meson-api', '06-read-null')
         build = join('test-cases', 'meson-api', '06-read-null', 'builddir')
 
@@ -184,7 +228,7 @@ class TestMesonAPI:
 
         assert(info is None)
 
-    def test_loader_fullback_get_none(self):
+    def test_meson_api_loader_fullback_get_none(self):
         source = join('test-cases', 'meson-api', '07-load-null')
         build = join('test-cases', 'meson-api', '07-load-null', 'builddir')
 
@@ -195,7 +239,7 @@ class TestMesonAPI:
 
         assert(info is None)
 
-    def test_scanner_fullback_get_none(self):
+    def test_meson_api_scanner_fullback_get_none(self):
         source = join('test-cases', 'meson-api', '08-scan-null')
         build = join('test-cases', 'meson-api', '08-scan-null', 'builddir')
 
@@ -206,7 +250,29 @@ class TestMesonAPI:
 
         assert(info is None)
 
-    def test_api_bad_extract_method(self):
+    def test_meson_api_reader_testlogs_get_none(self):
+        source = join('test-cases', 'meson-api', '09-read-testlog-null')
+        build = join('test-cases', 'meson-api', '09-read-testlog-null', 'builddir')
+
+        script: MesonAPI = MesonAPI(sourcedir=source, builddir=build)
+        #
+        # Posable value of passing testlog will be None
+        info = script.get_object(group='testlog', extract_method='reader')
+
+        assert(info is None)
+
+    def test_meson_api_loader_testlogs_get_none(self):
+        source = join('test-cases', 'meson-api', '10-load-testlog-null')
+        build = join('test-cases', 'meson-api', '10-load-testlog-null', 'builddir')
+
+        script: MesonAPI = MesonAPI(sourcedir=source, builddir=build)
+        #
+        # Posable value of passing testlog will be None
+        info = script.get_object(group='testlog', extract_method='loader')
+
+        assert(info is None)
+
+    def test_meson_api_bad_extract_method(self):
         reader: MesonAPI = MesonAPI(None, None)
         with pytest.raises(Exception) as e:
             reader = reader.get_object(group='not-a-key', extract_method='not-a-method')
@@ -214,7 +280,7 @@ class TestMesonAPI:
 
 
 class TestApiBuilddirLoader:
-    def test_projectinfo(self):
+    def test_loader_projectinfo(self):
         source = join('test-cases', 'intro-loader', '01-projectinfo')
         build = join('test-cases', 'intro-loader', '01-projectinfo', 'builddir')
         meson: Meson = Meson(sourcedir=source, builddir=build)
@@ -228,7 +294,7 @@ class TestApiBuilddirLoader:
         assert(info['version'] == '0.1')
         assert(info['subproject_dir'] == 'subprojects')
 
-    def test_buildoptions(self):
+    def test_loader_buildoptions(self):
         source = join('test-cases', 'intro-loader', '04-buildoptions')
         build = join('test-cases', 'intro-loader', '04-buildoptions', 'builddir')
         meson: Meson = Meson(sourcedir=source, builddir=build)
@@ -241,7 +307,7 @@ class TestApiBuilddirLoader:
         assert(info[0]['name'] == 'auto_features')
         assert(info[0]['value'] == 'auto')
 
-    def test_meson_test(self):
+    def test_loader_meson_test(self):
         source = join('test-cases', 'intro-loader', '02-unittests')
         build = join('test-cases', 'intro-loader', '02-unittests', 'builddir')
         meson: Meson = Meson(sourcedir=source, builddir=build)
@@ -253,7 +319,7 @@ class TestApiBuilddirLoader:
 
         assert(info[0]['name'] == 'basic unit test')
 
-    def test_benchmarks(self):
+    def test_loader_benchmarks(self):
         source = join('test-cases', 'intro-loader', '03-benchmarks')
         build = join('test-cases', 'intro-loader', '03-benchmarks', 'builddir')
         meson: Meson = Meson(sourcedir=source, builddir=build)
@@ -265,7 +331,7 @@ class TestApiBuilddirLoader:
 
         assert(info[0]['name'] == 'basic benchmark')
 
-    def test_dependencies(self):
+    def test_loader_dependencies(self):
         source = join('test-cases', 'intro-loader', '05-dependencies')
         build = join('test-cases', 'intro-loader', '05-dependencies', 'builddir')
         meson: Meson = Meson(sourcedir=source, builddir=build)
@@ -277,7 +343,7 @@ class TestApiBuilddirLoader:
 
         assert(info == [])
 
-    def test_api_targets(self):
+    def test_loader_targets(self):
         source = join('test-cases', 'intro-loader', '06-targets')
         build = join('test-cases', 'intro-loader', '06-targets', 'builddir')
         meson: Meson = Meson(sourcedir=source, builddir=build)
@@ -293,7 +359,7 @@ class TestApiBuilddirLoader:
         assert(info[0]['type'] == 'executable')
         assert(info[0]['id'] == 'prog@exe')
 
-    def test_install(self):
+    def test_loader_install(self):
         source = join('test-cases', 'intro-loader', '07-install')
         build = join('test-cases', 'intro-loader', '07-install', 'builddir')
         meson: Meson = Meson(sourcedir=source, builddir=build)
@@ -305,7 +371,7 @@ class TestApiBuilddirLoader:
 
         assert(info == {})
 
-    def test_mesoninfo(self):
+    def test_loader_mesoninfo(self):
         source = Path(join('test-cases', 'intro-loader', '08-mesoninfo'))
         build = Path(join('test-cases', 'intro-loader', '08-mesoninfo', 'builddir'))
         meson: Meson = Meson(sourcedir=source, builddir=build)
@@ -320,7 +386,7 @@ class TestApiBuilddirLoader:
         assert(info['directories']['build'] == str(build.resolve()))
         assert(info['directories']['info'] == str(join(build.resolve(), 'meson-info')))
 
-    def test_no_testlogs(self):
+    def test_loader_no_testlogs(self):
         source = Path(join('test-cases', 'intro-loader', '10-no-testlog'))
         build = Path(join('test-cases', 'intro-loader', '10-no-testlog', 'builddir'))
         meson: Meson = Meson(sourcedir=source, builddir=build)
@@ -332,7 +398,7 @@ class TestApiBuilddirLoader:
 
         assert(info is None)
 
-    def test_testlogs(self):
+    def test_loader_testlogs(self):
         source = Path(join('test-cases', 'intro-loader', '09-testlog'))
         build = Path(join('test-cases', 'intro-loader', '09-testlog', 'builddir'))
         meson: Meson = Meson(sourcedir=source, builddir=build)
@@ -348,7 +414,7 @@ class TestApiBuilddirLoader:
         assert(info['name'] == 'running test for testlog data')
         assert(info['result'] == 'OK')
 
-    def test_mesonbuild_files(self):
+    def test_loader_mesonbuild_files(self):
         source = Path(join('test-cases', 'intro-loader', '11-buildsystem_files'))
         build = Path(join('test-cases', 'intro-loader', '11-buildsystem_files', 'builddir'))
         meson: Meson = Meson(sourcedir=source, builddir=build)
@@ -360,7 +426,7 @@ class TestApiBuilddirLoader:
 
         assert(info[0] == join(source.resolve(), 'meson.build'))
 
-    def test_api_bad_extract_method(self):
+    def test_loader_bad_extract_method(self):
         reader: MesonBuilddirLoader = MesonBuilddirLoader(None)
         with pytest.raises(Exception) as e:
             reader = reader.extract_from(group='not-a-key')
@@ -369,7 +435,7 @@ class TestApiBuilddirLoader:
 
 class TestApiBuilddirReader:
 
-    def test_projectinfo(self):
+    def test_reader_projectinfo(self):
         source = join('test-cases', 'intro-reader', '01-projectinfo')
         build = join('test-cases', 'intro-reader', '01-projectinfo', 'builddir')
         meson: Meson = Meson(sourcedir=source, builddir=build)
@@ -383,7 +449,7 @@ class TestApiBuilddirReader:
         assert(info['version'] == '0.1')
         assert(info['subproject_dir'] == 'subprojects')
 
-    def test_buildoptions(self):
+    def test_reader_buildoptions(self):
         source = join('test-cases', 'intro-reader', '04-buildoptions')
         build = join('test-cases', 'intro-reader', '04-buildoptions', 'builddir')
         meson: Meson = Meson(sourcedir=source, builddir=build)
@@ -396,7 +462,7 @@ class TestApiBuilddirReader:
         assert(info[0]['name'] == 'auto_features')
         assert(info[0]['value'] == 'auto')
 
-    def test_meson_test(self):
+    def test_reader_meson_test(self):
         source = join('test-cases', 'intro-reader', '02-unittests')
         build = join('test-cases', 'intro-reader', '02-unittests', 'builddir')
         meson: Meson = Meson(sourcedir=source, builddir=build)
@@ -408,7 +474,7 @@ class TestApiBuilddirReader:
 
         assert(info[0]['name'] == 'basic unit test')
 
-    def test_benchmarks(self):
+    def test_reader_benchmarks(self):
         source = join('test-cases', 'intro-reader', '03-benchmarks')
         build = join('test-cases', 'intro-reader', '03-benchmarks', 'builddir')
         meson: Meson = Meson(sourcedir=source, builddir=build)
@@ -420,7 +486,7 @@ class TestApiBuilddirReader:
 
         assert(info[0]['name'] == 'basic benchmark')
 
-    def test_dependencies(self):
+    def test_reader_dependencies(self):
         source = join('test-cases', 'intro-reader', '05-dependencies')
         build = join('test-cases', 'intro-reader', '05-dependencies', 'builddir')
         meson: Meson = Meson(sourcedir=source, builddir=build)
@@ -432,7 +498,7 @@ class TestApiBuilddirReader:
 
         assert(info == [])
 
-    def test_scan_dependencies(self):
+    def test_reader_scan_dependencies(self):
         source = join('test-cases', 'intro-reader', '06-scan-dependencies')
         build = join('test-cases', 'intro-reader', '06-scan-dependencies', 'builddir')
         meson: Meson = Meson(sourcedir=source, builddir=build)
@@ -444,7 +510,7 @@ class TestApiBuilddirReader:
 
         assert(info == {})
 
-    def test_targets(self):
+    def test_reader_targets(self):
         source = join('test-cases', 'intro-reader', '07-targets')
         build = join('test-cases', 'intro-reader', '07-targets', 'builddir')
         meson: Meson = Meson(sourcedir=source, builddir=build)
@@ -458,7 +524,7 @@ class TestApiBuilddirReader:
         assert(info[0]['type'] == 'executable')
         assert(info[0]['id'] == 'prog@exe')
 
-    def test_install(self):
+    def test_reader_install(self):
         source = join('test-cases', 'intro-reader', '08-install')
         build = join('test-cases', 'intro-reader', '08-install', 'builddir')
         meson: Meson = Meson(sourcedir=source, builddir=build)
@@ -470,7 +536,7 @@ class TestApiBuilddirReader:
 
         assert(info == {})
 
-    def test_mesonbuild_files(self):
+    def test_reader_mesonbuild_files(self):
         source = Path(join('test-cases', 'intro-reader', '09-buildsystem_files'))
         build = Path(join('test-cases', 'intro-reader', '09-buildsystem_files', 'builddir'))
         meson: Meson = Meson(sourcedir=source, builddir=build)
@@ -482,7 +548,7 @@ class TestApiBuilddirReader:
         print(info)
         assert(info[0] == join(source.resolve(), 'meson.build'))
 
-    def test_api_bad_extract_method(self):
+    def test_reader_bad_extract_method(self):
         reader: MesonBuilddirReader = MesonBuilddirReader(None)
         with pytest.raises(Exception) as e:
             reader = reader.extract_from(group='not-a-key')
@@ -491,7 +557,7 @@ class TestApiBuilddirReader:
 
 class TestApiScriptScanner:
 
-    def test_projectinfo(self):
+    def test_script_projectinfo(self):
         script: MesonScriptReader = MesonScriptReader(join('test-cases', 'intro-scanner', '01-projectinfo'))
         info = script.extract_from(group='projectinfo')
 
@@ -499,7 +565,7 @@ class TestApiScriptScanner:
         assert(info['version'] == '0.1')
         assert(info['subproject_dir'] == 'subprojects')
 
-    def test_buildoptions(self):
+    def test_script_buildoptions(self):
         script: MesonScriptReader = MesonScriptReader(join('test-cases', 'intro-scanner', '04-buildoptions'))
         info = script.extract_from(group='buildoptions')
 
@@ -512,25 +578,25 @@ class TestApiScriptScanner:
 
         assert(info == {})
 
-    def test_benchmarks(self):
+    def test_script_benchmarks(self):
         script: MesonScriptReader = MesonScriptReader(join('test-cases', 'intro-scanner', '03-benchmarks'))
         info = script.extract_from(group='benchmarks')
 
         assert(info == {})
 
-    def test_api_dependencies(self):
+    def test_script_dependencies(self):
         script: MesonScriptReader = MesonScriptReader(join('test-cases', 'intro-scanner', '05-dependencies'))
         info = script.extract_from(group='dependencies')
 
         assert(info == [])
 
-    def test_api_scan_dependencies(self):
+    def test_script_scan_dependencies(self):
         script: MesonScriptReader = MesonScriptReader(join('test-cases', 'intro-scanner', '06-scan-dependencies'))
         info = script.extract_from(group='scan-dependencies')
 
         assert(info == [])
 
-    def test_api_targets(self):
+    def test_script_targets(self):
         script: MesonScriptReader = MesonScriptReader(join('test-cases', 'intro-scanner', '07-targets'))
         info = script.extract_from(group='targets')
 
@@ -538,19 +604,23 @@ class TestApiScriptScanner:
         assert(info[0]['type'] == 'executable')
         assert(info[0]['id'] == 'prog@exe')
 
-    def test_api_bad_extract_method(self):
+    def test_script_bad_extract_method(self):
         reader: MesonScriptReader = MesonScriptReader(None)
         with pytest.raises(Exception) as e:
             reader = reader.extract_from(group='not-a-key')
         assert('Group tag not-a-key not found in extract via data options!' == str(e.value))
 
 
-class MesonCacheConfig:
+class TestMesonCacheConfig:
     def test_core_configure(self):
         conf = MesonCoreConfig()
 
         for i in conf.meson_configure:
             assert(conf.meson_configure[i] is None)
+
+        with pytest.raises(MesonUiException) as e:
+            conf.extract()
+        assert('Meson cache failed do to "None" value found while loading value' == str(e.value))
 
     def test_base_configure(self):
         conf = MesonBaseConfig()
@@ -558,11 +628,19 @@ class MesonCacheConfig:
         for i in conf.meson_configure:
             assert(conf.meson_configure[i] is None)
 
+        with pytest.raises(MesonUiException) as e:
+            conf.extract()
+        assert('Meson cache failed do to "None" value found while loading value' == str(e.value))
+
     def test_path_configure(self):
         conf = MesonPathConfig()
 
         for i in conf.meson_configure:
             assert(conf.meson_configure[i] is None)
+
+        with pytest.raises(MesonUiException) as e:
+            conf.extract()
+        assert('Meson cache failed do to "None" value found while loading value' == str(e.value))
 
     def test_test_configure(self):
         conf = MesonTestConfig()
@@ -570,11 +648,19 @@ class MesonCacheConfig:
         for i in conf.meson_configure:
             assert(conf.meson_configure[i] is None)
 
+        with pytest.raises(MesonUiException) as e:
+            conf.extract()
+        assert('Meson cache failed do to "None" value found while loading value' == str(e.value))
+
     def test_init_configure(self):
         conf = MesonInitConfig()
 
         for i in conf.meson_configure:
             assert(conf.meson_configure[i] is None)
+
+        with pytest.raises(MesonUiException) as e:
+            conf.extract()
+        assert('Meson cache failed do to "None" value found while loading value' == str(e.value))
 
     def test_dist_configure(self):
         conf = MesonDistConfig()
@@ -582,11 +668,19 @@ class MesonCacheConfig:
         for i in conf.meson_configure:
             assert(conf.meson_configure[i] is None)
 
+        with pytest.raises(MesonUiException) as e:
+            conf.extract()
+        assert('Meson cache failed do to "None" value found while loading value' == str(e.value))
+
     def test_install_configure(self):
         conf = MesonInstallConfig()
 
         for i in conf.meson_configure:
             assert(conf.meson_configure[i] is None)
+
+        with pytest.raises(MesonUiException) as e:
+            conf.extract()
+        assert('Meson cache failed do to "None" value found while loading value' == str(e.value))
 
     def test_backend_configure(self):
         conf = MesonBackendConfig()
@@ -594,8 +688,124 @@ class MesonCacheConfig:
         for i in conf.meson_configure:
             assert(conf.meson_configure[i] is None)
 
+        with pytest.raises(MesonUiException) as e:
+            conf.extract()
+        assert('Meson cache failed do to "None" value found while loading value' == str(e.value))
 
-class MesonUiCacheSystem:
+    def test_core_configure_if_empty_option(self):
+        conf = MesonCoreConfig()
+
+        with pytest.raises(MesonUiException) as e:
+            conf.config('', 'some-value')
+        assert('Option key passed as empty string object' == str(e.value))
+
+    def test_base_configure_if_empty_option(self):
+        conf = MesonBaseConfig()
+
+        with pytest.raises(MesonUiException) as e:
+            conf.config('', 'some-value')
+        assert('Option key passed as empty string object' == str(e.value))
+
+    def test_path_configure_if_empty_option(self):
+        conf = MesonPathConfig()
+
+        with pytest.raises(MesonUiException) as e:
+            conf.config('', 'some-value')
+        assert('Option key passed as empty string object' == str(e.value))
+
+    def test_test_configure_if_empty_option(self):
+        conf = MesonTestConfig()
+
+        with pytest.raises(MesonUiException) as e:
+            conf.config('', 'some-value')
+        assert('Option key passed as empty string object' == str(e.value))
+
+    def test_init_configure_if_empty_option(self):
+        conf = MesonInitConfig()
+
+        with pytest.raises(MesonUiException) as e:
+            conf.config('', 'some-value')
+        assert('Option key passed as empty string object' == str(e.value))
+
+    def test_dist_configure_if_empty_option(self):
+        conf = MesonDistConfig()
+
+        with pytest.raises(MesonUiException) as e:
+            conf.config('', 'some-value')
+        assert('Option key passed as empty string object' == str(e.value))
+
+    def test_install_configure_if_empty_option(self):
+        conf = MesonInstallConfig()
+
+        with pytest.raises(MesonUiException) as e:
+            conf.config('', 'some-value')
+        assert('Option key passed as empty string object' == str(e.value))
+
+    def test_backend_configure_if_empty_option(self):
+        conf = MesonBackendConfig()
+
+        with pytest.raises(MesonUiException) as e:
+            conf.config('', 'some-value')
+        assert('Option key passed as empty string object' == str(e.value))
+
+    def test_core_configure_if_empty_value(self):
+        conf = MesonCoreConfig()
+
+        with pytest.raises(MesonUiException) as e:
+            conf.config('some-option', '')
+        assert('Value passed in as empty string object' == str(e.value))
+
+    def test_base_configure_if_empty_value(self):
+        conf = MesonBaseConfig()
+
+        with pytest.raises(MesonUiException) as e:
+            conf.config('some-option', '')
+        assert('Value passed in as empty string object' == str(e.value))
+
+    def test_path_configure_if_empty_value(self):
+        conf = MesonPathConfig()
+
+        with pytest.raises(MesonUiException) as e:
+            conf.config('some-option', '')
+        assert('Value passed in as empty string object' == str(e.value))
+
+    def test_test_configure_if_empty_value(self):
+        conf = MesonTestConfig()
+
+        with pytest.raises(MesonUiException) as e:
+            conf.config('some-option', '')
+        assert('Value passed in as empty string object' == str(e.value))
+
+    def test_init_configure_if_empty_value(self):
+        conf = MesonInitConfig()
+
+        with pytest.raises(MesonUiException) as e:
+            conf.config('some-option', '')
+        assert('Value passed in as empty string object' == str(e.value))
+
+    def test_dist_configure_if_empty_value(self):
+        conf = MesonDistConfig()
+
+        with pytest.raises(MesonUiException) as e:
+            conf.config('some-option', '')
+        assert('Value passed in as empty string object' == str(e.value))
+
+    def test_install_configure_if_empty_value(self):
+        conf = MesonInstallConfig()
+
+        with pytest.raises(MesonUiException) as e:
+            conf.config('some-option', '')
+        assert('Value passed in as empty string object' == str(e.value))
+
+    def test_backend_configure_if_empty_value(self):
+        conf = MesonBackendConfig()
+
+        with pytest.raises(MesonUiException) as e:
+            conf.config('some-option', '')
+        assert('Value passed in as empty string object' == str(e.value))
+
+
+class TestMesonUiCacheSystem:
     def test_mesonui_main_cache(self):
         cache = MesonUiCache()
         cache.init_cache()
@@ -629,3 +839,24 @@ class MesonUiCacheSystem:
 
         for i in values:
             assert(values[i] is not None)
+
+    def test_init_cache_give_exception(self):
+        cache = MesonUiInitCache()
+
+        with pytest.raises(MesonUiException) as e:
+            cache.get_cache()
+        assert('Meson cache failed do to "None" value found while loading value' == str(e.value))
+
+    def test_dist_cache_give_exception(self):
+        cache = MesonUiDistCache()
+
+        with pytest.raises(MesonUiException) as e:
+            cache.get_cache()
+        assert('Meson cache failed do to "None" value found while loading value' == str(e.value))
+
+    def test_install_cache_give_exception(self):
+        cache = MesonUiInstallCache()
+
+        with pytest.raises(MesonUiException) as e:
+            cache.get_cache()
+        assert('Meson cache failed do to "None" value found while loading value' == str(e.value))
