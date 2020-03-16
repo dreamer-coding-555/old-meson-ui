@@ -17,7 +17,6 @@ from mesonui.projectinfo import ProjectInfo
 from mesonui.authorinfo import ProjectAuthor
 from mesonui.mesonuilib.buildsystem import Meson
 import shutil
-import tempfile
 import logging
 
 logger = logging.getLogger(__name__)
@@ -216,6 +215,31 @@ class TestMeson:
         meson.setup()
         meson.compile()
         meson.clean()
+
+        #
+        # Run asserts to check it is working
+        assert tmpdir.join('meson.build').read() == BUILD_SCRIPT
+        assert tmpdir.join('meson.build').ensure()
+        assert tmpdir.join('builddir', 'build.ninja').ensure()
+        assert tmpdir.join('builddir', 'compile_commands.json').ensure()
+
+    def test_install_command(self, tmpdir):
+        #
+        # Setting up tmp test directory
+        with tmpdir.as_cwd():
+            pass
+        tmpdir.chdir()
+
+        #
+        # Running Meson command
+        meson: Meson = Meson(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
+
+        tmpdir.join('meson.build').write(BUILD_SCRIPT, ensure=True)
+        tmpdir.join('main.c').write(C_SOURCE_FILE, ensure=True)
+
+        meson.setup()
+        meson.compile()
+        print(meson.install())
 
         #
         # Run asserts to check it is working
