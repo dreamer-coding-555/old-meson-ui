@@ -27,13 +27,6 @@ This is the main exception class for Meson-UI
 class MesonUiExceptionType(Exception):
     '''Exceptions thrown by Meson-UI'''
 
-    def get_msg_with_context(self) -> T.AnyStr:
-        err_str = ''
-        if hasattr(self, 'lineno') and hasattr(self, 'file'):
-            err_str = f'{self.file}: {self.lineno}: '
-        err_str += str(self)
-        return err_str
-
 '''
 Exception classes for parts of both (Meson-UI, CMeson) apps
 '''
@@ -139,29 +132,6 @@ class CIUtility:
                 raise unittest.SkipTest('Git not found')
             return f(*args, **kwargs)
         return
-
-    def skip_if_no_cmake(self, f):
-        '''
-        Skip this test if no cmake is found, unless we're on CI.
-        This allows users to run our test suite without having
-        cmake installed on, f.ex., macOS, while ensuring that our CI does not
-        silently skip the test because of misconfiguration.
-        '''
-        @functools.wraps(f)
-        def wrapped(self, *args, **kwargs):
-            if not self.is_ci() and shutil.which('cmake') is None:
-                raise unittest.SkipTest('CMake not found')
-            return f(*args, **kwargs)
-        return
-
-
-def exe_exists(arglist: T.List[str]) -> bool:
-    try:
-        if subprocess.run(arglist, timeout=10).returncode == 0:
-            return True
-    except (FileNotFoundError, subprocess.TimeoutExpired):
-        pass
-    return False
 
 # a helper class which implements the same version ordering as RPM
 class Version:
