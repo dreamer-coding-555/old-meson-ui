@@ -45,9 +45,6 @@ Exception classes for other things like backends and cache
 class BackendException(MesonUiExceptionType):
     '''Exceptions thrown by Backend'''
 
-class CacheException(MesonUiExceptionType):
-    '''Exceptions thrown by Cache helpers'''
-
 
 class OSUtility:
     @staticmethod
