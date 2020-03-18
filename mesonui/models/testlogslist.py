@@ -20,7 +20,7 @@ class TestsLogsModel:
 
     def set_list(self, value) -> None:
         options = value.get_object(group='tests')
-        testlog = value.get_object(group='testlog', extract_method='loader')
+        testlog = value.get_object(group='testlog')
         if options is None or testlog is None:
             return
 

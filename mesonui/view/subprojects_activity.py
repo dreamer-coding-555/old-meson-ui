@@ -45,15 +45,16 @@ class SubprojectsActivity(QDialog, Ui_Activity_Wrap_Dialog):
 
     @pyqtSlot()
     def exec_download(self):
-        self.console.command_run(self._model.buildsystem().meson().subprojects().download([self.edit_wrap_item.text()]))
+        self.console.command_run(self._model.buildsystem().meson().subprojects().download(self.edit_wrap_item.text()))
 
     @pyqtSlot()
     def exec_checkout(self):
-        self.console.command_run(self._model.buildsystem().meson().subprojects().checkout([self.edit_wrap_item.text()]))
+        self.console.command_run(
+            self._model.buildsystem().meson().subprojects().checkout(self.entry_branch_item.text(), self.edit_wrap_item.text()))
 
     @pyqtSlot()
     def exec_update(self):
-        self.console.command_run(self._model.buildsystem().meson().subprojects().update([self.edit_wrap_item.text()]))
+        self.console.command_run(self._model.buildsystem().meson().subprojects().update(self.edit_wrap_item.text()))
 
     @pyqtSlot()
     def exec_ok(self):

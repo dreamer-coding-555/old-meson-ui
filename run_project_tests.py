@@ -14,12 +14,26 @@ from mesonui.packageinfo import PackageInfo
 from mesonui.projectinfo import ProjectInfo
 from mesonui.authorinfo import ProjectAuthor
 from mesonui.mesonuilib.buildsystem import Meson
+from os.path import join as join_paths
 import shutil
 import logging
+import os
 
 logger = logging.getLogger(__name__)
 sublogger = logging.getLogger(__name__ + ".log")
 
+TEST_WRAP: str = '''\
+[wrap-file]
+directory = sqlite-amalgamation-3080802
+
+source_url = http://sqlite.com/2015/sqlite-amalgamation-3080802.zip
+source_filename = sqlite-amalgamation-3080802.zip
+source_hash = 5ebeea0dfb75d090ea0e7ff84799b2a7a1550db3fe61eb5f6f61c2e971e57663
+
+patch_url = https://wrapdb.mesonbuild.com/v1/projects/sqlite/3080802/5/get_zip
+patch_filename = sqlite-3080802-5-wrap.zip
+patch_hash = d66469a73fa1344562d56a1d7627d5d0ee4044a77b32d16cf4bbb85741d4c9fd
+'''
 
 class TestPyPiPackageInfo:
     def test_all_pypi_info(self):
@@ -199,6 +213,7 @@ class TestMeson:
         meson.init(['--language=c', '--type=executable'])
         meson.setup(['--backend=ninja'])
         meson.compile()
+        meson.install()
 
         #
         # Run asserts to check it is working
@@ -275,6 +290,82 @@ class TestMeson:
         assert tmpdir.join('meson.build').ensure()
         assert tmpdir.join('builddir', 'build.ninja').ensure()
         assert tmpdir.join('builddir', 'compile_commands.json').ensure()
+
+    @pytest.mark.skipif(not shutil.which('git'), reason='Did not find "git" on this system')
+    def test_subproject_checkout_subcommand(self, tmpdir):
+        #
+        # Setting up tmp test directory
+        with tmpdir.as_cwd():
+            pass
+        tmpdir.chdir()
+
+        #
+        # Running Meson command
+        meson: Meson = Meson(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
+        meson.init(['--language=c', '--deps', 'samplesubproject'])
+        os.mkdir('subprojects')
+
+        tmpdir.join(join_paths('subprojects', 'samplesubproject.wrap')).write('''\
+        [wrap-git]
+        directory=samplesubproject
+        url=https://github.com/jpakkane/samplesubproject.git
+        revision=head
+        ''')
+
+        meson.subprojects().download('samplesubproject')
+        meson.subprojects().checkout('master', 'samplesubproject')
+
+        #
+        # Run asserts to check it is working
+        assert tmpdir.join('meson.build').ensure()
+        assert tmpdir.join('subprojects', 'samplesubproject.wrap').ensure()
+        assert tmpdir.join('subprojects', 'samplesubproject', '.gitignore').ensure()
+        assert tmpdir.join('subprojects', 'samplesubproject', 'README.md').ensure()
+
+    def test_subproject_update_subcommand(self, tmpdir):
+        #
+        # Setting up tmp test directory
+        with tmpdir.as_cwd():
+            pass
+        tmpdir.chdir()
+
+        #
+        # Running Meson command
+        meson: Meson = Meson(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
+        meson.init(['--language=c', '--deps', 'sqlite'])
+        os.mkdir('subprojects')
+
+        tmpdir.join(join_paths('subprojects', 'sqlite.wrap')).write(TEST_WRAP)
+
+        meson.subprojects().download('sqlite')
+        meson.subprojects().update('sqlite')
+
+        #
+        # Run asserts to check it is working
+        assert tmpdir.join('meson.build').ensure()
+        assert tmpdir.join('subprojects', 'sqlite.wrap').ensure()
+
+    def test_subproject_download_subcommand(self, tmpdir):
+        #
+        # Setting up tmp test directory
+        with tmpdir.as_cwd():
+            pass
+        tmpdir.chdir()
+
+        #
+        # Running Meson command
+        meson: Meson = Meson(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
+        meson.init(['--language=c', '--deps', 'sqlite'])
+        os.mkdir('subprojects')
+
+        tmpdir.join(join_paths('subprojects', 'sqlite.wrap')).write(TEST_WRAP)
+
+        meson.subprojects().download('sqlite')
+
+        #
+        # Run asserts to check it is working
+        assert tmpdir.join('meson.build').ensure()
+        assert tmpdir.join('subprojects', 'sqlite.wrap').ensure()
 
 
 class TestMesonBackend:
