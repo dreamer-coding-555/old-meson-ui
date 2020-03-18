@@ -272,6 +272,17 @@ class TestMesonAPI:
 
         assert(info is None)
 
+    def test_meson_api_scanner_testlogs_get_none(self):
+        source = join('test-cases', 'meson-api', '11-scan-testlog-null')
+        build = join('test-cases', 'meson-api', '11-scan-testlog-null', 'builddir')
+
+        script: MesonAPI = MesonAPI(sourcedir=source, builddir=build)
+        #
+        # Posable value of passing testlog will be None
+        info = script.get_object(group='testlog', extract_method='script')
+
+        assert(info is None)
+
     def test_meson_api_bad_extract_method(self):
         reader: MesonAPI = MesonAPI(None, None)
         with pytest.raises(Exception) as e:
