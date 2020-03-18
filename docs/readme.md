@@ -1,4 +1,4 @@
-# Meson Documentation
+# Meson-UI Documentation
 
 ## Build dependencies
 
@@ -13,8 +13,8 @@ Instructions on how to install hotdoc are [here](https://hotdoc.github.io/instal
 From the Meson-UI repository root dir:
 ```
 $ cd docs/
-$ meson built_docs
-$ ninja -C built_docs/
+$ meson setup built_docs
+$ meson compile -C built_docs/
 ```
 Now you should be able to open the documentation locally
 ```
