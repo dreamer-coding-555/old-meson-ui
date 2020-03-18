@@ -16,20 +16,17 @@ class MesonSubprojects:
         self._sourcedir: Path = sourcedir
         super().__init__()
 
-    def update(self, args):
-        run_cmd = ['meson', 'subprojects', 'update', '--sourcedir', str(self._sourcedir)]
-        run_cmd.extend(args)
+    def update(self, subproject):
+        run_cmd = ['meson', 'subprojects', 'update', subproject, '--sourcedir', str(self._sourcedir)]
         process = subprocess.Popen(run_cmd, encoding='utf8', stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         return process.communicate()[0]
 
-    def checkout(self, args):
-        run_cmd = ['meson', 'subprojects', 'checkout', '--sourcedir', str(self._sourcedir)]
-        run_cmd.extend(args)
+    def checkout(self, branch: str, subproject):
+        run_cmd = ['meson', 'subprojects', 'checkout', branch, subproject, '--sourcedir', str(self._sourcedir)]
         process = subprocess.Popen(run_cmd, encoding='utf8', stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         return process.communicate()[0]
 
-    def download(self, args):
-        run_cmd = ['meson', 'subprojects', 'download', '--sourcedir', str(self._sourcedir)]
-        run_cmd.extend(args)
+    def download(self, subproject):
+        run_cmd = ['meson', 'subprojects', 'download', subproject, '--sourcedir', str(self._sourcedir)]
         process = subprocess.Popen(run_cmd, encoding='utf8', stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         return process.communicate()[0]
