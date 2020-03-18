@@ -213,6 +213,7 @@ class TestMeson:
         meson.init(['--language=c', '--type=executable'])
         meson.setup(['--backend=ninja'])
         meson.compile()
+        meson.install()
 
         #
         # Run asserts to check it is working
