@@ -15,26 +15,22 @@ class MesonWrap:
         super().__init__()
 
     def update(self, wrap_args) -> None:
-        run_cmd = ['meson', 'wrap', 'update']
-        run_cmd.extend(wrap_args)
+        run_cmd = ['meson', 'wrap', 'update', wrap_args]
         process = subprocess.Popen(run_cmd, encoding='utf8', stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         return process.communicate()[0]
 
     def search(self, wrap_args) -> None:
-        run_cmd = ['meson', 'wrap', 'search']
-        run_cmd.extend(wrap_args)
+        run_cmd = ['meson', 'wrap', 'search', wrap_args]
         process = subprocess.Popen(run_cmd, encoding='utf8', stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         return process.communicate()[0]
 
     def info(self, wrap_args) -> None:
-        run_cmd = ['meson', 'wrap', 'info']
-        run_cmd.extend(wrap_args)
+        run_cmd = ['meson', 'wrap', 'info', wrap_args]
         process = subprocess.Popen(run_cmd, encoding='utf8', stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         return process.communicate()[0]
 
     def install(self, wrap_args) -> None:
-        run_cmd = ['meson', 'wrap', 'install']
-        run_cmd.extend(wrap_args)
+        run_cmd = ['meson', 'wrap', 'install', wrap_args]
         process = subprocess.Popen(run_cmd, encoding='utf8', stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         return process.communicate()[0]
 

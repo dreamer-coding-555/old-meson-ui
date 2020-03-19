@@ -51,19 +51,19 @@ class WrapActivity(QDialog, Ui_Activity_Wrap_Dialog):
 
     @pyqtSlot()
     def exec_search(self):
-        self.console.command_run(self._meson.wrap().search([self.edit_wrap_item.text()]))
+        self.console.command_run(self._meson.wrap().search(self.edit_wrap_item.text()))
 
     @pyqtSlot()
     def exec_install(self):
-        self._meson.wrap().install([self.edit_wrap_item.text()])
+        self._meson.wrap().install(self.edit_wrap_item.text())
 
     @pyqtSlot()
     def exec_update(self):
-        self.console.command_run(self._meson.wrap().update([self.edit_wrap_item.text()]))
+        self.console.command_run(self._meson.wrap().update(self.edit_wrap_item.text()))
 
     @pyqtSlot()
     def exec_info(self):
-        self.console.command_run(self._meson.wrap().info([self.edit_wrap_item.text()]))
+        self.console.command_run(self._meson.wrap().info(self.edit_wrap_item.text()))
 
     @pyqtSlot()
     def exec_ok(self):
