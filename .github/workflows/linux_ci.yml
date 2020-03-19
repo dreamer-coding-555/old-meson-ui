@@ -26,7 +26,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get --yes install xvfb
-        sudo xvfb-run python3 -m pip install --upgrade pip
+        sudo xvfb-run pip install --upgrade pip
         sudo xvfb-run pip install -r requirements.txt
         sudo xvfb-run pip install -r dev-requirements.txt
     - name: Lint with flake8
