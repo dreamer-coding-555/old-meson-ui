@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-
+    if: ! startsWith(github.event.commits[0].message, '[skip ci]')
     runs-on: windows-latest
     strategy:
       matrix:
