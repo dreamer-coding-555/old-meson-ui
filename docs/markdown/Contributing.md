@@ -136,6 +136,8 @@ different interfaces for indicating a commit should be skipped.
 Continuous integration systems currently used:
 - [Circle-CI](https://circleci.com/docs/2.0/skip-build/)
   allows `[skip ci]` in the commit message.
+- GitHub Actions
+  `meson-ui` actions check for `[skip ci]` in the commit message.
 - [Sider](https://sider.review)
   runs Flake8 ([see below](#python-coding-style))
 
