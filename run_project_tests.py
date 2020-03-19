@@ -16,11 +16,7 @@ from mesonui.authorinfo import ProjectAuthor
 from mesonui.mesonuilib.buildsystem import Meson
 from os.path import join as join_paths
 import shutil
-import logging
 import os
-
-logger = logging.getLogger(__name__)
-sublogger = logging.getLogger(__name__ + ".log")
 
 TEST_WRAP: str = '''\
 [wrap-file]
@@ -361,6 +357,136 @@ class TestMeson:
         tmpdir.join(join_paths('subprojects', 'sqlite.wrap')).write(TEST_WRAP)
 
         meson.subprojects().download('sqlite')
+
+        #
+        # Run asserts to check it is working
+        assert tmpdir.join('meson.build').ensure()
+        assert tmpdir.join('subprojects', 'sqlite.wrap').ensure()
+
+    def test_wrap_info_subcommand(self, tmpdir):
+        #
+        # Setting up tmp test directory
+        with tmpdir.as_cwd():
+            pass
+        tmpdir.chdir()
+
+        #
+        # Running Meson command
+        meson: Meson = Meson(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
+        meson.init(['--language=c', '--deps', 'sqlite'])
+        os.mkdir('subprojects')
+
+        tmpdir.join(join_paths('subprojects', 'sqlite.wrap')).write(TEST_WRAP)
+
+        meson.wrap().info('sqlite')
+
+        #
+        # Run asserts to check it is working
+        assert tmpdir.join('meson.build').ensure()
+        assert tmpdir.join('subprojects', 'sqlite.wrap').ensure()
+
+    def test_wrap_search_subcommand(self, tmpdir):
+        #
+        # Setting up tmp test directory
+        with tmpdir.as_cwd():
+            pass
+        tmpdir.chdir()
+
+        #
+        # Running Meson command
+        meson: Meson = Meson(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
+        meson.init(['--language=c', '--deps', 'sqlite'])
+        os.mkdir('subprojects')
+
+        tmpdir.join(join_paths('subprojects', 'sqlite.wrap')).write(TEST_WRAP)
+
+        meson.wrap().search('sqlite')
+
+        #
+        # Run asserts to check it is working
+        assert tmpdir.join('meson.build').ensure()
+        assert tmpdir.join('subprojects', 'sqlite.wrap').ensure()
+
+    def test_wrap_install_subcommand(self, tmpdir):
+        #
+        # Setting up tmp test directory
+        with tmpdir.as_cwd():
+            pass
+        tmpdir.chdir()
+
+        #
+        # Running Meson command
+        meson: Meson = Meson(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
+        meson.init(['--language=c', '--deps', 'sqlite'])
+        os.mkdir('subprojects')
+
+        meson.wrap().install('sqlite')
+
+        #
+        # Run asserts to check it is working
+        assert tmpdir.join('meson.build').ensure()
+        assert tmpdir.join('subprojects', 'sqlite.wrap').ensure()
+
+    def test_wrap_status_subcommand(self, tmpdir):
+        #
+        # Setting up tmp test directory
+        with tmpdir.as_cwd():
+            pass
+        tmpdir.chdir()
+
+        #
+        # Running Meson command
+        meson: Meson = Meson(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
+        meson.init(['--language=c', '--deps', 'sqlite'])
+        os.mkdir('subprojects')
+
+        tmpdir.join(join_paths('subprojects', 'sqlite.wrap')).write(TEST_WRAP)
+
+        meson.wrap().status()
+
+        #
+        # Run asserts to check it is working
+        assert tmpdir.join('meson.build').ensure()
+        assert tmpdir.join('subprojects', 'sqlite.wrap').ensure()
+
+    def test_wrap_update_subcommand(self, tmpdir):
+        #
+        # Setting up tmp test directory
+        with tmpdir.as_cwd():
+            pass
+        tmpdir.chdir()
+
+        #
+        # Running Meson command
+        meson: Meson = Meson(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
+        meson.init(['--language=c', '--deps', 'sqlite'])
+        os.mkdir('subprojects')
+
+        tmpdir.join(join_paths('subprojects', 'sqlite.wrap')).write(TEST_WRAP)
+
+        meson.wrap().update('sqlite')
+
+        #
+        # Run asserts to check it is working
+        assert tmpdir.join('meson.build').ensure()
+        assert tmpdir.join('subprojects', 'sqlite.wrap').ensure()
+
+    def test_wrap_list_subcommand(self, tmpdir):
+        #
+        # Setting up tmp test directory
+        with tmpdir.as_cwd():
+            pass
+        tmpdir.chdir()
+
+        #
+        # Running Meson command
+        meson: Meson = Meson(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
+        meson.init(['--language=c', '--deps', 'sqlite'])
+        os.mkdir('subprojects')
+
+        tmpdir.join(join_paths('subprojects', 'sqlite.wrap')).write(TEST_WRAP)
+
+        print(meson.wrap().list_wraps())
 
         #
         # Run asserts to check it is working

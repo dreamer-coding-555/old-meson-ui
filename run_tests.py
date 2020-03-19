@@ -11,7 +11,8 @@ from subprocess import check_call
 from subprocess import STDOUT
 
 
-cmd: list = ['pytest', '-v', '--cov=./',
+cmd: list = ['pytest', '-v',
+             '--cov=./',
              'run_unittests.py',
              'run_project_tests.py',
              'run_mesonui_tests.py']
