@@ -7,7 +7,9 @@
 # WARNING! All changes made in this file will be lost!
 
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore
+from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
 
 class Ui_Activity_Init_Dialog:
@@ -122,4 +124,8 @@ class Ui_Activity_Init_Dialog:
         self.info.setPlainText(_translate("Activity_Init_Dialog", "To make it easier for new developers to start working, Meson ships a tool to generate the basic setup of different kinds of projects. This functionality can be accessed with the meson init command.  Meson-UI supports this feature in the background:"))
         self.control_push_no_init.setText(_translate("Activity_Init_Dialog", "Don\'t Not Setup Yet"))
 
-from . import resource_rc
+try:
+    from . import resource_rc
+except ImportError:
+    print(f'Resource not found in UI layout Main')
+    print(f'Qt version {resource_rc.qt_version}')

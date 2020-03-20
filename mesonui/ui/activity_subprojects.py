@@ -7,7 +7,9 @@
 # WARNING! All changes made in this file will be lost!
 
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore
+from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
 
 class Ui_Activity_Wrap_Dialog(object):
@@ -96,4 +98,8 @@ class Ui_Activity_Wrap_Dialog(object):
         self.entry_branch_item.setPlaceholderText(_translate("Activity_Wrap_Dialog", "   branch name here"))
         self.label_branch.setText(_translate("Activity_Wrap_Dialog", "branch name:"))
 
-from . import resource_rc
+try:
+    from . import resource_rc
+except ImportError:
+    print(f'Resource not found in UI layout Main')
+    print(f'Qt version {resource_rc.qt_version}')

@@ -7,7 +7,9 @@
 # WARNING! All changes made in this file will be lost!
 
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore
+from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
 
 class Ui_Activity_Wrap_Dialog:
@@ -95,4 +97,8 @@ class Ui_Activity_Wrap_Dialog:
         self.control_push_search.setText(_translate("Activity_Wrap_Dialog", "Search"))
         self.output_console_dashboard.setTitle(_translate("Activity_Wrap_Dialog", "Output Console:"))
 
-from . import resource_rc
+try:
+    from . import resource_rc
+except ImportError:
+    print(f'Resource not found in UI layout Main')
+    print(f'Qt version {resource_rc.qt_version}')
