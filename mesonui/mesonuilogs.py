@@ -18,10 +18,9 @@ color = {
 }
 
 log_format = (
-    f'{color["bold"]} cat_log: {color["reset"]}'
+    f'{color["green"]} cat_log: {color["reset"]}'
     f'{color["blue"]} %(funcName)s - {color["reset"]}'
-    f'{color["bold"]} %(levelname)s: {color["reset"]}'
-    f'{color["green"]} %(message)s {color["reset"]}'
+    f'{color["bold"]} %(message)s {color["reset"]}'
 )
 
 #
