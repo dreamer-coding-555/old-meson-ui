@@ -587,10 +587,6 @@ class TestMeson:
 
 class TestMesonBackend:
 
-    #
-    # TODO: need to open my debian system to see if this is something
-    #       that can be fixed
-    @pytest.mark.skipif(OSUtility.is_linux(), reason='MesonAPI files not found on Linux for some reason')
     def test_kdevelop_backend(self, tmpdir):
         #
         # Setting up tmp test directory
@@ -605,7 +601,6 @@ class TestMesonBackend:
         meson.init(['--language=c'])
         meson.setup(['--backend=ninja'])
         api = MesonAPI(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
-        time.sleep(2)
         ide = KDevelopBackend(api)
         ide.generator()
 
@@ -616,7 +611,6 @@ class TestMesonBackend:
         assert tmpdir.join('builddir', 'compile_commands.json').ensure()
         assert tmpdir.join('builddir', 'test_kdevelop_backend0.kdev4').ensure()
 
-    @pytest.mark.skipif(OSUtility.is_linux(), reason='MesonAPI files not found on Linux for some reason')
     def test_codeblocks_backend(self, tmpdir):
         #
         # Setting up tmp test directory
@@ -631,7 +625,6 @@ class TestMesonBackend:
         meson.init(['--language=c'])
         meson.setup(['--backend=ninja'])
         api = MesonAPI(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
-        time.sleep(2)
         ide = CodeBlocksBackend(api)
         ide.generator()
 
@@ -642,7 +635,6 @@ class TestMesonBackend:
         assert tmpdir.join('builddir', 'compile_commands.json').ensure()
         assert tmpdir.join('builddir', 'test_codeblocks_backend0.cbp').ensure()
 
-    @pytest.mark.skipif(OSUtility.is_linux(), reason='MesonAPI files not found on Linux for some reason')
     def test_qtcreator_backend(self, tmpdir):
         #
         # Setting up tmp test directory
@@ -657,7 +649,6 @@ class TestMesonBackend:
         meson.init(['--language=c'])
         meson.setup(['--backend=ninja'])
         api = MesonAPI(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
-        time.sleep(2)
         ide = QtCreatorBackend(api)
         ide.generator()
 
@@ -665,6 +656,7 @@ class TestMesonBackend:
         # Run asserts to check it is working
         assert tmpdir.join('meson.build').ensure()
         assert tmpdir.join('builddir', 'build.ninja').ensure()
+        assert tmpdir.join('builddir', 'meson-info', 'intro-projectinfo.json').ensure()
         assert tmpdir.join('builddir', 'compile_commands.json').ensure()
         assert tmpdir.join('builddir', 'test_qtcreator_backend0.creator').ensure()
         assert tmpdir.join('builddir', 'test_qtcreator_backend0.includes').ensure()

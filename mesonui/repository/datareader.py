@@ -7,9 +7,8 @@
 #
 # copyright 2020 The Meson-UI development team
 #
-from subprocess import check_output
-from subprocess import STDOUT
 from pathlib import Path
+import subprocess
 import json
 
 
@@ -20,7 +19,8 @@ class MesonBuilddirReader:
     def _introspect(self, args: list) -> any:
         cmd: list = ['meson', 'introspect']
         cmd.extend(args)
-        return check_output(cmd, stderr=STDOUT)
+        proc = subprocess.Popen(cmd, encoding='utf8', stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        return proc.communicate()[0]
 
     def _scan(self, group: str) -> any:
         info: any = json.loads(self._introspect([group, '--force-object-output', str(self._builddir)]))
