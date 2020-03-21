@@ -14,8 +14,8 @@ from subprocess import STDOUT
 cmd: list = ['pytest', '-v',
              '--cov=./',
              'run_unittests.py',
-             'run_project_tests.py',
              'run_backend_tests.py',
+             'run_project_tests.py',
              'run_mesonui_tests.py']
 
 check_call(cmd, encoding='utf8', stderr=STDOUT)
