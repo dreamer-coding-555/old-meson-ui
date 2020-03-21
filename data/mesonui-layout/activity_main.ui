@@ -491,18 +491,18 @@
     <addaction name="action_open_sourcedir"/>
     <addaction name="action_clear_sourcedir"/>
     <addaction name="separator"/>
-    <addaction name="action_init"/>
-    <addaction name="action_setup"/>
-    <addaction name="action_build"/>
-    <addaction name="action_test"/>
-    <addaction name="action_conf"/>
-    <addaction name="action_dist"/>
-    <addaction name="action_install"/>
-    <addaction name="action_clean"/>
-    <addaction name="action_subprojects"/>
-    <addaction name="action_wraptools"/>
-    <addaction name="action_intro"/>
-    <addaction name="action_version"/>
+    <addaction name="action_meson_init"/>
+    <addaction name="action_meson_setup"/>
+    <addaction name="action_meson_build"/>
+    <addaction name="action_meson_test"/>
+    <addaction name="action_meson_conf"/>
+    <addaction name="action_meson_dist"/>
+    <addaction name="action_meson_install"/>
+    <addaction name="action_meson_clean"/>
+    <addaction name="action_meson_subprojects"/>
+    <addaction name="action_meson_wraptools"/>
+    <addaction name="action_meson_intro"/>
+    <addaction name="action_meson_version"/>
    </widget>
    <widget class="QMenu" name="menuhelp">
     <property name="title">
@@ -512,7 +512,19 @@
     <addaction name="action_meson_issue"/>
     <addaction name="action_mesonui_issue"/>
    </widget>
+   <widget class="QMenu" name="menu_ninja_commands">
+    <property name="title">
+     <string>Ninja commands</string>
+    </property>
+    <addaction name="action_ninja_build"/>
+    <addaction name="action_ninja_test"/>
+    <addaction name="action_ninja_dist"/>
+    <addaction name="action_ninja_install"/>
+    <addaction name="action_ninja_clean"/>
+    <addaction name="action_ninja_version"/>
+   </widget>
    <addaction name="menu_meson_actions"/>
+   <addaction name="menu_ninja_commands"/>
    <addaction name="menuhelp"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -536,57 +548,57 @@
     <string>Meson QnA</string>
    </property>
   </action>
-  <action name="action_init">
+  <action name="action_meson_init">
    <property name="text">
     <string>Init new project</string>
    </property>
   </action>
-  <action name="action_setup">
+  <action name="action_meson_setup">
    <property name="text">
     <string>Setup project</string>
    </property>
   </action>
-  <action name="action_build">
+  <action name="action_meson_build">
    <property name="text">
-    <string>Build project</string>
+    <string>Compile project</string>
    </property>
   </action>
-  <action name="action_test">
+  <action name="action_meson_test">
    <property name="text">
     <string>Run tests</string>
    </property>
   </action>
-  <action name="action_conf">
+  <action name="action_meson_conf">
    <property name="text">
     <string>Configure project</string>
    </property>
   </action>
-  <action name="action_dist">
+  <action name="action_meson_dist">
    <property name="text">
     <string>Generate release</string>
    </property>
   </action>
-  <action name="action_install">
+  <action name="action_meson_install">
    <property name="text">
     <string>Install project</string>
    </property>
   </action>
-  <action name="action_clean">
+  <action name="action_meson_clean">
    <property name="text">
     <string>Clean builddir</string>
    </property>
   </action>
-  <action name="action_wraptools">
+  <action name="action_meson_wraptools">
    <property name="text">
     <string>Wrap tools</string>
    </property>
   </action>
-  <action name="action_intro">
+  <action name="action_meson_intro">
    <property name="text">
     <string>Introspection refresh</string>
    </property>
   </action>
-  <action name="action_version">
+  <action name="action_meson_version">
    <property name="text">
     <string>Version</string>
    </property>
@@ -606,7 +618,7 @@
     <string>Clear sourcedir</string>
    </property>
   </action>
-  <action name="action_subprojects">
+  <action name="action_meson_subprojects">
    <property name="text">
     <string>Subprojects</string>
    </property>
@@ -636,6 +648,36 @@
    </property>
    <property name="text">
     <string>Meson-UI issue</string>
+   </property>
+  </action>
+  <action name="action_ninja_build">
+   <property name="text">
+    <string>Build project</string>
+   </property>
+  </action>
+  <action name="action_ninja_test">
+   <property name="text">
+    <string>Run tests</string>
+   </property>
+  </action>
+  <action name="action_ninja_dist">
+   <property name="text">
+    <string>Generate release</string>
+   </property>
+  </action>
+  <action name="action_ninja_install">
+   <property name="text">
+    <string>Install project</string>
+   </property>
+  </action>
+  <action name="action_ninja_clean">
+   <property name="text">
+    <string>Clean project</string>
+   </property>
+  </action>
+  <action name="action_ninja_version">
+   <property name="text">
+    <string>Version</string>
    </property>
   </action>
  </widget>
