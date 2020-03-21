@@ -598,7 +598,8 @@ class TestMesonBackend:
 
         meson.init(['--language=c'])
         meson.setup(['--backend=ninja'])
-        ide = KDevelopBackend(MesonAPI(sourcedir=tmpdir, builddir=(tmpdir / 'builddir')))
+        api = MesonAPI(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
+        ide = KDevelopBackend(api)
         ide.generator()
 
         #
@@ -621,7 +622,8 @@ class TestMesonBackend:
 
         meson.init(['--language=c'])
         meson.setup(['--backend=ninja'])
-        ide = CodeBlocksBackend(MesonAPI(sourcedir=tmpdir, builddir=(tmpdir / 'builddir')))
+        api = MesonAPI(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
+        ide = CodeBlocksBackend(api)
         ide.generator()
 
         #
@@ -644,7 +646,8 @@ class TestMesonBackend:
 
         meson.init(['--language=c'])
         meson.setup(['--backend=ninja'])
-        ide = QtCreatorBackend(MesonAPI(sourcedir=tmpdir, builddir=(tmpdir / 'builddir')))
+        api = MesonAPI(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
+        ide = QtCreatorBackend(api)
         ide.generator()
 
         #
