@@ -8,21 +8,15 @@
 # copyright 2020 The Meson-UI development team
 #
 import pytest
-from mesonui.mesonuilib.utilitylib import OSUtility
 from mesonui.mesonuilib.utilitylib import CIUtility
 from mesonui.packageinfo import PackageInfo
 from mesonui.projectinfo import ProjectInfo
 from mesonui.authorinfo import ProjectAuthor
 from mesonui.mesonuilib.buildsystem import Meson
 from mesonui.mesonuilib.buildsystem import Ninja
-from mesonui.mesonuilib.backends.codeblocks import CodeBlocksBackend
-from mesonui.mesonuilib.backends.qtcreator import QtCreatorBackend
-from mesonui.mesonuilib.backends.kdevelop import KDevelopBackend
 
-from mesonui.repository.mesonapi import MesonAPI
 from os.path import join as join_paths
 import shutil
-import time
 import os
 
 TEST_WRAP: str = '''\
@@ -577,152 +571,9 @@ class TestMeson:
 
         tmpdir.join(join_paths('subprojects', 'sqlite.wrap')).write(TEST_WRAP)
 
-        print(meson.wrap().list_wraps())
+        meson.wrap().list_wraps()
 
         #
         # Run asserts to check it is working
         assert tmpdir.join('meson.build').ensure()
         assert tmpdir.join('subprojects', 'sqlite.wrap').ensure()
-
-
-class TestMesonBackend:
-
-    def test_kdevelop_backend(self, tmpdir):
-        #
-        # Setting up tmp test directory
-        with tmpdir.as_cwd():
-            pass
-        tmpdir.chdir()
-
-        #
-        # Running Meson command
-        meson: Meson = Meson(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
-
-        meson.init(['--language=c'])
-        meson.setup(['--backend=ninja'])
-        api = MesonAPI(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
-        ide = KDevelopBackend(api)
-        ide.generator()
-
-        #
-        # Run asserts to check it is working
-        assert tmpdir.join('meson.build').ensure()
-        assert tmpdir.join('builddir', 'build.ninja').ensure()
-        assert tmpdir.join('builddir', 'compile_commands.json').ensure()
-        assert tmpdir.join('builddir', 'test_kdevelop_backend0.kdev4').ensure()
-
-    def test_codeblocks_backend(self, tmpdir):
-        #
-        # Setting up tmp test directory
-        with tmpdir.as_cwd():
-            pass
-        tmpdir.chdir()
-
-        #
-        # Running Meson command
-        meson: Meson = Meson(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
-
-        meson.init(['--language=c'])
-        meson.setup(['--backend=ninja'])
-        api = MesonAPI(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
-        ide = CodeBlocksBackend(api)
-        ide.generator()
-
-        #
-        # Run asserts to check it is working
-        assert tmpdir.join('meson.build').ensure()
-        assert tmpdir.join('builddir', 'build.ninja').ensure()
-        assert tmpdir.join('builddir', 'compile_commands.json').ensure()
-        assert tmpdir.join('builddir', 'test_codeblocks_backend0.cbp').ensure()
-
-    def test_qtcreator_backend(self, tmpdir):
-        #
-        # Setting up tmp test directory
-        with tmpdir.as_cwd():
-            pass
-        tmpdir.chdir()
-
-        #
-        # Running Meson command
-        meson: Meson = Meson(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
-
-        meson.init(['--language=c'])
-        meson.setup(['--backend=ninja'])
-        api = MesonAPI(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
-        ide = QtCreatorBackend(api)
-        ide.generator()
-
-        #
-        # Run asserts to check it is working
-        assert tmpdir.join('meson.build').ensure()
-        assert tmpdir.join('builddir', 'build.ninja').ensure()
-        assert tmpdir.join('builddir', 'meson-info', 'intro-projectinfo.json').ensure()
-        assert tmpdir.join('builddir', 'compile_commands.json').ensure()
-        assert tmpdir.join('builddir', 'test_qtcreator_backend0.creator').ensure()
-        assert tmpdir.join('builddir', 'test_qtcreator_backend0.includes').ensure()
-        assert tmpdir.join('builddir', 'test_qtcreator_backend0.files').ensure()
-
-    def test_ninja_backend(self, tmpdir):
-        #
-        # Setting up tmp test directory
-        with tmpdir.as_cwd():
-            pass
-        tmpdir.chdir()
-
-        #
-        # Running Meson command
-        meson: Meson = Meson(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
-
-        meson.init(['--language=c'])
-        meson.setup(['--backend=ninja'])
-
-        #
-        # Run asserts to check it is working
-        assert tmpdir.join('meson.build').ensure()
-        assert tmpdir.join('builddir', 'build.ninja').ensure()
-        assert tmpdir.join('builddir', 'compile_commands.json').ensure()
-
-    @pytest.mark.skipif(not OSUtility.is_osx(), reason='Skipping because Xcode backend only works on OSX systems')
-    def test_xcode_backend(self, tmpdir):
-        #
-        # Setting up tmp test directory
-        with tmpdir.as_cwd():
-            pass
-        tmpdir.chdir()
-
-        #
-        # Running Meson command
-        meson: Meson = Meson(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
-
-        meson.init(['--language=c', '--type=executable'])
-        meson.setup(['--backend=xcode'])
-        meson.compile()
-        meson.test()
-
-        #
-        # Run asserts to check it is working
-        assert tmpdir.join('meson.build').ensure()
-        assert tmpdir.join('builddir', 'build.ninja').ensure()
-        assert tmpdir.join('builddir', 'compile_commands.json').ensure()
-        assert tmpdir.join('builddir', 'test-prog.xcodeproj', 'project.pbxproj').ensure()
-
-    @pytest.mark.skipif(not OSUtility.is_windows(), reason='Skipping because Visual Studio backend only works on Windows')
-    def test_vs_backend(self, tmpdir):
-        #
-        # Setting up tmp test directory
-        with tmpdir.as_cwd():
-            pass
-        tmpdir.chdir()
-
-        #
-        # Running Meson command
-        meson: Meson = Meson(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
-
-        meson.init(['--language=c'])
-        meson.setup(['--backend=vs'])
-
-        #
-        # Run asserts to check it is working
-        assert tmpdir.join('meson.build').ensure()
-        assert tmpdir.join('builddir', 'build.ninja').ensure()
-        assert tmpdir.join('builddir', 'compile_commands.json').ensure()
