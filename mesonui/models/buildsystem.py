@@ -8,12 +8,17 @@
 # copyright 2020 The Meson-UI development team
 #
 from ..mesonuilib.buildsystem import Meson
+from ..mesonuilib.buildsystem import Ninja
 
 
 class BuildSystemModel:
     def __init__(self):
         super().__init__()
         self._meson: Meson = Meson()
+        self._ninja: Ninja = Ninja()
 
     def meson(self) -> Meson:
         return self._meson
+
+    def ninja(self) -> Ninja:
+        return self._ninja
