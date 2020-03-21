@@ -97,7 +97,7 @@ class TestSetupActivity:
 
 class TestConfigureActivity:
     def test_is_renderable(self, qtbot):
-        activity = ConfigureActivity(MainModel())
+        activity = ConfigureActivity(None, MainModel())
         qtbot.addWidget(activity)
 
     def test_do_configure_prog(self, qtbot, tmpdir):
