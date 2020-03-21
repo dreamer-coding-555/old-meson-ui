@@ -22,6 +22,7 @@ from mesonui.mesonuilib.backends.kdevelop import KDevelopBackend
 from mesonui.repository.mesonapi import MesonAPI
 from os.path import join as join_paths
 import shutil
+import time
 import os
 
 TEST_WRAP: str = '''\
@@ -599,6 +600,7 @@ class TestMesonBackend:
         meson.init(['--language=c'])
         meson.setup(['--backend=ninja'])
         api = MesonAPI(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
+        time.sleep(2)
         ide = KDevelopBackend(api)
         ide.generator()
 
@@ -623,6 +625,7 @@ class TestMesonBackend:
         meson.init(['--language=c'])
         meson.setup(['--backend=ninja'])
         api = MesonAPI(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
+        time.sleep(2)
         ide = CodeBlocksBackend(api)
         ide.generator()
 
@@ -647,6 +650,7 @@ class TestMesonBackend:
         meson.init(['--language=c'])
         meson.setup(['--backend=ninja'])
         api = MesonAPI(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
+        time.sleep(2)
         ide = QtCreatorBackend(api)
         ide.generator()
 

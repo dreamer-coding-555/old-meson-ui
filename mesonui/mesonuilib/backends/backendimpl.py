@@ -11,12 +11,12 @@
 
 class BackendImpl:
     def __init__(self, meson_api):
-        self._projectinfo = meson_api.get_object(group='projectinfo', extract_method='reader')
-        self._targetsinfo = meson_api.get_object(group='targets', extract_method='reader')
+        self._projectinfo = meson_api.get_object(group='projectinfo', extract_method='loader')
+        self._targetsinfo = meson_api.get_object(group='targets', extract_method='loader')
         self._mesoninfo = meson_api.get_object(group='meson-info', extract_method='loader')
-        self._testinfo = meson_api.get_object(group='tests', extract_method='reader')
-        self._buildfiles = meson_api.get_object(group='buildsystem-files', extract_method='reader')
-        self._buildoptions = meson_api.get_object(group='buildoptions', extract_method='reader')
+        self._testinfo = meson_api.get_object(group='tests', extract_method='loader')
+        self._buildfiles = meson_api.get_object(group='buildsystem-files', extract_method='loader')
+        self._buildoptions = meson_api.get_object(group='buildoptions', extract_method='loader')
 
     def generator(self):
         raise NotImplementedError('Backend "generator" method not implmented!')
