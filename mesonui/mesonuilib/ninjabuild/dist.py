@@ -11,12 +11,13 @@ from pathlib import Path
 import subprocess
 
 
-class MesonClean:
+class NinjaDist:
     def __init__(self, builddir: Path):
         self._builddir: Path = builddir
         super().__init__()
 
-    def run(self):
-        run_cmd = ['meson', 'compile', '--clean', '-C', str(self._builddir)]
+    def run(self, args: list = []):
+        run_cmd = ['ninja', 'dist', '-C', str(self._builddir)]
+        run_cmd.extend(args)
         process = subprocess.Popen(run_cmd, encoding='utf8', stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         return process.communicate()[0]

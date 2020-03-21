@@ -8,12 +8,13 @@
 # copyright 2020 The Meson-UI development team
 #
 import pytest
-from mesonui.mesonuilib.utilitylib import OSUtility
 from mesonui.mesonuilib.utilitylib import CIUtility
 from mesonui.packageinfo import PackageInfo
 from mesonui.projectinfo import ProjectInfo
 from mesonui.authorinfo import ProjectAuthor
 from mesonui.mesonuilib.buildsystem import Meson
+from mesonui.mesonuilib.buildsystem import Ninja
+
 from os.path import join as join_paths
 import shutil
 import os
@@ -54,6 +55,89 @@ class TestPyPiPackageInfo:
         assert(pypi.get_description() == 'Meson-UI is a build GUI for Meson build system.')
 
 
+class TestNinja:
+
+    def test_change_sourcedir(self):
+        ninja = Ninja('test/dir/one', 'test/dir/one/builddir')
+
+        assert(ninja.sourcedir == 'test/dir/one')
+        assert(ninja.builddir == 'test/dir/one/builddir')
+
+        ninja.sourcedir = 'test/dir/two'
+        ninja.builddir = 'test/dir/two/builddir'
+
+        assert(ninja.sourcedir == 'test/dir/two')
+        assert(ninja.builddir == 'test/dir/two/builddir')
+
+    def test_build_command(self, tmpdir):
+        #
+        # Setting up tmp test directory
+        with tmpdir.as_cwd():
+            pass
+        tmpdir.chdir()
+
+        #
+        # Running Meson command
+        meson: Meson = Meson(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
+        ninja: Ninja = Ninja(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
+
+        meson.init(['--language=c', '--type=executable'])
+        meson.setup(['--backend=ninja'])
+        ninja.build()
+
+        #
+        # Run asserts to check it is working
+        assert tmpdir.join('meson.build').ensure()
+        assert tmpdir.join('builddir', 'build.ninja').ensure()
+        assert tmpdir.join('builddir', 'compile_commands.json').ensure()
+
+    def test_clean_command(self, tmpdir):
+        #
+        # Setting up tmp test directory
+        with tmpdir.as_cwd():
+            pass
+        tmpdir.chdir()
+
+        #
+        # Running Meson command
+        meson: Meson = Meson(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
+        ninja: Ninja = Ninja(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
+
+        meson.init(['--language=c', '--type=executable'])
+        meson.setup(['--backend=ninja'])
+        ninja.build()
+        ninja.clean()
+
+        #
+        # Run asserts to check it is working
+        assert tmpdir.join('meson.build').ensure()
+        assert tmpdir.join('builddir', 'build.ninja').ensure()
+        assert tmpdir.join('builddir', 'compile_commands.json').ensure()
+
+    def test_ninja_test_command(self, tmpdir):
+        #
+        # Setting up tmp test directory
+        with tmpdir.as_cwd():
+            pass
+        tmpdir.chdir()
+
+        #
+        # Running Meson command
+        meson: Meson = Meson(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
+        ninja: Ninja = Ninja(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
+
+        meson.init(['--language=c', '--type=executable'])
+        meson.setup(['--backend=ninja'])
+        ninja.build()
+        ninja.test()
+
+        #
+        # Run asserts to check it is working
+        assert tmpdir.join('meson.build').ensure()
+        assert tmpdir.join('builddir', 'build.ninja').ensure()
+        assert tmpdir.join('builddir', 'compile_commands.json').ensure()
+
+
 class TestMeson:
 
     def test_change_sourcedir(self):
@@ -77,15 +161,16 @@ class TestMeson:
 
         #
         # Running Meson command
-        meson: Meson = Meson(sourcedir=(tmpdir / 'meson-tmp'), builddir=(tmpdir / 'meson-tmp', 'builddir'))
+        meson: Meson = Meson(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
 
         meson.init(['--language=c', '--type=executable'])
         meson.setup(['--backend=ninja'])
 
         #
         # Run asserts to check it is working
-        assert tmpdir.join('meson-tmp', 'meson.build').ensure()
-        assert tmpdir.join('meson-tmp', 'builddir').ensure()
+        assert tmpdir.join('meson.build').ensure()
+        assert tmpdir.join('builddir', 'build.ninja').ensure()
+        assert tmpdir.join('builddir', 'compile_commands.json').ensure()
 
     def test_build_command(self, tmpdir):
         #
@@ -486,77 +571,9 @@ class TestMeson:
 
         tmpdir.join(join_paths('subprojects', 'sqlite.wrap')).write(TEST_WRAP)
 
-        print(meson.wrap().list_wraps())
+        meson.wrap().list_wraps()
 
         #
         # Run asserts to check it is working
         assert tmpdir.join('meson.build').ensure()
         assert tmpdir.join('subprojects', 'sqlite.wrap').ensure()
-
-
-class TestMesonBackend:
-
-    def test_ninjabackend(self, tmpdir):
-        #
-        # Setting up tmp test directory
-        with tmpdir.as_cwd():
-            pass
-        tmpdir.chdir()
-
-        #
-        # Running Meson command
-        meson: Meson = Meson(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
-
-        meson.init(['--language=c'])
-        meson.setup(['--backend=ninja'])
-
-        #
-        # Run asserts to check it is working
-        assert tmpdir.join('meson.build').ensure()
-        assert tmpdir.join('builddir', 'build.ninja').ensure()
-        assert tmpdir.join('builddir', 'compile_commands.json').ensure()
-
-    @pytest.mark.skipif(not OSUtility.is_osx(), reason='Skipping because Xcode backend only works on OSX systems')
-    def test_xcode_backend(self, tmpdir):
-        #
-        # Setting up tmp test directory
-        with tmpdir.as_cwd():
-            pass
-        tmpdir.chdir()
-
-        #
-        # Running Meson command
-        meson: Meson = Meson(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
-
-        meson.init(['--language=c', '--type=executable'])
-        meson.setup(['--backend=xcode'])
-        meson.compile()
-        meson.test()
-
-        #
-        # Run asserts to check it is working
-        assert tmpdir.join('meson.build').ensure()
-        assert tmpdir.join('builddir', 'build.ninja').ensure()
-        assert tmpdir.join('builddir', 'compile_commands.json').ensure()
-        assert tmpdir.join('builddir', 'test-prog.xcodeproj', 'project.pbxproj').ensure()
-
-    @pytest.mark.skipif(not OSUtility.is_windows(), reason='Skipping because Visual Studio backend only works on Windows')
-    def test_vsbackend(self, tmpdir):
-        #
-        # Setting up tmp test directory
-        with tmpdir.as_cwd():
-            pass
-        tmpdir.chdir()
-
-        #
-        # Running Meson command
-        meson: Meson = Meson(sourcedir=tmpdir, builddir=(tmpdir / 'builddir'))
-
-        meson.init(['--language=c'])
-        meson.setup(['--backend=vs'])
-
-        #
-        # Run asserts to check it is working
-        assert tmpdir.join('meson.build').ensure()
-        assert tmpdir.join('builddir', 'build.ninja').ensure()
-        assert tmpdir.join('builddir', 'compile_commands.json').ensure()

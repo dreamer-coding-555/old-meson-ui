@@ -7,7 +7,9 @@
 # WARNING! All changes made in this file will be lost!
 
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore
+from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
 
 class Ui_Activity_Dist_Dialog:
@@ -106,4 +108,8 @@ class Ui_Activity_Dist_Dialog:
         self.control_push_do_install.setText(_translate("Activity_Dist_Dialog", "Install Project"))
         self.control_push_no_install.setText(_translate("Activity_Dist_Dialog", "Don\'t Not Install"))
 
-from . import resource_rc
+try:
+    from . import resource_rc
+except ImportError:
+    print(f'Resource not found in UI layout Main')
+    print(f'Qt version {resource_rc.qt_version}')

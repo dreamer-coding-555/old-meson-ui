@@ -11,7 +11,7 @@ from pathlib import Path
 import subprocess
 
 
-class MesonBuild:
+class NinjaBuild:
     def __init__(self, builddir: Path):
         self._builddir: Path = builddir
         super().__init__()

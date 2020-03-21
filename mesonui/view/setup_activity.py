@@ -17,7 +17,9 @@ from ..mesonuilib.coredata import default_base
 from ..mesonuilib.coredata import default_test
 from ..mesonuilib.coredata import default_path
 from ..mesonuilib.coredata import default_backend
+from ..mesonuilib.backend import backend_factory
 from ..mesonuilib.utilitylib import OSUtility
+from ..repository.mesonapi import MesonAPI
 from ..models.appmodel import MainModel
 from ..mesonuitheme import MesonUiTheme
 from ..containers.stack import MesonUiStack
@@ -26,6 +28,8 @@ from pathlib import Path
 import logging
 
 from ..ui.activity_setup import Ui_Activity_Setup_Dialog
+
+MESON_BACKENDS = ['xcode', 'ninja', 'vs2010', 'vs2015', 'vs2017', 'vs2019']
 
 
 class SetupActivity(QDialog, Ui_Activity_Setup_Dialog):
@@ -55,6 +59,10 @@ class SetupActivity(QDialog, Ui_Activity_Setup_Dialog):
         self.control_push_no_setup.clicked.connect(lambda: self.exec_no_setup())
         self.control_push_do_setup.clicked.connect(lambda: self.exec_do_setup())
         self.control_push_do_update.clicked.connect(lambda: self.exec_do_update())
+        self.meson_api: MesonAPI = MesonAPI(
+            self._model.buildsystem().meson().sourcedir,
+            self._model.buildsystem().meson().builddir
+        )
 
         self._cache.init_cache()
         self._cache_default()
@@ -109,7 +117,14 @@ class SetupActivity(QDialog, Ui_Activity_Setup_Dialog):
         if self._console is None:
             return
         else:
-            self._console.command_run(str(self._model.buildsystem().meson().setup(args=args)))
+            if self.combo_backend.currentText() in MESON_BACKENDS:
+                self._console.command_run(str(self._model.buildsystem().meson().setup(args=args)))
+            else:
+                args.remove(f'--backend={self.combo_backend.currentText()}')
+                args.append('--backend=ninja')
+                self._console.command_run(str(self._model.buildsystem().meson().setup(args=args)))
+                ide = backend_factory(self.combo_backend.currentText(), self.meson_api)
+                ide.generator()
 
     def _cache_parser(self, meson_args: MesonUiStack) -> None:
         '''

@@ -32,4 +32,6 @@ class ProjectInfo:
                 'mesonui.view',
                 'mesonui.ui',
                 'mesonui.mesonuilib.appconfig',
+                'mesonui.mesonuilib.backends',
+                'mesonui.mesonuilib.ninjabuild',
                 'mesonui.mesonuilib.mesonbuild']

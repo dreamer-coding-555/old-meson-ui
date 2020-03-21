@@ -86,18 +86,25 @@ class MainActivity(QMainWindow, Ui_Activity_Main_Window):
         self.actionMeson_QnA.triggered.connect(lambda: self.onclick_faqs())
         self.actionMeson_docs.triggered.connect(lambda: self.onclick_docs())
 
-        self.action_subprojects.triggered.connect(lambda: self.exec_subprojects())
-        self.action_wraptools.triggered.connect(lambda: self.exec_wrap())
-        self.action_version.triggered.connect(lambda: self.exec_version())
-        self.action_install.triggered.connect(lambda: self.exec_install())
-        self.action_intro.triggered.connect(lambda: self.exec_introspect())
-        self.action_setup.triggered.connect(lambda: self.exec_setup())
-        self.action_build.triggered.connect(lambda: self.exec_build())
-        self.action_clean.triggered.connect(lambda: self.exec_clean())
-        self.action_conf.triggered.connect(lambda: self.exec_conf())
-        self.action_dist.triggered.connect(lambda: self.exec_dist())
-        self.action_init.triggered.connect(lambda: self.exec_init())
-        self.action_test.triggered.connect(lambda: self.exec_test())
+        self.action_meson_subprojects.triggered.connect(lambda: self.exec_subprojects())
+        self.action_meson_wraptools.triggered.connect(lambda: self.exec_wrap())
+        self.action_meson_version.triggered.connect(lambda: self.exec_version())
+        self.action_meson_install.triggered.connect(lambda: self.exec_install())
+        self.action_meson_intro.triggered.connect(lambda: self.exec_introspect())
+        self.action_meson_setup.triggered.connect(lambda: self.exec_setup())
+        self.action_meson_build.triggered.connect(lambda: self.exec_compile())
+        self.action_meson_clean.triggered.connect(lambda: self.exec_clean())
+        self.action_meson_conf.triggered.connect(lambda: self.exec_conf())
+        self.action_meson_dist.triggered.connect(lambda: self.exec_dist())
+        self.action_meson_init.triggered.connect(lambda: self.exec_init())
+        self.action_meson_test.triggered.connect(lambda: self.exec_test())
+
+        self.action_ninja_version.triggered.connect(lambda: self._model.buildsystem().ninja().version())
+        self.action_ninja_install.triggered.connect(lambda: self._model.buildsystem().ninja().install())
+        self.action_ninja_build.triggered.connect(lambda: self._model.buildsystem().ninja().build())
+        self.action_ninja_clean.triggered.connect(lambda: self._model.buildsystem().ninja().clean())
+        self.action_ninja_dist.triggered.connect(lambda: self._model.buildsystem().ninja().dist())
+        self.action_ninja_test.triggered.connect(lambda: self._model.buildsystem().ninja().test())
 
         self.meson_api: MesonAPI = MesonAPI(str(self.get_sourcedir()), str(self.get_builddir()))
         self.console: OutputConsole = OutputConsole(self)
@@ -273,6 +280,8 @@ class MainActivity(QMainWindow, Ui_Activity_Main_Window):
         if source_root != '':
             self._model.buildsystem().meson().sourcedir = source_root
             self._model.buildsystem().meson().builddir = join(source_root, 'builddir')
+            self._model.buildsystem().ninja().sourcedir = source_root
+            self._model.buildsystem().ninja().builddir = join(source_root, 'builddir')
             self.project_sourcedir.setText(str(self._model.buildsystem().meson().sourcedir))
             self.project_builddir.setText(str(self._model.buildsystem().meson().builddir))
         else:

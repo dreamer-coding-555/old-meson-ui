@@ -23,7 +23,7 @@ class MesonBuilddirLoader:
                 return None
         else:
             subdir = 'meson-info'
-        with open(Path(join(self._builddir, subdir, group))) as loaded_json:
+        with open(join(self._builddir, subdir, group)) as loaded_json:
             info: any = json.loads(loaded_json.read())
         return info
 

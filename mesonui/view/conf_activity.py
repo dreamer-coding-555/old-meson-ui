@@ -17,25 +17,30 @@ from ..mesonuilib.coredata import default_base
 from ..mesonuilib.coredata import default_test
 from ..mesonuilib.coredata import default_path
 from ..mesonuilib.coredata import default_backend
+from ..mesonuilib.backend import backend_factory
 from ..mesonuilib.utilitylib import OSUtility
+from ..repository.mesonapi import MesonAPI
 from ..models.appmodel import MainModel
 from ..mesonuitheme import MesonUiTheme
 from ..containers.stack import MesonUiStack
+
+from pathlib import Path
 import logging
 
 from ..ui.activity_conf import Ui_Activity_Configure_Dialog
 
+MESON_BACKENDS = ['xcode', 'ninja', 'vs2010', 'vs2015', 'vs2017', 'vs2019']
+
 
 class ConfigureActivity(QDialog, Ui_Activity_Configure_Dialog):
     '''
-    this class is are Setup Activity
+    this class is are Configure Activity
     '''
     def __init__(self, console, model: MainModel = None):
         super(self.__class__, self).__init__()
         self.setupUi(self)
         self.setStyleSheet(MesonUiTheme().set_theme())
         self.setFixedSize(740, 421)
-
         self._model: MainModel = model
         self._console = console
 
@@ -53,6 +58,10 @@ class ConfigureActivity(QDialog, Ui_Activity_Configure_Dialog):
         self.control_push_no_setup.clicked.connect(lambda: self.exec_no_setup())
         self.control_push_do_setup.clicked.connect(lambda: self.exec_do_setup())
         self.control_push_do_update.clicked.connect(lambda: self.exec_do_update())
+        self.meson_api: MesonAPI = MesonAPI(
+            self._model.buildsystem().meson().sourcedir,
+            self._model.buildsystem().meson().builddir
+        )
 
         self._cache.init_cache()
         self._cache_default()
@@ -82,27 +91,45 @@ class ConfigureActivity(QDialog, Ui_Activity_Configure_Dialog):
         this method will perform the "meson setup" action and pass all
         options with the set whatever the user would like
         '''
-        meson_args: MesonUiStack = MesonUiStack()
+        if self._model.buildsystem().meson().builddir != '':
+            #
+            # here we define are process on how we are
+            # going to build a set object with Meson
+            # build args.
+            meson_args: MesonUiStack = MesonUiStack()
 
-        self._cache_update()
-        self._cache_parser(meson_args=meson_args)
-        self._cache_sender(meson_args=meson_args)
+            self._cache_update()
+            self._cache_parser(meson_args=meson_args)
+            self._cache_sender(meson_args=meson_args)
         #
         # then close are activity
         self.close()
+
+    def _cache_from_api(self, meson_args: MesonUiStack) -> None:
+        #
+        # TODO: this method should get introspection data from
+        #       Meson builddir API if builddir is found.
+        pass
 
     def _cache_sender(self, meson_args: MesonUiStack) -> None:
         '''
         this method will send the set to are Meson wrapper object
         '''
-        logging.info(' Configure Meson project')
+        logging.info(' Setup Meson project')
         args: list = list()
         for i in range(len(meson_args.stack)):
             args.extend(meson_args.pop())
         if self._console is None:
             return
         else:
-            self._console.command_run(str(self._model.buildsystem().meson().configure(args=args)))
+            if self.combo_backend.currentText() in MESON_BACKENDS:
+                self._console.command_run(str(self._model.buildsystem().meson().configure(args=args)))
+            else:
+                args.remove(f'--backend={self.combo_backend.currentText()}')
+                args.append('--backend=ninja')
+                self._console.command_run(str(self._model.buildsystem().meson().configure(args=args)))
+                ide = backend_factory(self.combo_backend.currentText(), self.meson_api)
+                ide.generator()
 
     def _cache_parser(self, meson_args: MesonUiStack) -> None:
         '''
@@ -159,7 +186,10 @@ class ConfigureActivity(QDialog, Ui_Activity_Configure_Dialog):
         #
         # here we add the fatal flag to make sure that the user
         # does not have too.
-        meson_args.push(['--fatal-meson-warnings'])
+        if Path(self._model.buildsystem().meson().builddir).exists():
+            meson_args.push(['--fatal-meson-warnings', '--wipe'])
+        else:
+            meson_args.push(['--fatal-meson-warnings'])
 
     def _cache_update(self) -> None:
         '''
@@ -249,6 +279,7 @@ class ConfigureActivity(QDialog, Ui_Activity_Configure_Dialog):
         self.combo_b_bitcode.addItems(default_base['b_bitcode'])
         if not OSUtility.is_osx():
             self.combo_b_bitcode.setEnabled(False)
+        self.combo_b_bitcode.addItems(default_base['b_bitcode'])
         self.combo_b_colorout.addItems(default_base['b_colorout'])
         self.combo_b_coverage.addItems(default_base['b_coverage'])
         self.combo_b_lundef.addItems(default_base['b_lundef'])
