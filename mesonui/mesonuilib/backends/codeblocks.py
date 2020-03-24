@@ -40,6 +40,7 @@ class CodeBlocksBackend(BackendImplementionApi):
 
     def generator(self):
         logging.info(f'Generating {self.backend} project')
+        self.generate_project()
 
     def generate_project(self):
         root = ETree.Element('CodeBlocks_project_file')
