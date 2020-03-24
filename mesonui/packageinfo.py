@@ -17,15 +17,15 @@ error_message: T.AnyStr = '''ERROR: Tried to install Meson-ui with Python versio
 Meson-ui requires Python 3.6.0 or greater
 '''
 
+
 class PackageInfo(ProjectAuthor, ProjectInfo):
     def __init__(self):
         super().__init__()
         self.required_version()
 
     @staticmethod
-    def readme():
-        with open('readme.md') as f:
-            return f.read()
+    def long_description():
+        return 'Meson-ui is a build GUI for Meson build system a next-generation build system.'
 
     @staticmethod
     def required_version() -> None:
