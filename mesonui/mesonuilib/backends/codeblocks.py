@@ -8,7 +8,7 @@
 # copyright 2020 The Meson-UI development team
 #
 from mesonui.repository.mesonapi import MesonAPI
-from .backendimpl import BackendImpl
+from .backendimpl import BackendImplementionApi
 from os.path import join as join_paths
 from ..buildsystem import Ninja
 import logging
@@ -24,18 +24,24 @@ CBP_VERSION_MAJOR = 1
 CBP_VERSION_MINOR = 6
 
 
-class CodeBlocksBackend(BackendImpl):
+class CodeBlocksBackend(BackendImplementionApi):
     def __init__(self, meson_api: MesonAPI):
         super(self.__class__, self).__init__(meson_api)
-        self.backend: str = 'Code::Blocks'
-        self.compiler = self.targetsinfo[0]['target_sources'][0]['compiler'][0]
+        self.backend: str = '\'codeblocks\''
         self.project_name = re.sub(r'[^a-z0-9]', '_', self.projectinfo['descriptive_name'])
+        self.compiler = self.targetsinfo[0]['target_sources'][0]['compiler'][0]
         self.source: str = self.mesoninfo['directories']['source']
         self.build: str = self.mesoninfo['directories']['build']
+        self.includes: list = []
+        self.scripts: list = []
+        self.sources: list = []
+        self.defs: list = []
         self.ninja = Ninja(self.source, self.build)
 
     def generator(self):
         logging.info(f'Generating {self.backend} project')
+
+    def generate_project(self):
         root = ETree.Element('CodeBlocks_project_file')
         tree = ETree.ElementTree(root)
         ETree.SubElement(root, 'FileVersion', {'major': f'{CBP_VERSION_MAJOR}', 'minor': f'{CBP_VERSION_MINOR}'})
@@ -68,13 +74,11 @@ class CodeBlocksBackend(BackendImpl):
 
             compiler = ETree.SubElement(build_target, 'Compiler')
 
-            for define in target['target_sources'][0]['parameters']:
-                if define.startswith('-D'):
-                    ETree.SubElement(compiler, 'Add', {'option': define})
+            for define in self.defs:
+                ETree.SubElement(compiler, 'Add', {'option': define})
 
-            for include_dir in target['target_sources'][0]['parameters']:
-                if include_dir.startswith('-I') or include_dir.startswith('/I'):
-                    ETree.SubElement(compiler, 'Add', {'directory': include_dir})
+            for include_dir in self.includes:
+                ETree.SubElement(compiler, 'Add', {'directory': include_dir})
 
             make_commands = ETree.SubElement(build_target, 'MakeCommands')
             ETree.SubElement(make_commands, 'Build', {'command': f'{self.ninja.exe} -v {target["name"]}'})
@@ -83,8 +87,7 @@ class CodeBlocksBackend(BackendImpl):
             ETree.SubElement(make_commands, 'DistClean', {'command': f'{self.ninja.exe} -v clean'})
 
         for target in self.targetsinfo:
-            target_files = target['target_sources'][0]['sources']
-            for target_file in target_files:
+            for target_file in self.sources:
                 unit = ETree.SubElement(project, 'Unit', {'filename': join_paths(self.source, target_file)})
                 ETree.SubElement(unit, 'Option', {'target': target['name']})
 
@@ -97,9 +100,38 @@ class CodeBlocksBackend(BackendImpl):
                         unit = ETree.SubElement(project, 'Unit', {'filename': header_file})
                         ETree.SubElement(unit, 'Option', {'target': target['name']})
 
-        for file in self.buildfiles:
+        for file in self.scripts:
             unit = ETree.SubElement(project, 'Unit', {'filename': join_paths(self.source, file)})
             ETree.SubElement(unit, 'Option', {'virtualFolder': join_paths('Meson Files', os.path.dirname(file))})
 
         project_file = join_paths(self.build, f'{self.project_name}.cbp')
         tree.write(project_file, 'unicode', True)
+
+    def find_includes(self):
+        include_dirs: list = []
+        for target in self.targetsinfo:
+            for includes in target['target_sources'][0]['parameters']:
+                if includes.startswith('-I') or includes.startswith('/I'):
+                    logging.info(f'add include: {includes}')
+                    include_dirs.append([includes])
+        self.includes = include_dirs
+
+    def find_definitions(self):
+        definitions: list = []
+        for target in self.targetsinfo:
+            for defs in target['target_sources'][0]['parameters']:
+                if defs.startswith('-D'):
+                    logging.info(f'add def: {defs}')
+                    definitions.append([defs])
+        self.defs = definitions
+
+    def find_source_files(self):
+        sources: list = []
+        for target in self.targetsinfo:
+            for file in target['target_sources'][0]['sources']:
+                logging.info(f'add source: {file}')
+                sources.append([file])
+        self.source = sources
+
+    def find_build_files(self):
+        self.scripts = self.buildsystem_files
