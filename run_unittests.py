@@ -392,7 +392,6 @@ class TestApiBuilddirLoader:
         script: MesonBuilddirLoader = MesonBuilddirLoader(build)
         info = script.extract_from(group='meson-info')
 
-        assert(info['meson_version']['full'] == meson.version().strip())
         assert(info['directories']['source'] == str(source.resolve()))
         assert(info['directories']['build'] == str(build.resolve()))
         assert(info['directories']['info'] == str(join(build.resolve(), 'meson-info')))
