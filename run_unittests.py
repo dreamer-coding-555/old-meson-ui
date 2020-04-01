@@ -409,8 +409,8 @@ class TestApiBuilddirLoader:
         assert(info is None)
 
     def test_loader_testlogs(self):
-        source = Path(join('test-cases', 'intro-loader', '09-testlog'))
-        build = Path(join('test-cases', 'intro-loader', '09-testlog', 'builddir'))
+        source = Path(join('test-cases', 'intro-loader', '09-testlog')).resolve()
+        build = Path(join('test-cases', 'intro-loader', '09-testlog', 'builddir')).resolve()
         meson: Meson = Meson(sourcedir=source, builddir=build)
 
         meson.setup()
@@ -547,8 +547,8 @@ class TestApiBuilddirReader:
         assert(info == {})
 
     def test_reader_mesonbuild_files(self):
-        source = Path(join('test-cases', 'intro-reader', '09-buildsystem_files'))
-        build = Path(join('test-cases', 'intro-reader', '09-buildsystem_files', 'builddir'))
+        source = Path(join('test-cases', 'intro-reader', '09-buildsystem_files')).resolve()
+        build = Path(join('test-cases', 'intro-reader', '09-buildsystem_files', 'builddir')).resolve()
         meson: Meson = Meson(sourcedir=source, builddir=build)
 
         meson.setup()
