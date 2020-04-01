@@ -7,6 +7,7 @@
 #
 # copyright 2020 The Meson-UI development team
 #
+from .backends.emstudio import EmbeddedStudioBackend
 from .backends.codeblocks import CodeBlocksBackend
 from .backends.qtcreator import QtCreatorBackend
 from .backends.kdevelop import KDevelopBackend
@@ -20,5 +21,6 @@ def backend_factory(backend: str, meson_api: MesonAPI):
     return {
         'kdevelop': KDevelopBackend,
         'codeblocks': CodeBlocksBackend,
-        'qtcreator': QtCreatorBackend
+        'qtcreator': QtCreatorBackend,
+        'emstudio': EmbeddedStudioBackend
     }[backend](meson_api)
