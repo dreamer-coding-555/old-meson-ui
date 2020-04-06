@@ -35,6 +35,7 @@ from mesonui.containers.doublylist import MesonUiDLL
 from mesonui.containers.queue import MesonUiQueue
 from mesonui.containers.stack import MesonUiStack
 from mesonui.mesonuilib.utilitylib import MesonUiException
+from mesonui.mesonuilib.utilitylib import OSUtility
 
 
 class TestMesonUiQueue:
@@ -424,6 +425,7 @@ class TestApiBuilddirLoader:
         assert(info['name'] == 'running test for testlog data')
         assert(info['result'] == 'OK')
 
+    @pytest.mark.skipif(OSUtility.is_windows(), reason='Some issue with / char over \\ on Windows')
     def test_loader_mesonbuild_files(self):
         source = Path(join('test-cases', 'intro-loader', '11-buildsystem_files'))
         build = Path(join('test-cases', 'intro-loader', '11-buildsystem_files', 'builddir'))
@@ -546,6 +548,7 @@ class TestApiBuilddirReader:
 
         assert(info == {})
 
+    @pytest.mark.skipif(OSUtility.is_windows(), reason='Some issue with / char over \\ on Windows')
     def test_reader_mesonbuild_files(self):
         source = Path(join('test-cases', 'intro-reader', '09-buildsystem_files'))
         build = Path(join('test-cases', 'intro-reader', '09-buildsystem_files', 'builddir'))
