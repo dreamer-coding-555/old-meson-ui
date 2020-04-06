@@ -17,7 +17,7 @@ setup(
     author=pypi_pkg.get_name(),
     author_email=pypi_pkg.get_mail(),
     name=pypi_pkg.get_project_name(),
-    description=pypi_pkg.get_description,
+    description=pypi_pkg.get_description(),
     long_description=pypi_pkg.long_description(),
     version=pypi_pkg.get_version(),
     license=pypi_pkg.get_license(),
