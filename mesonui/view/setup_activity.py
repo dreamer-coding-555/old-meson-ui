@@ -18,7 +18,6 @@ from ..mesonuilib.coredata import default_test
 from ..mesonuilib.coredata import default_path
 from ..mesonuilib.coredata import default_backend
 from ..mesonuilib.backend import backend_factory
-from ..mesonuilib.utilitylib import OSUtility
 from ..repository.mesonapi import MesonAPI
 from ..models.appmodel import MainModel
 from ..mesonuitheme import MesonUiTheme
@@ -146,11 +145,11 @@ class SetupActivity(QDialog, Ui_Activity_Setup_Dialog):
         # are cache object.
         #
         # here we also check to see if the option is
-        # is eithor a 'werror', 'debug', 'strip' so
+        # is eithor a 'werror', 'strip' so
         # we don't get an error.  Else we just pass
         # are option name equale to user set value.
         for conf in core:
-            if conf in ['--werror', '--debug', '--strip']:
+            if conf in ['--werror', '--strip', '--fatal-meson-warnings']:
                 meson_args.push([f'{conf}'])
             else:
                 meson_args.push([f'{conf}={core[conf]}'])
@@ -158,10 +157,6 @@ class SetupActivity(QDialog, Ui_Activity_Setup_Dialog):
         # here we add Meson base config values from
         # are cache object.
         for conf in base:
-            if OSUtility.is_osx() and base['-Db_asneeded']:
-                continue
-            elif not OSUtility.is_osx() and base['-Db_bitcode']:
-                continue
             meson_args.push([f'{conf}={base[conf]}'])
         #
         # here we add Meson test config values from
@@ -179,12 +174,9 @@ class SetupActivity(QDialog, Ui_Activity_Setup_Dialog):
         for conf in back:
             meson_args.push([f'{conf}={back[conf]}'])
         #
-        # here we add the fatal flag to make sure that the user
-        # does not have too.
+        # here we wipe the current builddir if it exists and start new
         if Path(self._model.buildsystem().meson().builddir).exists():
-            meson_args.push(['--fatal-meson-warnings', '--wipe'])
-        else:
-            meson_args.push(['--fatal-meson-warnings'])
+            meson_args.push(['--wipe'])
 
     def _cache_update(self) -> None:
         '''
@@ -193,24 +185,21 @@ class SetupActivity(QDialog, Ui_Activity_Setup_Dialog):
         '''
         #
         # Meson args passed for (Core options)
+        self._cache.configure_core('fatal-meson-warnings', self.combo_fetal_warnings.currentText())
         self._cache.configure_core('auto-features',     self.combo_auto_features.currentText())
         self._cache.configure_core('backend',           self.combo_backend.currentText())
         self._cache.configure_core('buildtype',         self.combo_buildtype.currentText())
         self._cache.configure_core('default-library',   self.combo_default_library.currentText())
         self._cache.configure_core('layout',            self.combo_layout.currentText())
-        self._cache.configure_core('optimization',      self.combo_optimization.currentText())
         self._cache.configure_core('unity',             self.combo_unity.currentText())
         self._cache.configure_core('warnlevel',         self.combo_warnlevel.currentText())
         self._cache.configure_core('wrap-mode',         self.combo_wrap_mode.currentText())
         self._cache.configure_core('werror',            self.combo_werror.currentText())
-        self._cache.configure_core('debug',             self.combo_debug.currentText())
         self._cache.configure_core('strip',             self.combo_strip.currentText())
         self._cache.configure_core('cmake-prefix-path', self.edit_cmake_prefix_path.text())
         self._cache.configure_core('pkg-config-path',   self.edit_pkg_config_path.text())
         #
         # Meson args passed for (Base options)
-        self._cache.configure_base('b_asneeded',  self.combo_b_asneeded.currentText())
-        self._cache.configure_base('b_bitcode',   self.combo_b_bitcode.currentText())
         self._cache.configure_base('b_colorout',  self.combo_b_colorout.currentText())
         self._cache.configure_base('b_coverage',  self.combo_b_coverage.currentText())
         self._cache.configure_base('b_lundef',    self.combo_b_lundef.currentText())
@@ -252,29 +241,21 @@ class SetupActivity(QDialog, Ui_Activity_Setup_Dialog):
         '''
         #
         # Meson args passed for (Core options)
+        self.combo_fetal_warnings.addItems(default_core['fatal-meson-warnings'])
         self.edit_cmake_prefix_path.setText(default_core['cmake-prefix-path'])
         self.edit_pkg_config_path.setText(default_core['pkg-config-path'])
         self.combo_default_library.addItems(default_core['default-library'])
         self.combo_auto_features.addItems(default_core['auto-features'])
-        self.combo_optimization.addItems(default_core['optimization'])
         self.combo_buildtype.addItems(default_core['buildtype'])
         self.combo_warnlevel.addItems(default_core['warnlevel'])
         self.combo_wrap_mode.addItems(default_core['wrap-mode'])
         self.combo_backend.addItems(default_core['backend'])
         self.combo_werror.addItems(default_core['werror'])
-        self.combo_debug.addItems(default_core['debug'])
         self.combo_strip.addItems(default_core['strip'])
         self.combo_unity.addItems(default_core['unity'])
         self.combo_layout.addItems(default_core['layout'])
         #
         # Meson args passed for (Base options)
-        self.combo_b_asneeded.addItems(default_base['b_asneeded'])
-        if OSUtility.is_osx():
-            self.combo_b_asneeded.setEnabled(False)
-        self.combo_b_bitcode.addItems(default_base['b_bitcode'])
-        if not OSUtility.is_osx():
-            self.combo_b_bitcode.setEnabled(False)
-        self.combo_b_bitcode.addItems(default_base['b_bitcode'])
         self.combo_b_colorout.addItems(default_base['b_colorout'])
         self.combo_b_coverage.addItems(default_base['b_coverage'])
         self.combo_b_lundef.addItems(default_base['b_lundef'])

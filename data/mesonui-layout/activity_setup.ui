@@ -26,7 +26,7 @@
     </rect>
    </property>
    <property name="title">
-    <string>Setup view:</string>
+    <string>Setup view: Native build</string>
    </property>
    <widget class="QTabWidget" name="tabWidget">
     <property name="geometry">
@@ -86,35 +86,6 @@
        </property>
        <property name="text">
         <string>buildtype:</string>
-       </property>
-      </widget>
-      <widget class="QComboBox" name="combo_backend">
-       <property name="geometry">
-        <rect>
-         <x>120</x>
-         <y>70</y>
-         <width>151</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="styleSheet">
-        <string notr="true"/>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_2">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>70</y>
-         <width>71</width>
-         <height>16</height>
-        </rect>
-       </property>
-       <property name="styleSheet">
-        <string notr="true"/>
-       </property>
-       <property name="text">
-        <string>backend:</string>
        </property>
       </widget>
       <widget class="QComboBox" name="combo_auto_features">
@@ -179,7 +150,7 @@
        <property name="geometry">
         <rect>
          <x>599</x>
-         <y>130</y>
+         <y>100</y>
          <width>111</width>
          <height>21</height>
         </rect>
@@ -192,7 +163,7 @@
        <property name="geometry">
         <rect>
          <x>549</x>
-         <y>130</y>
+         <y>100</y>
          <width>51</width>
          <height>16</height>
         </rect>
@@ -202,51 +173,6 @@
        </property>
        <property name="text">
         <string>layout:</string>
-       </property>
-      </widget>
-      <widget class="QComboBox" name="combo_optimization">
-       <property name="geometry">
-        <rect>
-         <x>380</x>
-         <y>130</y>
-         <width>151</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="styleSheet">
-        <string notr="true"/>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_7">
-       <property name="geometry">
-        <rect>
-         <x>280</x>
-         <y>130</y>
-         <width>81</width>
-         <height>16</height>
-        </rect>
-       </property>
-       <property name="styleSheet">
-        <string notr="true"/>
-       </property>
-       <property name="text">
-        <string>optimization:</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_9">
-       <property name="geometry">
-        <rect>
-         <x>549</x>
-         <y>40</y>
-         <width>51</width>
-         <height>16</height>
-        </rect>
-       </property>
-       <property name="styleSheet">
-        <string notr="true"/>
-       </property>
-       <property name="text">
-        <string>debug:</string>
        </property>
       </widget>
       <widget class="QComboBox" name="combo_wrap_mode">
@@ -307,19 +233,6 @@
         <string>unity:</string>
        </property>
       </widget>
-      <widget class="QComboBox" name="combo_debug">
-       <property name="geometry">
-        <rect>
-         <x>600</x>
-         <y>40</y>
-         <width>111</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="styleSheet">
-        <string notr="true"/>
-       </property>
-      </widget>
       <widget class="QComboBox" name="combo_warnlevel">
        <property name="geometry">
         <rect>
@@ -353,7 +266,7 @@
        <property name="geometry">
         <rect>
          <x>549</x>
-         <y>70</y>
+         <y>40</y>
          <width>51</width>
          <height>16</height>
         </rect>
@@ -369,7 +282,7 @@
        <property name="geometry">
         <rect>
          <x>599</x>
-         <y>70</y>
+         <y>40</y>
          <width>111</width>
          <height>21</height>
         </rect>
@@ -382,7 +295,7 @@
        <property name="geometry">
         <rect>
          <x>600</x>
-         <y>100</y>
+         <y>70</y>
          <width>111</width>
          <height>21</height>
         </rect>
@@ -395,7 +308,7 @@
        <property name="geometry">
         <rect>
          <x>549</x>
-         <y>100</y>
+         <y>70</y>
          <width>51</width>
          <height>16</height>
         </rect>
@@ -426,7 +339,7 @@
         <property name="geometry">
          <rect>
           <x>180</x>
-          <y>50</y>
+          <y>40</y>
           <width>521</width>
           <height>21</height>
          </rect>
@@ -442,7 +355,7 @@
         <property name="geometry">
          <rect>
           <x>30</x>
-          <y>50</y>
+          <y>40</y>
           <width>141</width>
           <height>16</height>
          </rect>
@@ -457,8 +370,8 @@
        <widget class="QLabel" name="label_14">
         <property name="geometry">
          <rect>
-          <x>40</x>
-          <y>80</y>
+          <x>30</x>
+          <y>70</y>
           <width>131</width>
           <height>16</height>
          </rect>
@@ -474,7 +387,7 @@
         <property name="geometry">
          <rect>
           <x>180</x>
-          <y>80</y>
+          <y>70</y>
           <width>521</width>
           <height>21</height>
          </rect>
@@ -486,6 +399,64 @@
          <string/>
         </property>
        </widget>
+      </widget>
+      <widget class="QLabel" name="label_2">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>70</y>
+         <width>91</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+       <property name="text">
+        <string>backend:</string>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="combo_fetal_warnings">
+       <property name="geometry">
+        <rect>
+         <x>380</x>
+         <y>130</y>
+         <width>151</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_5">
+       <property name="geometry">
+        <rect>
+         <x>280</x>
+         <y>130</y>
+         <width>91</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+       <property name="text">
+        <string>fatal_warnings:</string>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="combo_backend">
+       <property name="geometry">
+        <rect>
+         <x>120</x>
+         <y>70</y>
+         <width>151</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
       </widget>
      </widget>
     </widget>
@@ -510,7 +481,7 @@
       <property name="geometry">
        <rect>
         <x>19</x>
-        <y>100</y>
+        <y>40</y>
         <width>81</width>
         <height>16</height>
        </rect>
@@ -523,7 +494,7 @@
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>160</y>
+        <y>100</y>
         <width>91</width>
         <height>16</height>
        </rect>
@@ -542,34 +513,11 @@
        </rect>
       </property>
      </widget>
-     <widget class="QLabel" name="label_b_asneeded">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>40</y>
-        <width>91</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>b_asneeded:</string>
-      </property>
-     </widget>
-     <widget class="QComboBox" name="combo_b_bitcode">
-      <property name="geometry">
-       <rect>
-        <x>120</x>
-        <y>70</y>
-        <width>90</width>
-        <height>21</height>
-       </rect>
-      </property>
-     </widget>
      <widget class="QComboBox" name="combo_b_coverage">
       <property name="geometry">
        <rect>
         <x>120</x>
-        <y>130</y>
+        <y>70</y>
         <width>90</width>
         <height>21</height>
        </rect>
@@ -612,7 +560,7 @@
       <property name="geometry">
        <rect>
         <x>120</x>
-        <y>100</y>
+        <y>40</y>
         <width>90</width>
         <height>21</height>
        </rect>
@@ -622,7 +570,7 @@
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>130</y>
+        <y>70</y>
         <width>91</width>
         <height>16</height>
        </rect>
@@ -658,33 +606,10 @@
       <property name="geometry">
        <rect>
         <x>120</x>
-        <y>160</y>
+        <y>100</y>
         <width>90</width>
         <height>21</height>
        </rect>
-      </property>
-     </widget>
-     <widget class="QComboBox" name="combo_b_asneeded">
-      <property name="geometry">
-       <rect>
-        <x>120</x>
-        <y>40</y>
-        <width>90</width>
-        <height>21</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_b_bitcode">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>70</y>
-        <width>91</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>b_bitcode:</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_b_pgo">
@@ -739,7 +664,7 @@
      <widget class="QComboBox" name="combo_b_ndebug">
       <property name="geometry">
        <rect>
-        <x>360</x>
+        <x>120</x>
         <y>130</y>
         <width>90</width>
         <height>21</height>
@@ -749,7 +674,7 @@
      <widget class="QLabel" name="label_b_ndebug">
       <property name="geometry">
        <rect>
-        <x>281</x>
+        <x>21</x>
         <y>130</y>
         <width>81</width>
         <height>16</height>
@@ -776,7 +701,7 @@
       <property name="geometry">
        <rect>
         <x>360</x>
-        <y>160</y>
+        <y>130</y>
         <width>90</width>
         <height>21</height>
        </rect>
@@ -796,7 +721,7 @@
       <property name="geometry">
        <rect>
         <x>280</x>
-        <y>160</y>
+        <y>130</y>
         <width>71</width>
         <height>16</height>
        </rect>
