@@ -24,7 +24,8 @@ default_core: map = {
     'werror':            ('false', 'true'),
     'strip':             ('false', 'true'),
     'cmake-prefix-path': ('.'),
-    'pkg-config-path':   ('.')
+    'pkg-config-path':   ('.'),
+    'fatal-meson-warnings': ('true', 'false')
 }
 
 default_test: map = {

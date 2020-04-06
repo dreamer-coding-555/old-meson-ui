@@ -176,7 +176,11 @@ class SetupActivity(QDialog, Ui_Activity_Setup_Dialog):
         #
         # here we add the fatal flag to make sure that the user
         # does not have too.
-        meson_args.push(['--fatal-meson-warnings'])
+        if self.combo_fetal_warnings.currentText() == 'true':
+            meson_args.push(['--fatal-meson-warnings'])
+
+        if Path(self._model.buildsystem().meson().builddir).exists():
+            meson_args.push(['--wipe'])
 
     def _cache_update(self) -> None:
         '''
@@ -185,6 +189,7 @@ class SetupActivity(QDialog, Ui_Activity_Setup_Dialog):
         '''
         #
         # Meson args passed for (Core options)
+        self._cache.configure_core('fatal-meson-warnings', self.combo_fetal_warnings.currentText())
         self._cache.configure_core('auto-features',     self.combo_auto_features.currentText())
         self._cache.configure_core('backend',           self.combo_backend.currentText())
         self._cache.configure_core('buildtype',         self.combo_buildtype.currentText())

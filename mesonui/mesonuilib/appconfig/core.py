@@ -25,7 +25,8 @@ class MesonCoreConfig:
             '--werror': None,# eithor --werror or ''
             '--strip': None, # eithor --strip or ''
             '--cmake-prefix-path': None,
-            '--pkg-config-path': None
+            '--pkg-config-path': None,
+            '--fatal-meson-warnings': None
         }
 
     def extract(self):
