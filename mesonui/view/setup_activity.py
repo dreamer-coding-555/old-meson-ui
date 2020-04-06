@@ -176,10 +176,7 @@ class SetupActivity(QDialog, Ui_Activity_Setup_Dialog):
         #
         # here we add the fatal flag to make sure that the user
         # does not have too.
-        if Path(self._model.buildsystem().meson().builddir).exists():
-            meson_args.push(['--fatal-meson-warnings', '--wipe'])
-        else:
-            meson_args.push(['--fatal-meson-warnings'])
+        meson_args.push(['--fatal-meson-warnings'])
 
     def _cache_update(self) -> None:
         '''
