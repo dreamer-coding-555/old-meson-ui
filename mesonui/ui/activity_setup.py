@@ -11,11 +11,11 @@ from PyQt5 import QtCore, QtWidgets
 
 
 class Ui_Activity_Setup_Dialog(object):
-    def setupUi(self, Activity_SetupBuild_Dialog):
-        Activity_SetupBuild_Dialog.setObjectName("Activity_SetupBuild_Dialog")
-        Activity_SetupBuild_Dialog.setGeometry(QtCore.QRect(0, 0, 740, 421))
-        Activity_SetupBuild_Dialog.setStyleSheet("")
-        self.groupBox = QtWidgets.QGroupBox(Activity_SetupBuild_Dialog)
+    def setupUi(self, Activity_Setup_Dialog):
+        Activity_Setup_Dialog.setObjectName("Activity_Setup_Dialog")
+        Activity_Setup_Dialog.resize(740, 421)
+        Activity_Setup_Dialog.setStyleSheet("")
+        self.groupBox = QtWidgets.QGroupBox(Activity_Setup_Dialog)
         self.groupBox.setGeometry(QtCore.QRect(0, 0, 741, 341))
         self.groupBox.setObjectName("groupBox")
         self.tabWidget = QtWidgets.QTabWidget(self.groupBox)
@@ -347,7 +347,7 @@ class Ui_Activity_Setup_Dialog(object):
         self.label_errorlogs_15.setGeometry(QtCore.QRect(390, 160, 121, 16))
         self.label_errorlogs_15.setObjectName("label_errorlogs_15")
         self.tabWidget.addTab(self.tab_5, "")
-        self.layoutWidget = QtWidgets.QWidget(Activity_SetupBuild_Dialog)
+        self.layoutWidget = QtWidgets.QWidget(Activity_Setup_Dialog)
         self.layoutWidget.setGeometry(QtCore.QRect(380, 360, 331, 32))
         self.layoutWidget.setObjectName("layoutWidget")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.layoutWidget)
@@ -360,17 +360,17 @@ class Ui_Activity_Setup_Dialog(object):
         self.control_push_do_setup.setDefault(True)
         self.control_push_do_setup.setObjectName("control_push_do_setup")
         self.horizontalLayout.addWidget(self.control_push_do_setup)
-        self.control_push_no_setup = QtWidgets.QPushButton(Activity_SetupBuild_Dialog)
+        self.control_push_no_setup = QtWidgets.QPushButton(Activity_Setup_Dialog)
         self.control_push_no_setup.setGeometry(QtCore.QRect(30, 364, 160, 24))
         self.control_push_no_setup.setObjectName("control_push_no_setup")
 
-        self.retranslateUi(Activity_SetupBuild_Dialog)
+        self.retranslateUi(Activity_Setup_Dialog)
         self.tabWidget.setCurrentIndex(0)
-        QtCore.QMetaObject.connectSlotsByName(Activity_SetupBuild_Dialog)
+        QtCore.QMetaObject.connectSlotsByName(Activity_Setup_Dialog)
 
-    def retranslateUi(self, Activity_SetupBuild_Dialog):
+    def retranslateUi(self, Activity_Setup_Dialog):
         _translate = QtCore.QCoreApplication.translate
-        Activity_SetupBuild_Dialog.setWindowTitle(_translate("Activity_Setup_Dialog", "Setup Dialog"))
+        Activity_Setup_Dialog.setWindowTitle(_translate("Activity_Setup_Dialog", "Setup Dialog"))
         self.groupBox.setTitle(_translate("Activity_Setup_Dialog", "Setup view: Native build"))
         self.group_core.setTitle(_translate("Activity_Setup_Dialog", "Configure any of the values for Meson built-in (Core options):"))
         self.label.setText(_translate("Activity_Setup_Dialog", "buildtype:"))
