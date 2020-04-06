@@ -154,7 +154,7 @@ class ConfigureActivity(QDialog, Ui_Activity_Configure_Dialog):
         # we don't get an error.  Else we just pass
         # are option name equale to user set value.
         for conf in core:
-            if conf in ['--werror', '--strip']:
+            if conf in ['--werror', '--strip', '--fatal-meson-warnings']:
                 meson_args.push([f'{conf}'])
             else:
                 meson_args.push([f'{conf}={core[conf]}'])
@@ -179,10 +179,9 @@ class ConfigureActivity(QDialog, Ui_Activity_Configure_Dialog):
         for conf in back:
             meson_args.push([f'{conf}={back[conf]}'])
         #
-        # here we add the fatal flag to make sure that the user
-        # does not have too.
-        if self.combo_fetal_warnings.currentText() == 'true':
-            meson_args.push(['--fatal-meson-warnings'])
+        # here we wipe the current builddir if it exists and start new
+        if Path(self._model.buildsystem().meson().builddir).exists():
+            meson_args.push(['--wipe'])
 
     def _cache_update(self) -> None:
         '''
