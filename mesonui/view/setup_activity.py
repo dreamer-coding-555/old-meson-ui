@@ -245,6 +245,7 @@ class SetupActivity(QDialog, Ui_Activity_Setup_Dialog):
         '''
         #
         # Meson args passed for (Core options)
+        self.combo_fetal_warnings.addItems(default_core['fatal-meson-warnings'])
         self.edit_cmake_prefix_path.setText(default_core['cmake-prefix-path'])
         self.edit_pkg_config_path.setText(default_core['pkg-config-path'])
         self.combo_default_library.addItems(default_core['default-library'])

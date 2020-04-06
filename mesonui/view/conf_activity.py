@@ -191,6 +191,7 @@ class ConfigureActivity(QDialog, Ui_Activity_Configure_Dialog):
         '''
         #
         # Meson args passed for (Core options)
+        self._cache.configure_core('fatal-meson-warnings', self.combo_fetal_warnings.currentText())
         self._cache.configure_core('auto-features',     self.combo_auto_features.currentText())
         self._cache.configure_core('backend',           self.combo_backend.currentText())
         self._cache.configure_core('buildtype',         self.combo_buildtype.currentText())
@@ -246,6 +247,7 @@ class ConfigureActivity(QDialog, Ui_Activity_Configure_Dialog):
         '''
         #
         # Meson args passed for (Core options)
+        self.combo_fetal_warnings.addItems(default_core['fatal-meson-warnings'])
         self.edit_cmake_prefix_path.setText(default_core['cmake-prefix-path'])
         self.edit_pkg_config_path.setText(default_core['pkg-config-path'])
         self.combo_default_library.addItems(default_core['default-library'])
