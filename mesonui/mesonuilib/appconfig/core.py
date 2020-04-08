@@ -19,15 +19,14 @@ class MesonCoreConfig:
             '--buildtype': None,
             '--default-library': None,
             '--layout': None,
-            '--optimization': None,
             '--unity': None,
             '--warnlevel': None,
             '--wrap-mode': None,
             '--werror': None,# eithor --werror or ''
-            '--debug': None, # eithor --debug or ''
             '--strip': None, # eithor --strip or ''
             '--cmake-prefix-path': None,
-            '--pkg-config-path': None
+            '--pkg-config-path': None,
+            '--fatal-meson-warnings': None
         }
 
     def extract(self):

@@ -127,6 +127,8 @@ class MainActivity(QMainWindow, Ui_Activity_Main_Window):
         logging.info('Setup project process')
         self._model.buildsystem().meson().sourcedir = self.get_sourcedir()
         self._model.buildsystem().meson().builddir = self.get_builddir()
+        self.meson_api.sourcedir = self.get_sourcedir()
+        self.meson_api.builddir = self.get_builddir()
 
         SetupActivity(self.console, model=self._model)
 
@@ -141,6 +143,8 @@ class MainActivity(QMainWindow, Ui_Activity_Main_Window):
         logging.info('Configure Meson build project with "meson configure" command')
         self._model.buildsystem().meson().sourcedir = self.get_sourcedir()
         self._model.buildsystem().meson().builddir = self.get_builddir()
+        self.meson_api.sourcedir = self.get_sourcedir()
+        self.meson_api.builddir = self.get_builddir()
 
         ConfigureActivity(self.console, model=self._model)
         self.dashboard.update(self.meson_api)
@@ -282,6 +286,8 @@ class MainActivity(QMainWindow, Ui_Activity_Main_Window):
             self._model.buildsystem().meson().builddir = join(source_root, 'builddir')
             self._model.buildsystem().ninja().sourcedir = source_root
             self._model.buildsystem().ninja().builddir = join(source_root, 'builddir')
+            self.meson_api.sourcedir = source_root
+            self.meson_api.builddir = join(source_root, 'builddir')
             self.project_sourcedir.setText(str(self._model.buildsystem().meson().sourcedir))
             self.project_builddir.setText(str(self._model.buildsystem().meson().builddir))
         else:

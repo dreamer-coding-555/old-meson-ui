@@ -14,8 +14,6 @@ import typing as T
 class MesonBaseConfig:
     def __init__(self):
         self.meson_configure: T.Dict = {
-            '-Db_asneeded': None,
-            '-Db_bitcode': None,
             '-Db_colorout': None,
             '-Db_coverage': None,
             '-Db_lundef': None,

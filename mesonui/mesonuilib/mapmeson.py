@@ -18,15 +18,14 @@ default_core: map = {
     'buildtype':         ('debug', 'plain', 'release', 'debugoptimized', 'minsize', 'custom'),
     'default-library':   ('shared', 'static', 'both'),
     'layout':            ('mirror', 'flat'),
-    'optimization':      ('0', 'g', '1', '2', '3', 's'),
     'warnlevel':         ('0', '1', '2', '3'),
     'wrap-mode':         ('default', 'nofallback', 'nodownload', 'forcefallback'),
     'unity':             ('off', 'on', 'subprojects'),
     'werror':            ('false', 'true'),
     'strip':             ('false', 'true'),
-    'debug':             ('true', 'false'),
     'cmake-prefix-path': ('.'),
-    'pkg-config-path':   ('.')
+    'pkg-config-path':   ('.'),
+    'fatal-meson-warnings': ('true', 'false')
 }
 
 default_test: map = {
@@ -51,8 +50,6 @@ default_path: map = {
 }
 
 default_base: map = {
-    'b_asneeded':  ('true', 'false'),
-    'b_bitcode':   ('false', 'true'),
     'b_colorout':  ('always', 'auto', 'never'),
     'b_coverage':  ('false', 'true'),
     'b_lundef':    ('true', 'false'),
