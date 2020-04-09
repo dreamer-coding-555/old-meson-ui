@@ -9,6 +9,7 @@
 #
 from pathlib import Path
 import subprocess
+import logging
 import json
 
 
@@ -30,6 +31,7 @@ class MesonBuilddirReader:
         #
         # We need to make sure to return None if testlogs.json is not found. So
         # check to see if the group is "testlog" and if so give nothing back
+        logging.info(f'Try getting {group} API object via read build directory.')
         if group == 'testlog':
             return None
         elif group == 'buildoptions':

@@ -7,10 +7,22 @@
 #
 # copyright 2020 The Meson-UI development team
 #
+from os.path import join as join_paths
 from pathlib import Path
-from os.path import join
+import logging
 import json
 
+_MESON_INTRO_FILES: tuple = (
+    'intro-benchmarks.json',
+    'intro-buildoptions.json',
+    'intro-buildsystem_files.json',
+    'intro-dependencies.json',
+    'intro-installed.json',
+    'intro-projectinfo.json',
+    'intro-targets.json',
+    'intro-tests.json',
+    'meson-info.json'
+)
 
 class MesonBuilddirLoader:
     def __init__(self, builddir: Path = None):
@@ -19,15 +31,16 @@ class MesonBuilddirLoader:
     def _scan(self, group: str) -> any:
         if group == 'testlog.json':
             subdir = 'meson-logs'
-            if not Path(join(self._builddir, subdir, group)).exists():
+            if not Path(join_paths(self._builddir, subdir, group)).exists():
                 return None
         else:
             subdir = 'meson-info'
-        with open(join(self._builddir, subdir, group)) as loaded_json:
+        with open(join_paths(self._builddir, subdir, group)) as loaded_json:
             info: any = json.loads(loaded_json.read())
         return info
 
     def extract_from(self, group: str):
+        logging.info(f'Try getting {group} API object via build directory loader')
         if group == 'buildoptions':
             return self._scan(group=f'intro-{group}.json')
         elif group == 'meson-info':
