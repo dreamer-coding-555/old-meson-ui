@@ -304,6 +304,18 @@ class TestMesonAPI:
             reader = reader.get_object(group='not-a-key', extract_method='not-a-method')
         assert('Extract method not-a-method not found in Meson "JSON" API!' == str(e.value))
 
+    def test_meson_api_bad_extract_method_type(self):
+        reader: MesonAPI = MesonAPI(None, None)
+        with pytest.raises(Exception) as e:
+            reader = reader.get_object(group='not-a-key', extract_method=None)
+        assert('API extract method <class \'NoneType\'> is not valid type!' == str(e.value))
+
+    def test_meson_api_bad_group_type(self):
+        reader: MesonAPI = MesonAPI(None, None)
+        with pytest.raises(Exception) as e:
+            reader = reader.get_object(group=1234.09, extract_method='not-a-method')
+        assert('API group key pair <class \'float\'> is not valid type!' == str(e.value))
+
 
 class TestApiBuilddirLoader:
     def test_loader_projectinfo(self):
