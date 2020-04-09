@@ -14,7 +14,8 @@ from .utilitylib import default_libdir
 
 default_core: map = {
     'auto-features':     ('auto', 'enabled', 'disabled'),
-    'backend':           ('ninja', 'xcode', 'qtcreator', 'codeblocks', 'kdevelop', 'vs2010', 'vs2015', 'vs2017', 'vs2019'),
+    'backend':           ('ninja', 'xcode', 'qtcreator', 'codeblocks', 'gnome',
+                          'kdevelop', 'vs2010', 'vs2015', 'vs2017', 'vs2019'),
     'buildtype':         ('debug', 'plain', 'release', 'debugoptimized', 'minsize', 'custom'),
     'default-library':   ('shared', 'static', 'both'),
     'layout':            ('mirror', 'flat'),
