@@ -22,10 +22,6 @@ class QtCreatorBackend(BackendImplementionApi):
         self.project_name = re.sub(r'[^a-z0-9]', '_', self.projectinfo['descriptive_name'])
         self.source: str = self.mesoninfo['directories']['source']
         self.build: str = self.mesoninfo['directories']['build']
-        self.includes: list = []
-        self.scripts: list = []
-        self.sources: list = []
-        self.defs: list = []
 
     def generator(self):
         logging.info(f'Generating {self.backend} project')
@@ -40,45 +36,28 @@ class QtCreatorBackend(BackendImplementionApi):
         with open(join_paths(self.build, f'{self.project_name}.config'), 'w') as file:
             file.write('// Add predefined macros for your project here. For example:')
             file.write('// #define THE_ANSWER 42')
-            for item in self.defs:
-                item = ' '.join(item.split('='))
-                file.write(f'#define {item}\n')
+            for targets in self.targetsinfo:
+                for target in targets['target_sources']:
+                    for item in target['parameters']:
+                        if item.startswith('-D'):
+                            logging.info(f'add def: {item}')
+                            item = ' '.join(item.split('='))
+                            file.write(f'#define {item}\n')
 
         # Generate the .files file.
         with open(join_paths(self.build, f'{self.project_name}.files'), 'w') as file:
-            for item in self.sources + self.scripts:
-                file.write(os.path.relpath(item, self.build) + '\n')
+            for targets in self.targetsinfo:
+                for target in targets['target_sources']:
+                    for item in target['sources']:
+                        file.write(os.path.relpath(item, self.build) + '\n')
+
+                    for item in self.buildsystem_files:
+                        file.write(os.path.relpath(item, self.build) + '\n')
 
         # Generate the .includes file.
         with open(join_paths(self.build, f'{self.project_name}.includes'), 'w') as file:
-            for item in self.includes:
-                file.write(os.path.relpath(item, self.build) + '\n')
-
-    def find_includes(self):
-        include_dirs: list = []
-        for target in self.targetsinfo:
-            for includes in target['target_sources'][0]['parameters']:
-                if includes.startswith('-I') or includes.startswith('/I'):
-                    logging.info(f'add include: {includes}')
-                    include_dirs.append([includes])
-        self.includes = include_dirs
-
-    def find_definitions(self):
-        definitions: list = []
-        for target in self.targetsinfo:
-            for defs in target['target_sources'][0]['parameters']:
-                if defs.startswith('-D'):
-                    logging.info(f'add def: {defs}')
-                    definitions.append([defs])
-        self.defs = definitions
-
-    def find_source_files(self):
-        sources: list = []
-        for target in self.targetsinfo:
-            for file in target['target_sources'][0]['sources']:
-                logging.info(f'add source: {file}')
-                sources.append([file])
-        self.source = sources
-
-    def find_build_files(self):
-        self.scripts = self.buildsystem_files
+            for targets in self.targetsinfo:
+                for item in targets['target_sources']:
+                    for item in target['parameters']:
+                        if item.startswith('-I') or item.startswith('/I'):
+                            file.write(os.path.relpath(item, self.build) + '\n')

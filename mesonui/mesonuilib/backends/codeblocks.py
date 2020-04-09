@@ -7,6 +7,7 @@
 #
 # copyright 2020 The Meson-UI development team
 #
+from mesonui.mesonuilib.xmlbuilder import Builder
 from mesonui.repository.mesonapi import MesonAPI
 from .backendimpl import BackendImplementionApi
 from os.path import join as join_paths
@@ -14,7 +15,6 @@ from ..buildsystem import Ninja
 import logging
 import os
 import re
-import xml.etree.ElementTree as ETree
 
 BUILD_OPTION_EXECUTABLE = 1
 BUILD_OPTION_STATIC_LIBRARY = 2
@@ -32,10 +32,6 @@ class CodeBlocksBackend(BackendImplementionApi):
         self.compiler = self.targetsinfo[0]['target_sources'][0]['compiler'][0]
         self.source: str = self.mesoninfo['directories']['source']
         self.build: str = self.mesoninfo['directories']['build']
-        self.includes: list = []
-        self.scripts: list = []
-        self.sources: list = []
-        self.defs: list = []
         self.ninja = Ninja(self.source, self.build)
 
     def generator(self):
@@ -43,96 +39,68 @@ class CodeBlocksBackend(BackendImplementionApi):
         self.generate_project()
 
     def generate_project(self):
-        root = ETree.Element('CodeBlocks_project_file')
-        tree = ETree.ElementTree(root)
-        ETree.SubElement(root, 'FileVersion', {'major': f'{CBP_VERSION_MAJOR}', 'minor': f'{CBP_VERSION_MINOR}'})
-        project = ETree.SubElement(root, 'Project')
-        ETree.SubElement(project, 'Option', {'title': self.project_name})
-        ETree.SubElement(project, 'Option', {'makefile_is_custom': '1'})
-        ETree.SubElement(project, 'Option', {'compiler': self.compiler})
-        ETree.SubElement(project, 'Option', {'virtualFolders': 'Meson Files'})
+        xml: Builder = Builder(version='1.0', encoding='UTF-8')
+        with xml.CodeBlocks_project_file(Name=self.project_name, Version='0.1', InternalType='Console'):
+            xml.FileVersion(major=f'{CBP_VERSION_MAJOR}', minor=f'{CBP_VERSION_MINOR}')
+            with xml.Project:
+                xml.Option(title=self.project_name)
+                xml.Option(compiler=self.compiler)
+                xml.Option(virtualFolders='Meson Files')
+                xml.Option(makefile_is_custom='1')
 
-        build = ETree.SubElement(project, 'Build')
+            with xml.Build:
+                for targets in self.targetsinfo:
+                    output = join_paths(self.build, targets['id'])
+                    with xml.Target(title=targets['name']):
+                        xml.Option(output=output)
+                        xml.Option(working_dir=os.path.split(output)[0])
+                        xml.Option(object_output=join_paths(os.path.split(output)[0], targets['id']))
+                        ty = {
+                            'executable': f'{BUILD_OPTION_EXECUTABLE}',
+                            'static library': f'{BUILD_OPTION_STATIC_LIBRARY}',
+                            'shared library': f'{BUILD_OPTION_SHARED_LIBRARY}',
+                            'custom': f'{BUILD_OPTION_COMMANDS_ONLY}',
+                            'run': f'{BUILD_OPTION_COMMANDS_ONLY}'
+                        }[targets['type']]
+                        xml.Option(type=ty)
+                        compiler = targets
+                        if compiler:
+                            xml.Option(compiler=self.compiler)
+                    with xml.Compiler:
+                        for target in targets['target_sources']:
+                            for defs in target['parameters']:
+                                if defs.startswith('-D'):
+                                    logging.info(f'add def: {defs}')
+                                    xml.Add(option=defs)
 
-        for target in self.targetsinfo:
-            build_target = ETree.SubElement(build, 'Target', {'title': target['name']})
-            output = join_paths(self.build, target['id'])
-            ETree.SubElement(build_target, 'Option', {'output': output})
-            ETree.SubElement(build_target, 'Option', {'working_dir': os.path.split(output)[0]})
-            ETree.SubElement(build_target, 'Option', {'object_output': join_paths(os.path.split(output)[0], target['id'])})
-            ty = {
-                'executable': f'{BUILD_OPTION_EXECUTABLE}',
-                'static library': f'{BUILD_OPTION_STATIC_LIBRARY}',
-                'shared library': f'{BUILD_OPTION_SHARED_LIBRARY}',
-                'custom': f'{BUILD_OPTION_COMMANDS_ONLY}',
-                'run': f'{BUILD_OPTION_COMMANDS_ONLY}'
-            }[target['type']]
-            ETree.SubElement(build_target, 'Option', {'type': ty})
+                            for dirs in target['parameters']:
+                                if dirs.startswith('-I') or dirs.startswith('/I'):
+                                    logging.info(f'add include: {dirs}')
+                                    xml.Add(option=dirs)
 
-            compiler = target
-            if compiler:
-                ETree.SubElement(build_target, 'Option', {'compiler': self.compiler})
+                    with xml.MakeCommands:
+                        xml.Build(command=f'{self.ninja.exe} -v {targets["name"]}')
+                        xml.CompileFile(command=f'{self.ninja.exe} -v {targets["name"]}')
+                        xml.Clean(command=f'{self.ninja.exe} -v clean')
+                        xml.DistClean(command=f'{self.ninja.exe} -v clean')
 
-            compiler = ETree.SubElement(build_target, 'Compiler')
+            for targets in self.targetsinfo:
+                for target in targets['target_sources']:
+                    for file in target['sources']:
+                        with xml.Unit(filename=join_paths(self.source, file)):
+                            xml.Option(target=targets['name'])
 
-            for define in self.defs:
-                ETree.SubElement(compiler, 'Add', {'option': define})
+                    base = os.path.splitext(os.path.basename(file))[0]
+                    header_exts = ('h', 'hpp')
+                    for ext in header_exts:
+                        header_file = os.path.abspath(
+                            join_paths(self.source, os.path.dirname(file), f'{base}.{ext}'))
+                        if os.path.exists(header_file):
+                            with xml.Unit(filename=header_file):
+                                xml.Option(target=targets['name'])
+            for file in self.buildsystem_files:
+                with xml.Unit(filename=join_paths(self.source, file)):
+                    xml.Option(target=join_paths('Meson Files', os.path.dirname(file)))
 
-            for include_dir in self.includes:
-                ETree.SubElement(compiler, 'Add', {'directory': include_dir})
-
-            make_commands = ETree.SubElement(build_target, 'MakeCommands')
-            ETree.SubElement(make_commands, 'Build', {'command': f'{self.ninja.exe} -v {target["name"]}'})
-            ETree.SubElement(make_commands, 'CompileFile', {'command': f'{self.ninja.exe} -v {target["name"]}'})
-            ETree.SubElement(make_commands, 'Clean', {'command': f'{self.ninja.exe} -v clean'})
-            ETree.SubElement(make_commands, 'DistClean', {'command': f'{self.ninja.exe} -v clean'})
-
-        for target in self.targetsinfo:
-            for target_file in self.sources:
-                unit = ETree.SubElement(project, 'Unit', {'filename': join_paths(self.source, target_file)})
-                ETree.SubElement(unit, 'Option', {'target': target['name']})
-
-                base = os.path.splitext(os.path.basename(target_file))[0]
-                header_exts = ('h', 'hpp')
-                for ext in header_exts:
-                    header_file = os.path.abspath(
-                        join_paths(self.source, os.path.dirname(target_file), join_paths(base + '.' + ext)))
-                    if os.path.exists(header_file):
-                        unit = ETree.SubElement(project, 'Unit', {'filename': header_file})
-                        ETree.SubElement(unit, 'Option', {'target': target['name']})
-
-        for file in self.scripts:
-            unit = ETree.SubElement(project, 'Unit', {'filename': join_paths(self.source, file)})
-            ETree.SubElement(unit, 'Option', {'virtualFolder': join_paths('Meson Files', os.path.dirname(file))})
-
-        project_file = join_paths(self.build, f'{self.project_name}.cbp')
-        tree.write(project_file, 'unicode', True)
-
-    def find_includes(self):
-        include_dirs: list = []
-        for target in self.targetsinfo:
-            for includes in target['target_sources'][0]['parameters']:
-                if includes.startswith('-I') or includes.startswith('/I'):
-                    logging.info(f'add include: {includes}')
-                    include_dirs.append([includes])
-        self.includes = include_dirs
-
-    def find_definitions(self):
-        definitions: list = []
-        for target in self.targetsinfo:
-            for defs in target['target_sources'][0]['parameters']:
-                if defs.startswith('-D'):
-                    logging.info(f'add def: {defs}')
-                    definitions.append([defs])
-        self.defs = definitions
-
-    def find_source_files(self):
-        sources: list = []
-        for target in self.targetsinfo:
-            for file in target['target_sources'][0]['sources']:
-                logging.info(f'add source: {file}')
-                sources.append([file])
-        self.source = sources
-
-    def find_build_files(self):
-        self.scripts = self.buildsystem_files
+        with open(join_paths(self.build, f'{self.project_name}.cbp'), 'w') as ide_file:
+            ide_file.write(str(xml))

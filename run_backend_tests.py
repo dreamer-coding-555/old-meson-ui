@@ -13,6 +13,7 @@ from mesonui.mesonuilib.buildsystem import Meson
 from mesonui.mesonuilib.backends.codeblocks import CodeBlocksBackend
 from mesonui.mesonuilib.backends.qtcreator import QtCreatorBackend
 from mesonui.mesonuilib.backends.kdevelop import KDevelopBackend
+from mesonui.mesonuilib.backends.gnome import GNOMEBuilderBackend
 
 from mesonui.repository.mesonapi import MesonAPI
 from os.path import join as join_paths
@@ -68,8 +69,6 @@ class TestMesonBackend:
         assert os.path.exists(join_paths(build, 'compile_commands.json'))
         assert os.path.exists(join_paths(build, 'basic.cbp'))
 
-# /Users/mike/Desktop/meson-ui/test-cases/backends/02-codeblocks/builddir/basic.cbp
-# /Users/mike/Desktop/meson-ui/test-cases/backends/02-codeblocks/builddir/basic.cbp
     def test_qtcreator_backend(self):
         #
         # Setting up tmp test directory
@@ -94,6 +93,27 @@ class TestMesonBackend:
         assert os.path.exists(join_paths(build, 'basic.creator'))
         assert os.path.exists(join_paths(build, 'basic.includes'))
         assert os.path.exists(join_paths(build, 'basic.files'))
+
+    def test_gnome_builder_backend(self):
+        #
+        # Setting up tmp test directory
+        source = Path(join_paths('test-cases', 'backends', '04-gnome')).resolve()
+        build = Path(join_paths('test-cases', 'backends', '04-gnome', 'builddir')).resolve()
+
+        #
+        # Running Meson command
+        meson: Meson = Meson(sourcedir=source, builddir=build)
+
+        meson.setup(['--backend=ninja'])
+        api = MesonAPI(sourcedir=source, builddir=build)
+        ide = GNOMEBuilderBackend(api)
+        ide.generator()
+
+        #
+        # Run asserts to check it is working
+        assert os.path.exists(join_paths(source, 'meson.build'))
+        assert os.path.exists(join_paths(build, 'build.ninja'))
+        assert os.path.exists(join_paths(build, 'compile_commands.json'))
 
     def test_ninja_backend(self, tmpdir):
         #

@@ -10,6 +10,7 @@
 from .backends.codeblocks import CodeBlocksBackend
 from .backends.qtcreator import QtCreatorBackend
 from .backends.kdevelop import KDevelopBackend
+from .backends.gnome import GNOMEBuilderBackend
 
 from ..repository.mesonapi import MesonAPI
 import logging
@@ -21,4 +22,5 @@ def backend_factory(backend: str, meson_api: MesonAPI):
         'kdevelop': KDevelopBackend,
         'codeblocks': CodeBlocksBackend,
         'qtcreator': QtCreatorBackend,
+        'gnome': GNOMEBuilderBackend
     }[backend](meson_api)
