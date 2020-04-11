@@ -8,20 +8,21 @@
 # copyright 2020 The Meson-UI development team
 #
 from mesonui.repository.mesonapi import MesonAPI
+from mesonui.mesonuilib.mesonapi.projectinfo import ProjectInfo
+from mesonui.mesonuilib.mesonapi.projectinfo import MesonInfo
 from .backendimpl import BackendImplementionApi
 from os.path import join as join_paths
 import logging
 import os
-import re
 
 
 class QtCreatorBackend(BackendImplementionApi):
     def __init__(self, meson_api: MesonAPI):
-        super(self.__class__, self).__init__(meson_api)
         self.backend: str = '\'qtcreator\''
-        self.project_name = re.sub(r'[^a-z0-9]', '_', self.projectinfo['descriptive_name'])
-        self.source: str = self.mesoninfo['directories']['source']
-        self.build: str = self.mesoninfo['directories']['build']
+        self.projectinfo = ProjectInfo(meson_api=meson_api)
+        self.mesoninfo = MesonInfo(meson_api=meson_api)
+        self.buildsystem_files: list = meson_api.get_object(group='buildsystem-files', extract_method='loader')
+        self.targetsinfo: list = meson_api.get_object(group='targets', extract_method='loader')
 
     def generator(self):
         logging.info(f'Generating {self.backend} project')
@@ -29,35 +30,32 @@ class QtCreatorBackend(BackendImplementionApi):
 
     def generate_project(self):
         # Generate the .creator file.
-        with open(join_paths(self.build, f'{self.project_name}.creator'), 'w') as file:
+        with open(join_paths(self.mesoninfo.builddir, f'{self.projectinfo.descriptive_name}.creator'), 'w') as file:
             file.write('[General]')
 
         # Generate the .config file.
-        with open(join_paths(self.build, f'{self.project_name}.config'), 'w') as file:
+        with open(join_paths(self.mesoninfo.builddir, f'{self.projectinfo.descriptive_name}.config'), 'w') as file:
             file.write('// Add predefined macros for your project here. For example:')
             file.write('// #define THE_ANSWER 42')
             for targets in self.targetsinfo:
-                for target in targets['target_sources']:
-                    for item in target['parameters']:
-                        if item.startswith('-D'):
-                            logging.info(f'add def: {item}')
-                            item = ' '.join(item.split('='))
-                            file.write(f'#define {item}\n')
+                for item in targets['target_sources'][0]['parameters']:
+                    if item.startswith('-D'):
+                        logging.info(f'add def: {item}')
+                        item = ' '.join(item.split('='))
+                        file.write(f'#define {item}\n')
 
         # Generate the .files file.
-        with open(join_paths(self.build, f'{self.project_name}.files'), 'w') as file:
+        with open(join_paths(self.mesoninfo.builddir, f'{self.projectinfo.descriptive_name}.files'), 'w') as file:
             for targets in self.targetsinfo:
-                for target in targets['target_sources']:
-                    for item in target['sources']:
-                        file.write(os.path.relpath(item, self.build) + '\n')
+                for items in targets['target_sources'][0]['sources']:
+                    file.write(os.path.relpath(item, self.mesoninfo.builddir) + '\n')
 
-                    for item in self.buildsystem_files:
-                        file.write(os.path.relpath(item, self.build) + '\n')
+                for item in self.buildsystem_files:
+                    file.write(os.path.relpath(item, self.mesoninfo.builddir) + '\n')
 
         # Generate the .includes file.
-        with open(join_paths(self.build, f'{self.project_name}.includes'), 'w') as file:
+        with open(join_paths(self.mesoninfo.builddir, f'{self.projectinfo.descriptive_name}.includes'), 'w') as file:
             for targets in self.targetsinfo:
-                for item in targets['target_sources']:
-                    for item in target['parameters']:
-                        if item.startswith('-I') or item.startswith('/I'):
-                            file.write(os.path.relpath(item, self.build) + '\n')
+                for item in targets['target_sources'][0]['parameters']:
+                    if item.startswith('-I') or item.startswith('/I'):
+                        file.write(os.path.relpath(item, self.mesoninfo.builddir) + '\n')

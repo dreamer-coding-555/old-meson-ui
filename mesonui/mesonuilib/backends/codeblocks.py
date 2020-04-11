@@ -9,12 +9,13 @@
 #
 from mesonui.mesonuilib.xmlbuilder import Builder
 from mesonui.repository.mesonapi import MesonAPI
+from mesonui.mesonuilib.mesonapi.projectinfo import ProjectInfo
+from mesonui.mesonuilib.mesonapi.projectinfo import MesonInfo
 from .backendimpl import BackendImplementionApi
 from os.path import join as join_paths
 from ..buildsystem import Ninja
 import logging
 import os
-import re
 
 BUILD_OPTION_EXECUTABLE = 1
 BUILD_OPTION_STATIC_LIBRARY = 2
@@ -26,13 +27,13 @@ CBP_VERSION_MINOR = 6
 
 class CodeBlocksBackend(BackendImplementionApi):
     def __init__(self, meson_api: MesonAPI):
-        super(self.__class__, self).__init__(meson_api)
         self.backend: str = '\'codeblocks\''
-        self.project_name = re.sub(r'[^a-z0-9]', '_', self.projectinfo['descriptive_name'])
+        self.projectinfo = ProjectInfo(meson_api=meson_api)
+        self.mesoninfo = MesonInfo(meson_api=meson_api)
+        self.buildsystem_files = meson_api.get_object(group='buildsystem-files', extract_method='loader')
+        self.targetsinfo: any = meson_api.get_object(group='targets', extract_method='loader')
+        self.ninja = Ninja(self.mesoninfo.sourcedir, self.mesoninfo.builddir)
         self.compiler = self.targetsinfo[0]['target_sources'][0]['compiler'][0]
-        self.source: str = self.mesoninfo['directories']['source']
-        self.build: str = self.mesoninfo['directories']['build']
-        self.ninja = Ninja(self.source, self.build)
 
     def generator(self):
         logging.info(f'Generating {self.backend} project')
@@ -40,17 +41,17 @@ class CodeBlocksBackend(BackendImplementionApi):
 
     def generate_project(self):
         xml: Builder = Builder(version='1.0', encoding='UTF-8')
-        with xml.CodeBlocks_project_file(Name=self.project_name, Version='0.1', InternalType='Console'):
+        with xml.CodeBlocks_project_file(Name=self.projectinfo.descriptive_name, Version='0.1', InternalType='Console'):
             xml.FileVersion(major=f'{CBP_VERSION_MAJOR}', minor=f'{CBP_VERSION_MINOR}')
             with xml.Project:
-                xml.Option(title=self.project_name)
+                xml.Option(title=self.projectinfo.descriptive_name)
                 xml.Option(compiler=self.compiler)
                 xml.Option(virtualFolders='Meson Files')
                 xml.Option(makefile_is_custom='1')
 
             with xml.Build:
                 for targets in self.targetsinfo:
-                    output = join_paths(self.build, targets['id'])
+                    output = join_paths(self.mesoninfo.builddir, targets['id'])
                     with xml.Target(title=targets['name']):
                         xml.Option(output=output)
                         xml.Option(working_dir=os.path.split(output)[0])
@@ -87,20 +88,20 @@ class CodeBlocksBackend(BackendImplementionApi):
             for targets in self.targetsinfo:
                 for target in targets['target_sources']:
                     for file in target['sources']:
-                        with xml.Unit(filename=join_paths(self.source, file)):
+                        with xml.Unit(filename=join_paths(self.mesoninfo.sourcedir, file)):
                             xml.Option(target=targets['name'])
 
                     base = os.path.splitext(os.path.basename(file))[0]
                     header_exts = ('h', 'hpp')
                     for ext in header_exts:
                         header_file = os.path.abspath(
-                            join_paths(self.source, os.path.dirname(file), f'{base}.{ext}'))
+                            join_paths(self.mesoninfo.sourcedir, os.path.dirname(file), f'{base}.{ext}'))
                         if os.path.exists(header_file):
                             with xml.Unit(filename=header_file):
                                 xml.Option(target=targets['name'])
             for file in self.buildsystem_files:
-                with xml.Unit(filename=join_paths(self.source, file)):
+                with xml.Unit(filename=join_paths(self.mesoninfo.sourcedir, file)):
                     xml.Option(target=join_paths('Meson Files', os.path.dirname(file)))
 
-        with open(join_paths(self.build, f'{self.project_name}.cbp'), 'w') as ide_file:
+        with open(join_paths(self.mesoninfo.builddir, f'{self.projectinfo.descriptive_name}.cbp'), 'w') as ide_file:
             ide_file.write(str(xml))

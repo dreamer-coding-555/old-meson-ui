@@ -8,11 +8,13 @@
 # copyright 2020 The Meson-UI development team
 #
 from mesonui.repository.mesonapi import MesonAPI
+from mesonui.mesonuilib.mesonapi.buildoptions import BuildOption
+from mesonui.mesonuilib.mesonapi.projectinfo import ProjectInfo
+from mesonui.mesonuilib.mesonapi.projectinfo import MesonInfo
 from .backendimpl import BackendImplementionApi
 from os.path import join as join_paths
 from ..buildsystem import Meson
 import logging
-import re
 import os
 
 
@@ -20,9 +22,9 @@ class KDevelopBackend(BackendImplementionApi):
     def __init__(self, meson_api: MesonAPI):
         super(self.__class__, self).__init__(meson_api)
         self.backend: str = '\'kdevelop\''
-        self.project_name = re.sub(r'[^a-z0-9]', '_', self.projectinfo['descriptive_name'])
-        self.source: str = self.mesoninfo['directories']['source']
-        self.build: str = self.mesoninfo['directories']['build']
+        self.buildoptions = BuildOption(meson_api=meson_api)
+        self.projectinfo = ProjectInfo(meson_api=meson_api)
+        self.mesoninfo = MesonInfo(meson_api=meson_api)
         self.meson = Meson()
 
     def generator(self):
@@ -31,18 +33,18 @@ class KDevelopBackend(BackendImplementionApi):
 
     def generate_project(self):
         # Generate the .kdev4 file.
-        with open(join_paths(self.build, f'{self.project_name}.kdev4'), 'w') as file:
+        with open(join_paths(self.mesoninfo.builddir, f'{self.projectinfo.descriptive_name}.kdev4'), 'w') as file:
             file.write('[Project]\n')
             file.write('CreatedFrom=meson.build\n')
             file.write('Manager=KDevMesonManager\n')
-            file.write(f'Name={self.project_name}\n')
+            file.write(f'Name={self.projectinfo.descriptive_name}\n')
 
         # Make .kdev4/ directory.
-        if not os.path.exists(join_paths(self.build, '.kdev')):
-            os.mkdir(join_paths(self.build, '.kdev'))
+        if not os.path.exists(join_paths(self.mesoninfo.builddir, '.kdev')):
+            os.mkdir(join_paths(self.mesoninfo.builddir, '.kdev'))
 
         # Generate the .kdev4/ file.
-        with open(join_paths(self.build, '.kdev', f'{self.project_name}.kdev4'), 'w') as file:
+        with open(join_paths(self.mesoninfo.builddir, '.kdev', f'{self.projectinfo.descriptive_name}.kdev4'), 'w') as file:
             file.write('[Buildset]\n')
             file.write(f'BuildItems=@Variant({self._variant()})\n\n')
 
@@ -52,12 +54,12 @@ class KDevelopBackend(BackendImplementionApi):
 
             file.write('[MesonManager][BuildDir 0]\n')
             file.write('Additional meson arguments=\n')
-            file.write(f'Build Build Path={self.build}\n')
-            file.write(f'Meson Generator Backend={self.buildoptions[1]["value"]}\n')
+            file.write(f'Build Build Path={self.mesoninfo.builddir}\n')
+            file.write(f'Meson Generator Backend={self.buildoptions.combo("backend").value}\n')
             file.write(f'Meson executable={self.meson.exe}\n')
 
     def _variant(self) -> str:
         variant: str = '\\x00\\x00\\x00\\t\\x00\\x00\\x00\\x00\\x01\\x00\\x00\\x00\\x0b\\x00\\x00\\x00\\x00\\x01\\x00\\x00\\x00\\x16'
-        for i in self.project_name:
+        for i in self.projectinfo.descriptive_name:
             variant + f'\\x00{i}'
         return variant
