@@ -25,6 +25,15 @@ from mesonui.mesonuilib.coredata import MesonUiCache
 from mesonui.mesonuilib.coredata import MesonUiInitCache
 from mesonui.mesonuilib.coredata import MesonUiDistCache
 from mesonui.mesonuilib.coredata import MesonUiInstallCache
+from mesonui.mesonuilib.mesonapi.buildoptions import MESON_OPTION_MACHINE
+from mesonui.mesonuilib.mesonapi.buildoptions import MESON_OPTION_SECTION
+from mesonui.mesonuilib.mesonapi.buildoptions import MESON_OPTION_TYPES
+from mesonui.mesonuilib.mesonapi.buildoptions import BuildOption
+from mesonui.mesonuilib.mesonapi.buildoptions import StringBuildOption
+from mesonui.mesonuilib.mesonapi.buildoptions import IntegerBuildOption
+from mesonui.mesonuilib.mesonapi.buildoptions import BooleanBuildOption
+from mesonui.mesonuilib.mesonapi.buildoptions import ComboBuildOption
+from mesonui.mesonuilib.mesonapi.buildoptions import ArrayBuildOption
 
 from mesonui.repository.dataloader import MesonBuilddirLoader
 from mesonui.repository.datareader import MesonBuilddirReader
@@ -36,6 +45,237 @@ from mesonui.containers.queue import MesonUiQueue
 from mesonui.containers.stack import MesonUiStack
 from mesonui.mesonuilib.utilitylib import MesonUiException
 from mesonui.mesonuilib.utilitylib import OSUtility
+
+
+class TestBuildOptionWrapper:
+    def test_integer(self):
+        source = join('test-cases', 'meson-api', '01-scan-script')
+        build = join('test-cases', 'meson-api', '01-scan-script', 'builddir')
+        meson: Meson = Meson(sourcedir=source, builddir=build)
+
+        meson.setup()
+
+        api: MesonAPI = MesonAPI(sourcedir=source, builddir=build)
+        option: BuildOption = BuildOption(api)
+        opt = option.integer('install_umask')
+
+        assert(opt.section in MESON_OPTION_SECTION)
+        assert(opt.machine in MESON_OPTION_MACHINE)
+        assert(opt.type in MESON_OPTION_TYPES)
+
+    def test_boolean(self):
+        source = join('test-cases', 'meson-api', '01-scan-script')
+        build = join('test-cases', 'meson-api', '01-scan-script', 'builddir')
+        meson: Meson = Meson(sourcedir=source, builddir=build)
+
+        meson.setup()
+
+        api: MesonAPI = MesonAPI(sourcedir=source, builddir=build)
+        option: BuildOption = BuildOption(api)
+        opt = option.boolean('strip')
+
+        assert(opt.section in MESON_OPTION_SECTION)
+        assert(opt.machine in MESON_OPTION_MACHINE)
+        assert(opt.type in MESON_OPTION_TYPES)
+
+    def test_string(self):
+        source = join('test-cases', 'meson-api', '01-scan-script')
+        build = join('test-cases', 'meson-api', '01-scan-script', 'builddir')
+        meson: Meson = Meson(sourcedir=source, builddir=build)
+
+        meson.setup()
+
+        api: MesonAPI = MesonAPI(sourcedir=source, builddir=build)
+        option: BuildOption = BuildOption(api)
+        opt = option.string('bindir')
+
+        assert(opt.section in MESON_OPTION_SECTION)
+        assert(opt.machine in MESON_OPTION_MACHINE)
+        assert(opt.type in MESON_OPTION_TYPES)
+
+    def test_combo(self):
+        source = join('test-cases', 'meson-api', '01-scan-script')
+        build = join('test-cases', 'meson-api', '01-scan-script', 'builddir')
+        meson: Meson = Meson(sourcedir=source, builddir=build)
+
+        meson.setup()
+
+        api: MesonAPI = MesonAPI(sourcedir=source, builddir=build)
+        option: BuildOption = BuildOption(api)
+        opt = option.combo('backend')
+
+        assert(opt.section in MESON_OPTION_SECTION)
+        assert(opt.machine in MESON_OPTION_MACHINE)
+        assert(opt.type in MESON_OPTION_TYPES)
+
+    def test_array(self):
+        source = join('test-cases', 'meson-api', '01-scan-script')
+        build = join('test-cases', 'meson-api', '01-scan-script', 'builddir')
+        meson: Meson = Meson(sourcedir=source, builddir=build)
+
+        meson.setup()
+
+        api: MesonAPI = MesonAPI(sourcedir=source, builddir=build)
+        option: BuildOption = BuildOption(api)
+        opt = option.array('cmake_prefix_path')
+
+        assert(opt.section in MESON_OPTION_SECTION)
+        assert(opt.machine in MESON_OPTION_MACHINE)
+        assert(opt.type in MESON_OPTION_TYPES)
+
+    def test_integer_wrong_type_name_pram(self):
+        source = join('test-cases', 'meson-api', '01-scan-script')
+        build = join('test-cases', 'meson-api', '01-scan-script', 'builddir')
+        meson: Meson = Meson(sourcedir=source, builddir=build)
+
+        meson.setup()
+
+        api: MesonAPI = MesonAPI(sourcedir=source, builddir=build)
+        option: BuildOption = BuildOption(api)
+
+        with pytest.raises(MesonUiException) as e:
+            option.integer(None)
+        assert('Option has wrong type <class \'NoneType\'> should be string!' == str(e.value))
+
+    def test_boolean_wrong_type_name_pram(self):
+        source = join('test-cases', 'meson-api', '01-scan-script')
+        build = join('test-cases', 'meson-api', '01-scan-script', 'builddir')
+        meson: Meson = Meson(sourcedir=source, builddir=build)
+
+        meson.setup()
+
+        api: MesonAPI = MesonAPI(sourcedir=source, builddir=build)
+        option: BuildOption = BuildOption(api)
+
+        with pytest.raises(MesonUiException) as e:
+            option.boolean(None)
+        assert('Option has wrong type <class \'NoneType\'> should be string!' == str(e.value))
+
+    def test_string_wrong_type_name_pram(self):
+        source = join('test-cases', 'meson-api', '01-scan-script')
+        build = join('test-cases', 'meson-api', '01-scan-script', 'builddir')
+        meson: Meson = Meson(sourcedir=source, builddir=build)
+
+        meson.setup()
+
+        api: MesonAPI = MesonAPI(sourcedir=source, builddir=build)
+        option: BuildOption = BuildOption(api)
+
+        with pytest.raises(MesonUiException) as e:
+            option.string(None)
+        assert('Option has wrong type <class \'NoneType\'> should be string!' == str(e.value))
+
+    def test_combo_wrong_type_name_pram(self):
+        source = join('test-cases', 'meson-api', '01-scan-script')
+        build = join('test-cases', 'meson-api', '01-scan-script', 'builddir')
+        meson: Meson = Meson(sourcedir=source, builddir=build)
+
+        meson.setup()
+
+        api: MesonAPI = MesonAPI(sourcedir=source, builddir=build)
+        option: BuildOption = BuildOption(api)
+
+        with pytest.raises(MesonUiException) as e:
+            option.combo(None)
+        assert('Option has wrong type <class \'NoneType\'> should be string!' == str(e.value))
+
+    def test_array_wrong_type_name_pram(self):
+        source = join('test-cases', 'meson-api', '01-scan-script')
+        build = join('test-cases', 'meson-api', '01-scan-script', 'builddir')
+        meson: Meson = Meson(sourcedir=source, builddir=build)
+
+        meson.setup()
+
+        api: MesonAPI = MesonAPI(sourcedir=source, builddir=build)
+        option: BuildOption = BuildOption(api)
+
+        with pytest.raises(MesonUiException) as e:
+            option.array(None)
+        assert('Option has wrong type <class \'NoneType\'> should be string!' == str(e.value))
+
+    def test_integer_option_not_found(self):
+        source = join('test-cases', 'meson-api', '01-scan-script')
+        build = join('test-cases', 'meson-api', '01-scan-script', 'builddir')
+        meson: Meson = Meson(sourcedir=source, builddir=build)
+
+        meson.setup()
+
+        api: MesonAPI = MesonAPI(sourcedir=source, builddir=build)
+        option: BuildOption = BuildOption(api)
+
+        with pytest.raises(MesonUiException) as e:
+            option.integer('debug')
+        assert('Option has wrong type!' == str(e.value))
+
+    def test_boolean_option_not_found(self):
+        source = join('test-cases', 'meson-api', '01-scan-script')
+        build = join('test-cases', 'meson-api', '01-scan-script', 'builddir')
+        meson: Meson = Meson(sourcedir=source, builddir=build)
+
+        meson.setup()
+
+        api: MesonAPI = MesonAPI(sourcedir=source, builddir=build)
+        option: BuildOption = BuildOption(api)
+
+        with pytest.raises(MesonUiException) as e:
+            option.integer('layout')
+        assert('Option has wrong type!' == str(e.value))
+
+    def test_string_option_not_found(self):
+        source = join('test-cases', 'meson-api', '01-scan-script')
+        build = join('test-cases', 'meson-api', '01-scan-script', 'builddir')
+        meson: Meson = Meson(sourcedir=source, builddir=build)
+
+        meson.setup()
+
+        api: MesonAPI = MesonAPI(sourcedir=source, builddir=build)
+        option: BuildOption = BuildOption(api)
+
+        with pytest.raises(MesonUiException) as e:
+            option.integer('debug')
+        assert('Option has wrong type!' == str(e.value))
+
+    def test_combo_option_not_found(self):
+        source = join('test-cases', 'meson-api', '01-scan-script')
+        build = join('test-cases', 'meson-api', '01-scan-script', 'builddir')
+        meson: Meson = Meson(sourcedir=source, builddir=build)
+
+        meson.setup()
+
+        api: MesonAPI = MesonAPI(sourcedir=source, builddir=build)
+        option: BuildOption = BuildOption(api)
+
+        with pytest.raises(MesonUiException) as e:
+            option.integer('debug')
+        assert('Option has wrong type!' == str(e.value))
+
+    def test_array_option_not_found(self):
+        source = join('test-cases', 'meson-api', '01-scan-script')
+        build = join('test-cases', 'meson-api', '01-scan-script', 'builddir')
+        meson: Meson = Meson(sourcedir=source, builddir=build)
+
+        meson.setup()
+
+        api: MesonAPI = MesonAPI(sourcedir=source, builddir=build)
+        option: BuildOption = BuildOption(api)
+
+        with pytest.raises(MesonUiException) as e:
+            option.integer('debug')
+        assert('Option has wrong type!' == str(e.value))
+
+    def test_option_not_found(self):
+        source = join('test-cases', 'meson-api', '01-scan-script')
+        build = join('test-cases', 'meson-api', '01-scan-script', 'builddir')
+        meson: Meson = Meson(sourcedir=source, builddir=build)
+
+        meson.setup()
+
+        api: MesonAPI = MesonAPI(sourcedir=source, builddir=build)
+        option: BuildOption = BuildOption(api)
+
+        with pytest.raises(MesonUiException) as e:
+            option.integer('smap-option')
+        assert('Option smap-option not found!' == str(e.value))
 
 
 class TestMesonUiQueue:
@@ -303,6 +543,18 @@ class TestMesonAPI:
         with pytest.raises(Exception) as e:
             reader = reader.get_object(group='not-a-key', extract_method='not-a-method')
         assert('Extract method not-a-method not found in Meson "JSON" API!' == str(e.value))
+
+    def test_meson_api_bad_extract_method_type(self):
+        reader: MesonAPI = MesonAPI(None, None)
+        with pytest.raises(Exception) as e:
+            reader = reader.get_object(group='not-a-key', extract_method=None)
+        assert('API extract method <class \'NoneType\'> is not valid type!' == str(e.value))
+
+    def test_meson_api_bad_group_type(self):
+        reader: MesonAPI = MesonAPI(None, None)
+        with pytest.raises(Exception) as e:
+            reader = reader.get_object(group=1234.09, extract_method='not-a-method')
+        assert('API group key pair <class \'float\'> is not valid type!' == str(e.value))
 
 
 class TestApiBuilddirLoader:

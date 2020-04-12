@@ -14,28 +14,8 @@ class BackendImplementionApi:
         self.meson_api = meson_api
 
     @property
-    def projectinfo(self):
-        return self.meson_api.get_object(group='projectinfo', extract_method='loader')
-
-    @property
-    def targetsinfo(self):
-        return self.meson_api.get_object(group='targets', extract_method='loader')
-
-    @property
-    def mesoninfo(self):
-        return self.meson_api.get_object(group='meson-info', extract_method='loader')
-
-    @property
     def testinfo(self):
         return self.meson_api.get_object(group='tests', extract_method='loader')
-
-    @property
-    def buildoptions(self):
-        return self.meson_api.get_object(group='buildoptions', extract_method='loader')
-
-    @property
-    def buildsystem_files(self):
-        return self.meson_api.get_object(group='buildsystem-files', extract_method='loader')
 
     def generator(self):
         raise NotImplementedError('IDE Backend "generate" method not iemented!')
