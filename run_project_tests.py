@@ -32,6 +32,15 @@ patch_filename = sqlite-3080802-5-wrap.zip
 patch_hash = d66469a73fa1344562d56a1d7627d5d0ee4044a77b32d16cf4bbb85741d4c9fd
 '''
 
+info = '''\
+Meson-UI is an open source build GUI meant to be both extremely fast,
+and, even more importantly, as user friendly as possible.
+
+The main design point of Meson-UI is to provide a standalone portable
+build GUI and allow the user to access all or most of Meson build
+systems features.
+'''
+
 class TestPyPiPackageInfo:
     def test_all_pypi_info(self):
         pypi = PackageInfo()
@@ -39,8 +48,8 @@ class TestPyPiPackageInfo:
         assert(pypi.get_mail() == 'michaelbrockus@gmail.com')
         assert(pypi.get_license() == 'Apache-2.0')
         assert(pypi.get_project_name() == 'meson-ui')
-        assert(pypi.get_version() == '0.20.0')
-        assert(pypi.get_description() == 'Meson-UI is a build GUI for Meson build system.')
+        assert(pypi.get_version() == '0.20.1')
+        assert(pypi.get_description() == info)
 
     def test_only_author_info(self):
         pypi = ProjectAuthor()
@@ -52,7 +61,7 @@ class TestPyPiPackageInfo:
         assert(pypi.get_license() == 'Apache-2.0')
         assert(pypi.get_project_name() == 'meson-ui')
         assert(pypi.get_version() == '0.20.1')
-        assert(pypi.get_description() == 'Meson-UI is a build GUI for Meson build system.')
+        assert(pypi.get_description() == info)
 
 
 class TestNinja:
