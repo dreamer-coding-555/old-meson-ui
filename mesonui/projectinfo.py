@@ -9,12 +9,21 @@
 #
 
 
+info = '''\
+Meson-UI is an open source build GUI meant to be both extremely fast,
+and, even more importantly, as user friendly as possible.
+
+The main design point of Meson-UI is to provide a standalone portable
+build GUI and allow the user to access all or most of Meson build
+systems features.
+'''
+
 class ProjectInfo:
     def get_description(self) -> str:
-        return 'Meson-UI is a build GUI for Meson build system.'
+        return info
 
     def get_version(self) -> str:
-        return '0.20.0'
+        return '0.20.1'
 
     def get_license(self) -> str:
         return 'Apache-2.0'
