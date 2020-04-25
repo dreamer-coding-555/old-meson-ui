@@ -29,11 +29,6 @@ from mesonui.mesonuilib.mesonapi.buildoptions import MESON_OPTION_MACHINE
 from mesonui.mesonuilib.mesonapi.buildoptions import MESON_OPTION_SECTION
 from mesonui.mesonuilib.mesonapi.buildoptions import MESON_OPTION_TYPES
 from mesonui.mesonuilib.mesonapi.buildoptions import BuildOption
-from mesonui.mesonuilib.mesonapi.buildoptions import StringBuildOption
-from mesonui.mesonuilib.mesonapi.buildoptions import IntegerBuildOption
-from mesonui.mesonuilib.mesonapi.buildoptions import BooleanBuildOption
-from mesonui.mesonuilib.mesonapi.buildoptions import ComboBuildOption
-from mesonui.mesonuilib.mesonapi.buildoptions import ArrayBuildOption
 
 from mesonui.repository.dataloader import MesonBuilddirLoader
 from mesonui.repository.datareader import MesonBuilddirReader
